@@ -12,7 +12,7 @@ Note: this is similar to [rvagg/abstract-leveldown](https://github.com/rvagg/abs
 
 ### Usage
 
-See [datastore.memory/try.js](https://github.com/jbenet/datastore.memory/blob/master/try.js):
+See [datastore.memory/try.js](https://github.com/jbenet/node-datastore.memory/blob/master/try.js):
 
 ```js
 var memDS = require('datastore.memory')
@@ -48,7 +48,7 @@ ds.has('foo', function(err, has, key) {
 
 ### Implementation
 
-See [datastore.memory/index.js](https://github.com/jbenet/datastore.memory/blob/master/index.js):
+See [datastore.memory/index.js](https://github.com/jbenet/node-datastore.memory/blob/master/index.js):
 
 ```js
 var DS = require('datastore.abstract')
