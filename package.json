@@ -1,0 +1,22 @@
+{
+  "name": "datastore.abstract",
+  "version": "0.0.0",
+  "description": "datastore",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "datastore",
+    "abstract"
+  ],
+  "author": "Juan Benet <juan@benet.ai> (http://juan.benet.ai/)",
+  "license": "MIT",
+  "devDependencies": {
+    "tape": "^2.13.3"
+  },
+  "dependencies": {
+    "inherits": "^2.0.1",
+    "xtend": "^3.0.0"
+  }
+}
