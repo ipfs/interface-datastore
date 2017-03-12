@@ -90,4 +90,4 @@ Close the datastore, this should always be called to ensure resources are cleane
 
 ## License
 
-MIT 2017 Protocol Labs
+MIT 2017 @ IPFS
