@@ -1,92 +1,93 @@
-# node-datastore interface
+# interface-datastore
 
-datastore is a generic layer of abstraction for data store and database access. It is a simple API with the aim to enable application development in a datastore-agnostic way, allowing datastores to be swapped seamlessly without changing application code. Thus, one can leverage different datastores with different strengths without committing the application to one datastore throughout its lifetime.
+[![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
+[![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
+[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
+[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
+[![Build Status](https://travis-ci.org/ipfs/js-interface-datastore.svg)](https://travis-ci.org/ipfs/js-interface-datastore) [![Circle CI](https://circleci.com/gh/ipfs/js-interface-datastore.svg?style=svg)](https://circleci.com/gh/ipfs/js-interface-datastore)
+[![Coverage Status](https://coveralls.io/repos/github/ipfs/js-interface-datastore/badge.svg?branch=master)](https://coveralls.io/github/ipfs/js-interface-datastore?branch=master) [![Dependency Status](https://david-dm.org/diasdavid/js-peer-id.svg?style=flat-square)](https://david-dm.org/ipfs/js-interface-datastore)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
+![](https://img.shields.io/badge/npm-%3E%3D3.0.0-orange.svg?style=flat-square)
+![](https://img.shields.io/badge/Node.js-%3E%3D4.0.0-orange.svg?style=flat-square)
 
-In addition, grouped datastores significantly simplify interesting data access patterns (such as caching and sharding).
+> Implementation of the datastore interface in JavaScript
 
-Based on [datastore.py](https://github.com/jbenet/datastore).
+## Implementations
 
-Note: this is similar to [rvagg/abstract-leveldown](https://github.com/rvagg/abstract-leveldown/). Though I wrote [my original datastore](https://github.com/jbenet/datastore) many years ago. :)
+- Backed Implementations
+  - Memory: [`src/memory`](src/memory.js)
+  - leveldb: [`datastore-leveldb`](https://github.com/ipfs/js-datastore-leveldb) (supports any levelup compatible backend)
+  - File System: [`datstore-fs`](https://github.com/ipfs/js-datastore-fs)
+- Wrapper Implementations
+  - Mount: [`src/mount`](src/mount.js)
+  - Keytransform: [`src/keytransform`](src/keytransform.js)
+  - Sharding: [`src/sharding`](src/sharding.js)
+  - Tiered: [`src/tiered`](src/tirered.js)
 
-## Example
-
-### Usage
-
-See [datastore.memory/try.js](https://github.com/jbenet/node-datastore.memory/blob/master/try.js):
+If you want the same functionality as [go-ds-flatfs](https://github.com/ipfs/go-ds-flatfs), use sharding with fs.
 
 ```js
-var memDS = require('datastore.memory')
-ds.put('foo', 'bar', function(err, val, key) {
-  if (err) throw err
-  console.log('put ' + key + ': ' + val)
-  assert(val === 'bar')
-})
+const FsStore = require('datastore-fs)
+const ShardingStore = require('interface-datastore).ShardingDatatstore
+const NextToLast = require('interface-datastore).shard.NextToLast
 
-ds.has('foo', function(err, has, key) {
-  if (err) throw err
-  console.log(key + ' exists? ' + has)
-  assert(has === true)
-})
-
-ds.get('foo', function(err, val, key) {
-  if (err) throw err
-  console.log('get ' + key + ': ' + val)
-  assert(val === 'bar')
-})
-
-ds.delete('foo', function(err, key) {
-  if (err) throw err
-  console.log(key + ' deleted')
-})
-
-ds.has('foo', function(err, has, key) {
-  if (err) throw err
-  console.log(key + ' exists? ' + has)
-  assert(has === false)
+const fs = new FsStore('path/to/store')
+ShardingStore.createOrOpen(fs, new NextToLast(2), (err, flatfs) => {
+  // flatfs now works like go-flatfs
 })
 ```
 
-### Implementation
+## Testsuite
 
-See [datastore.memory/index.js](https://github.com/jbenet/node-datastore.memory/blob/master/index.js):
+Available under `test/interface`
 
 ```js
-var DS = require('datastore.abstract')
-
-module.exports = MemDS
-
-function MemDS() {
-  if (!(this instanceof MemDS))
-    return new MemDS
-  DS.call(this)
-  this.values = {}
-}
-
-DS.inherits(MemDS)
-
-MemDS.prototype._get = function(key, cb) {
-  var val = this.values[key.toString()]
-  if (val !== undefined) cb(null, val, key)
-  else cb(MemDS.errors.NotFound, null, key)
-}
-
-MemDS.prototype._put = function(key, val, cb) {
-  this.values[key.toString()] = val
-  cb(null, val, key)
-}
-
-MemDS.prototype._delete = function(key, cb) {
-  delete this.values[key.toString()]
-  cb(null, key)
-}
-
-MemDS.prototype._has = function(key, cb) {
-  var has = (this.values[key.toString()] !== undefined)
-  cb(null, has, key)
-}
+describe('mystore', () => {
+  require('interface-datastore/test/interface')({
+    setup (callback) {
+      callback(null, instanceOfMyStore)
+    },
+    teardown (callback) {
+      // cleanup resources
+      callback()
+    }
+  })
+})
 ```
 
+## API
+
+The exact types can be found in [`src/index.js`](src/index.js).
+
+### `put(Key, Value, (err: ?Error) => void): void`
+
+### `get(Key, (err: ?Error, val: ?Value) => void): void`
+
+### `delete(Key, (err: ?Error) => void): void`
+
+### `query(Query<Value>): QueryResult<Value>)`
+
+#### `Query`
+
+Object in the form with the following optional properties
+
+- `prefix?: string`
+- `filters?: Array<Filter<Value>>`
+- `orders?: Array<Order<Value>>`
+- `limit?: number`
+- `offset?: number`
+- `keysOnly?: bool`
+
+### batch(): Batch<Value>
+
+#### `put(Key, Value): void`
+#### `delete(Key): void`
+#### `commit((err: ?Error) => void): void`
+
+### `close((err: ?Error) => void): void`
+
+Close the datastore, this should always be called to ensure resources are cleaned up.
 
 ## License
 
-MIT
+MIT 2017 Protocol Labs
