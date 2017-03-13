@@ -21,10 +21,15 @@ const uuid = require('uuid/v4')
  *
  */
 class Key {
-  /* :: _string: string */
+  /* :: _buf: Buffer */
 
-  constructor (s /* : string */, clean /* : ?bool */) {
-    this._string = s
+  constructor (s /* : string|Buffer */, clean /* : ?bool */) {
+    if (typeof s === 'string') {
+      this._buf = new Buffer(s)
+    } else if (Buffer.isBuffer(s)) {
+      this._buf = s
+    }
+
     if (clean == null) {
       clean = true
     }
@@ -33,19 +38,29 @@ class Key {
       this.clean()
     }
 
-    if (this._string.length === 0 || !this._string.startsWith('/')) {
+    if (this._buf.length === 0 || this._buf[0] !== 47) {
       throw new Error(`Invalid key: ${this.toString()}`)
     }
   }
 
-  toString () {
-    return this._string
+  /**
+   * Convert to the string representation
+   */
+  toString (encoding/* : ?buffer$Encoding */)/* : string */ {
+    return this._buf.toString(encoding || 'utf8')
+  }
+
+  /**
+   * Return the buffer representation of the key
+   */
+  toBuffer () /* : Buffer */ {
+    return this._buf
   }
 
   // waiting on https://github.com/facebook/flow/issues/2286
   // $FlowFixMe
   get [Symbol.toStringTag] () /* : string */ {
-    return `[Key ${this._string}]`
+    return `[Key ${this.toString()}]`
   }
 
   /**
@@ -76,19 +91,19 @@ class Key {
    * Cleanup the current key
    */
   clean () {
-    if (!this._string) {
-      this._string = '/'
+    if (!this._buf || this._buf.length === 0) {
+      this._buf = new Buffer('/')
     }
 
-    if (!this._string.startsWith('/')) {
-      this._string = '/' + this._string
+    if (this._buf[0] !== 47 /* / is 47*/) {
+      this._buf = Buffer.concat([new Buffer('/'), this._buf])
     }
 
-    this._string = path.normalize(this._string)
+    this._buf = new Buffer(path.normalize(this.toString()))
 
-    // normalize does not removeve trailing slashes
-    if (this._string.length > 1) {
-      this._string = this._string.replace(/\/$/, '')
+    // normalize does not remove trailing slashes
+    if (this.toString().length > 1) {
+      this._buf = new Buffer(this.toString().replace(/\/$/, ''))
     }
   }
 
@@ -156,7 +171,7 @@ class Key {
    *
    */
   list () /* : Array<string> */ {
-    return this._string.split('/').slice(1)
+    return this.toString().split('/').slice(1)
   }
 
   /**
@@ -187,7 +202,7 @@ class Key {
    * // => Key('/Comedy/MontyPython/Actor:JohnCleese')
    */
   instance (s /* : string */) /* : Key */ {
-    return new Key(this._string + ':' + s)
+    return new Key(this.toString() + ':' + s)
   }
 
   /**
