@@ -7,6 +7,7 @@ const MemoryDatastore = require('./memory')
 const ShardingDatastore = require('./sharding')
 const MountDatastore = require('./mount')
 const TieredDatastore = require('./tiered')
+const NamespaceDatastore = require('./namespace')
 const shard = require('./shard')
 const utils = require('./utils')
 
@@ -16,6 +17,7 @@ exports.MemoryDatastore = MemoryDatastore
 exports.ShardingDatastore = ShardingDatastore
 exports.MountDatastore = MountDatastore
 exports.TieredDatastore = TieredDatastore
+exports.NamespaceDatastore = NamespaceDatastore
 exports.shard = shard
 exports.utils = utils
 

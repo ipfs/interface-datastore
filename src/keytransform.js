@@ -1,29 +1,35 @@
 /* @flow */
 'use strict'
 
-/* :: import type Key from './key' */
-/* :: import type {Datastore, Batch, Query, QueryResult} from './' */
-
 const pull = require('pull-stream')
 
-/**
- * Map one key onto another key.
- */
+/* ::
+import type Key from './key'
+import type {Datastore, Batch, Query, QueryResult} from './'
+*/
 
 /**
  * An object with a pair of functions for (invertibly) transforming keys
  */
-/* :: type KeyMapping = (Key) => Key */
+/* ::
+type KeyTransform = {
+  convert: KeyMapping,
+  invert: KeyMapping
+}
+*/
+
+/**
+ * Map one key onto another key.
+ */
+/* ::
+type KeyMapping = (Key) => Key
+*/
 
 /**
  * A datastore shim, that wraps around a given datastore, changing
  * the way keys look to the user, for example namespacing
  * keys, reversing them, etc.
  */
-/* :: type KeyTransform = {
-  convert: KeyMapping,
-  invert: KeyMapping
-} */
 class KeyTransformDatastore /* :: <Value> */ {
   /* :: child: Datastore<Value> */
   /* :: transform: KeyTransform */
@@ -65,10 +71,13 @@ class KeyTransformDatastore /* :: <Value> */ {
   }
 
   query (q /* : Query<Value> */) /* : QueryResult<Value> */ {
-    return pull(this.child.query(q), pull.map(e => {
-      e.key = this.transform.invert(e.key)
-      return e
-    }))
+    return pull(
+      this.child.query(q),
+      pull.map(e => {
+        e.key = this.transform.invert(e.key)
+        return e
+      })
+    )
   }
 
   close (callback /* : (err: ?Error) => void */) /* : void */ {
