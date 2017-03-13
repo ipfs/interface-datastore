@@ -74,10 +74,10 @@ class ShardingDatastore {
       }
 
       if (!exists) {
-        // const put = typeof store.putRaw === 'function' ? store.putRaw.bind(store) : store.put.bind(store)
+        const put = typeof store.putRaw === 'function' ? store.putRaw.bind(store) : store.put.bind(store)
         return parallel([
-          (cb) => store.put(shardKey, new Buffer(shard.toString() + '\n'), cb),
-          (cb) => store.put(shardReadmeKey, new Buffer(sh.readme), cb)
+          (cb) => put(shardKey, new Buffer(shard.toString() + '\n'), cb),
+          (cb) => put(shardReadmeKey, new Buffer(sh.readme), cb)
         ], err => callback(err))
       }
 
