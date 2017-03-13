@@ -29,17 +29,18 @@
   - level: [`datastore-level`](https://github.com/ipfs/js-datastore-level) (supports any levelup compatible backend)
   - File System: [`datstore-fs`](https://github.com/ipfs/js-datastore-fs)
 - Wrapper Implementations
-  - Mount: [`src/mount`](src/mount.js)
-  - Keytransform: [`src/keytransform`](src/keytransform.js)
-  - Sharding: [`src/sharding`](src/sharding.js)
-  - Tiered: [`src/tiered`](src/tirered.js)
+  - Mount: [`datastore-core/src/mount`](https://github.com/ipfs/js-datastore-core/tree/master/src/mount.js)
+  - Keytransform: [`datstore-core/src/keytransform`](https://github.com/ipfs/js-datastore-core/tree/master/src/keytransform.js)
+  - Sharding: [`datastore-core/src/sharding`](https://github.com/ipfs/js-datastore-core/tree/master/src/sharding.js)
+  - Tiered: [`datstore-core/src/tiered`](https://github.com/ipfs/js-datastore-core/tree/master/src/tirered.js)
+  - Namespace: [`datastore-core/src/namespace`](https://github.com/ipfs/js-datastore-core/tree/master/src/namespace.js)
 
 If you want the same functionality as [go-ds-flatfs](https://github.com/ipfs/go-ds-flatfs), use sharding with fs.
 
 ```js
 const FsStore = require('datastore-fs)
-const ShardingStore = require('interface-datastore).ShardingDatatstore
-const NextToLast = require('interface-datastore).shard.NextToLast
+const ShardingStore = require('datastore-core').ShardingDatatstore
+const NextToLast = require('datastore-core').shard.NextToLast
 
 const fs = new FsStore('path/to/store')
 ShardingStore.createOrOpen(fs, new NextToLast(2), (err, flatfs) => {
@@ -59,7 +60,7 @@ $ npm install interface-datastore
 
 ```js
 const MemoryStore = require('interface-datastore').MemoryDatastore
-const MountStore = require('interface-datastore').MountDatastore
+const MountStore = require('datastore-core').MountDatastore
 const Key = require('interface-datastore').Key
 
 const store = new MountStore({prefix: new Key('/a'), datastore: new MemoryStore()})
@@ -67,11 +68,11 @@ const store = new MountStore({prefix: new Key('/a'), datastore: new MemoryStore(
 
 ### Testsuite
 
-Available under `test/interface`
+Available under [`src/tests.js`](src/tests.js)
 
 ```js
 describe('mystore', () => {
-  require('interface-datastore/test/interface')({
+  require('interface-datastore/src/tests)({
     setup (callback) {
       callback(null, instanceOfMyStore)
     },

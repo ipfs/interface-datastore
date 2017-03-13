@@ -6,7 +6,7 @@ const MemoryDatastore = require('../src').MemoryDatastore
 
 describe('Memory', () => {
   describe('interface-datastore', () => {
-    require('./interface')({
+    require('../src/tests')({
       setup (callback) {
         callback(null, new MemoryDatastore())
       },

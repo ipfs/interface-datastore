@@ -95,7 +95,7 @@ class Key {
       this._buf = new Buffer('/')
     }
 
-    if (this._buf[0] !== 47 /* / is 47*/) {
+    if (this._buf[0] !== 47 /* / is 47 */) {
       this._buf = Buffer.concat([new Buffer('/'), this._buf])
     }
 
