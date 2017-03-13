@@ -1,6 +1,6 @@
 {
   "name": "interface-datastore",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "datastore interface",
   "main": "src/index.js",
   "scripts": {
@@ -26,7 +26,10 @@
     "ipfs",
     "datastore"
   ],
-  "author": "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
+  "author": [
+    "Juan Benet <juan@benet.ai> (http://juan.benet.ai/)",
+    "Friedel Ziegelmayer <dignifiedquire@gmail.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ipfs/interface-datastore/issues"

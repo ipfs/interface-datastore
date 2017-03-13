@@ -10,7 +10,17 @@
 ![](https://img.shields.io/badge/npm-%3E%3D3.0.0-orange.svg?style=flat-square)
 ![](https://img.shields.io/badge/Node.js-%3E%3D4.0.0-orange.svg?style=flat-square)
 
-> Implementation of the datastore interface in JavaScript
+> Implementation of the [datastore](https://github.com/ipfs/go-datastore) interface in JavaScript
+
+
+## Table of Contents
+
+- [Implementations](#implementations)
+- [Install](#install)
+- [Usage](#usage)
+- [Api](#api)
+- [Contribute](#contribute)
+- [License](#license)
 
 ## Implementations
 
@@ -37,7 +47,25 @@ ShardingStore.createOrOpen(fs, new NextToLast(2), (err, flatfs) => {
 })
 ```
 
-## Testsuite
+## Install
+
+```
+$ npm install interface-datastore
+```
+
+## Usage
+
+### Wrapping Stores
+
+```js
+const MemoryStore = require('interface-datastore').MemoryDatastore
+const MountStore = require('interface-datastore').MountDatastore
+const Key = require('interface-datastore').Key
+
+const store = new MountStore({prefix: new Key('/a'), datastore: new MemoryStore()})
+```
+
+### Testsuite
 
 Available under `test/interface`
 
@@ -88,6 +116,12 @@ Object in the form with the following optional properties
 
 Close the datastore, this should always be called to ensure resources are cleaned up.
 
+## Contribute
+
+PRs accepted.
+
+Small note: If editing the Readme, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
+
 ## License
 
-MIT 2017 @ IPFS
+MIT 2017 © IPFS
