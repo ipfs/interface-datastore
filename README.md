@@ -4,8 +4,8 @@
 [![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
 [![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-[![Build Status](https://travis-ci.org/ipfs/js-interface-datastore.svg)](https://travis-ci.org/ipfs/js-interface-datastore) [![Circle CI](https://circleci.com/gh/ipfs/js-interface-datastore.svg?style=svg)](https://circleci.com/gh/ipfs/js-interface-datastore)
-[![Coverage Status](https://coveralls.io/repos/github/ipfs/js-interface-datastore/badge.svg?branch=master)](https://coveralls.io/github/ipfs/js-interface-datastore?branch=master) [![Dependency Status](https://david-dm.org/diasdavid/js-peer-id.svg?style=flat-square)](https://david-dm.org/ipfs/js-interface-datastore)
+[![Build Status](https://travis-ci.org/ipfs/interface-datastore.svg)](https://travis-ci.org/ipfs/interface-datastore) [![Circle CI](https://circleci.com/gh/ipfs/interface-datastore.svg?style=svg)](https://circleci.com/gh/ipfs/interface-datastore)
+[![Coverage Status](https://coveralls.io/repos/github/ipfs/interface-datastore/badge.svg?branch=master)](https://coveralls.io/github/ipfs/interface-datastore?branch=master) [![Dependency Status](https://david-dm.org/diasdavid/js-peer-id.svg?style=flat-square)](https://david-dm.org/ipfs/interface-datastore)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
 ![](https://img.shields.io/badge/npm-%3E%3D3.0.0-orange.svg?style=flat-square)
 ![](https://img.shields.io/badge/Node.js-%3E%3D4.0.0-orange.svg?style=flat-square)
@@ -16,7 +16,7 @@
 
 - Backed Implementations
   - Memory: [`src/memory`](src/memory.js)
-  - leveldb: [`datastore-leveldb`](https://github.com/ipfs/js-datastore-leveldb) (supports any levelup compatible backend)
+  - level: [`datastore-level`](https://github.com/ipfs/js-datastore-level) (supports any levelup compatible backend)
   - File System: [`datstore-fs`](https://github.com/ipfs/js-datastore-fs)
 - Wrapper Implementations
   - Mount: [`src/mount`](src/mount.js)
