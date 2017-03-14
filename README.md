@@ -86,15 +86,89 @@ describe('mystore', () => {
 
 ## API
 
-The exact types can be found in [`src/index.js`](src/index.js).
+### Keys
+
+To allow a better abstraction on how to address values, there is a `Key` class which is used as identifier. It's easy to create a key from a `Buffer` or a `string`.
+
+```js
+const a = new Key('a')
+const b = new Key(new Buffer('hello'))
+```
+
+The key scheme is inspired by file systems and Google App Engine key model. Keys are meant to be unique across a system. They are typical hierarchical, incorporating more and more specific namespaces. Thus keys can be deemed 'children' or 'ancestors' of other keys:
+
+- `new Key('/Comedy')`
+- `new Key('/Comedy/MontyPython')`
+
+Also, every namespace can be parametrized to embed relevant object information. For example, the Key `name` (most specific namespace) could include the object type:
+
+- `new Key('/Comedy/MontyPython/Actor:JohnCleese')`
+- `new Key('/Comedy/MontyPython/Sketch:CheeseShop')`
+- `new Key('/Comedy/MontyPython/Sketch:CheeseShop/Character:Mousebender')`
+
+
+### Methods
+
+> The exact types can be found in [`src/index.js`](src/index.js).
+
+These methods will be present on every datastore. `Key` always means an instance of the above mentioned Key type. Every datastore is generic over the `Value` type, though currently all backing implementations are implemented only for [`Buffer`](https://nodejs.org/docs/latest/api/buffer.html).
 
 ### `put(Key, Value, (err: ?Error) => void): void`
 
+Store a value with the given key.
+
+```js
+store.put(new Key('awesome'), new Buffer('datastores'), (err) => {
+  if (err) {
+    throw err
+  }
+  console.log('put content')
+})
+```
+
 ### `get(Key, (err: ?Error, val: ?Value) => void): void`
+
+Retrieve the value stored under the given key.
+
+```js
+store.get(new Key('awesome'), (err, value) => {
+  if (err) {
+    throw err
+  }
+  console.log(got content: %s', value.toString())
+  // => got content: datastore
+})
+```
 
 ### `delete(Key, (err: ?Error) => void): void`
 
+Delete the content stored under the given key.
+
+```js
+store.delete(new Key('awesome'), (err) => {
+  if (err) {
+    throw err
+  }
+  console.log(deleted awesome content :(')
+})
+```
+
 ### `query(Query<Value>): QueryResult<Value>)`
+
+Search the store for some values. Returns a [pull-stream](https://pull-stream.github.io/) with each item being a `Value`.
+
+```js
+// retrieve __all__ values from the store
+pull(
+  store.query({}),
+  pull.collect((err, list) => {
+    if (err) {
+      console.error(err)
+    }
+    console.log('ALL THE VALUES', list)
+  })
+)
+```
 
 #### `Query`
 
@@ -109,9 +183,35 @@ Object in the form with the following optional properties
 
 ### batch(): Batch<Value>
 
+This will return an object with which you can chain multiple operations together, with them only being executed on calling `commit`.
+
+```js
+const b = store.batch()
+
+for (let i = 0; i < 100; i++) {
+  b.put(new Key(`hello${i}`), new Buffer(`hello world ${i}`))
+}
+
+b.commit((err) => {
+  if (err) {
+    throw err
+  }
+  console.log(put 100 values')
+})
+
+```
+
 #### `put(Key, Value): void`
+
+Queue a put operation to the store.
+
 #### `delete(Key): void`
+
+Queue a delete operation to the store.
+
 #### `commit((err: ?Error) => void): void`
+
+Write all queued operations to the underyling store. The batch object should not be used after calling this.
 
 ### `close((err: ?Error) => void): void`
 
