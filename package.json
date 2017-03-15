@@ -10,11 +10,12 @@
     "flow": "flow",
     "test:node": "aegir-test --env node",
     "test:browser": "aegir-test --env browser",
-    "release": "aegir-release",
-    "release-minor": "aegir-release --type minor",
-    "release-major": "aegir-release --type major",
+    "release": "aegir-release --docs",
+    "release-minor": "aegir-release --type minor --docs",
+    "release-major": "aegir-release --type major --docs",
     "coverage": "aegir-coverage",
-    "coverage-publish": "aegir-coverage publish"
+    "coverage-publish": "aegir-coverage publish",
+    "docs": "aegir-docs"
   },
   "repository": {
     "type": "git",

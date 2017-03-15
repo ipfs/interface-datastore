@@ -1,12 +1,6 @@
-**/node_modules/
-**/*.log
-test/repo-tests*
-
 # Logs
 logs
 *.log
-
-coverage
 
 # Runtime data
 pids
@@ -25,11 +19,11 @@ coverage
 # node-waf configuration
 .lock-wscript
 
-build
+# Compiled binary addons (http://nodejs.org/api/addons.html)
+build/Release
 
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
 
-dist
-docs
+test

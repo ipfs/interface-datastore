@@ -45,6 +45,9 @@ class Key {
 
   /**
    * Convert to the string representation
+   *
+   * @param {string} [encoding='utf8']
+   * @returns {string}
    */
   toString (encoding/* : ?buffer$Encoding */)/* : string */ {
     return this._buf.toString(encoding || 'utf8')
@@ -52,6 +55,8 @@ class Key {
 
   /**
    * Return the buffer representation of the key
+   *
+   * @returns {Buffer}
    */
   toBuffer () /* : Buffer */ {
     return this._buf
@@ -66,6 +71,9 @@ class Key {
   /**
    * Constructs a key out of a namespace array.
    *
+   * @param {Array<string>} list
+   * @returns {Key}
+   *
    * @example
    * Key.withNamespaces(['one', 'two'])
    * // => Key('/one/two')
@@ -78,6 +86,8 @@ class Key {
   /**
    * Returns a randomly (uuid) generated key.
    *
+   * @returns {Key}
+   *
    * @example
    * Key.random()
    * // => Key('/f98719ea086343f7b71f32ea9d9d521d')
@@ -89,6 +99,8 @@ class Key {
 
   /**
    * Cleanup the current key
+   *
+   * @returns {void}
    */
   clean () {
     if (!this._buf || this._buf.length === 0) {
@@ -109,6 +121,9 @@ class Key {
 
   /**
    * Check if the given key is sorted lower than ourself.
+   *
+   * @param {Key} key
+   * @returns {bool}
    */
   less (key /* : Key */) /* : bool */ {
     const list1 = this.list()
@@ -135,6 +150,8 @@ class Key {
   /**
    * Returns the key with all parts in reversed order.
    *
+   * @returns {Key}
+   *
    * @example
    * new Key('/Comedy/MontyPython/Actor:JohnCleese').reverse()
    * // => Key('/Actor:JohnCleese/MontyPython/Comedy')
@@ -145,12 +162,16 @@ class Key {
 
   /**
    * Returns the `namespaces` making up this Key.
+   *
+   * @returns {Array<string>}
    */
   namespaces () /* : Array<string> */ {
     return this.list()
   }
 
   /** Returns the "base" namespace of this key.
+   *
+   * @returns {string}
    *
    * @example
    * new Key('/Comedy/MontyPython/Actor:JohnCleese').baseNamespace()
@@ -165,6 +186,8 @@ class Key {
   /**
    * Returns the `list` representation of this key.
    *
+   * @returns {Array<string>}
+   *
    * @example
    * new Key('/Comedy/MontyPython/Actor:JohnCleese').list()
    * // => ['Comedy', 'MontyPythong', 'Actor:JohnCleese']
@@ -177,6 +200,8 @@ class Key {
   /**
    * Returns the "type" of this key (value of last namespace).
    *
+   * @returns {string}
+   *
    * @example
    * new Key('/Comedy/MontyPython/Actor:JohnCleese').type()
    * // => 'Actor'
@@ -185,8 +210,11 @@ class Key {
   type () /* : string */ {
     return namespaceType(this.baseNamespace())
   }
+
   /**
    * Returns the "name" of this key (field of last namespace).
+   *
+   * @returns {string}
    *
    * @example
    * new Key('/Comedy/MontyPython/Actor:JohnCleese').name()
@@ -198,6 +226,11 @@ class Key {
 
   /**
    * Returns an "instance" of this type key (appends value to namespace).
+   *
+   * @param {string} s
+   * @returns {Key}
+   *
+   * @example
    * new Key('/Comedy/MontyPython/Actor').instance('JohnClesse')
    * // => Key('/Comedy/MontyPython/Actor:JohnCleese')
    */
@@ -207,6 +240,8 @@ class Key {
 
   /**
    * Returns the "path" of this key (parent + type).
+   *
+   * @returns {Key}
    *
    * @example
    * new Key('/Comedy/MontyPython/Actor:JohnCleese').path()
@@ -219,6 +254,8 @@ class Key {
 
   /**
    * Returns the `parent` Key of this Key.
+   *
+   * @returns {Key}
    *
    * @example
    * new Key("/Comedy/MontyPython/Actor:JohnCleese").parent()
@@ -236,6 +273,9 @@ class Key {
 
   /**
    * Returns the `child` Key of this Key.
+   *
+   * @param {Key} key
+   * @returns {Key}
    *
    * @example
    * new Key('/Comedy/MontyPython').child(new Key('Actor:JohnCleese'))
@@ -255,6 +295,9 @@ class Key {
   /**
    * Returns whether this key is a prefix of `other`
    *
+   * @param {Key} other
+   * @returns {bool}
+   *
    * @example
    * new Key('/Comedy').isAncestorOf('/Comedy/MontyPython')
    * // => true
@@ -271,6 +314,9 @@ class Key {
   /**
    * Returns whether this key is a contains another as prefix.
    *
+   * @param {Key} other
+   * @returns {bool}
+   *
    * @example
    * new Key('/Comedy/MontyPython').isDecendantOf('/Comedy')
    * // => true
@@ -286,6 +332,9 @@ class Key {
 
   /**
    * Returns wether this key has only one namespace.
+   *
+   * @returns {bool}
+   *
    */
   isTopLevel () /* : bool */ {
     return this.list().length === 1
@@ -294,6 +343,9 @@ class Key {
 
 /**
  * The first component of a namespace. `foo` in `foo:bar`
+ *
+ * @param {string} ns
+ * @returns {string}
  */
 function namespaceType (ns /* : string */) /* : string */ {
   const parts = ns.split(':')
@@ -305,6 +357,9 @@ function namespaceType (ns /* : string */) /* : string */ {
 
 /**
  * The last component of a namespace, `baz` in `foo:bar:baz`.
+ *
+ * @param {string} ns
+ * @returns {string}
  */
 function namespaceValue (ns /* : string */) /* : string */ {
   const parts = ns.split(':')
