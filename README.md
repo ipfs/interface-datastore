@@ -72,7 +72,7 @@ Available under [`src/tests.js`](src/tests.js)
 
 ```js
 describe('mystore', () => {
-  require('interface-datastore/src/tests)({
+  require('interface-datastore/src/tests')({
     setup (callback) {
       callback(null, instanceOfMyStore)
     },
@@ -142,7 +142,7 @@ store.get(new Key('awesome'), (err, value) => {
   if (err) {
     throw err
   }
-  console.log(got content: %s', value.toString())
+  console.log('got content: %s', value.toString())
   // => got content: datastore
 })
 ```
@@ -159,7 +159,7 @@ store.delete(new Key('awesome'), (err) => {
   if (err) {
     throw err
   }
-  console.log(deleted awesome content :(')
+  console.log('deleted awesome content :(')
 })
 ```
 
@@ -209,7 +209,7 @@ b.commit((err) => {
   if (err) {
     throw err
   }
-  console.log(put 100 values')
+  console.log('put 100 values')
 })
 
 ```
