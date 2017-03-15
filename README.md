@@ -113,7 +113,11 @@ Also, every namespace can be parametrized to embed relevant object information. 
 
 These methods will be present on every datastore. `Key` always means an instance of the above mentioned Key type. Every datastore is generic over the `Value` type, though currently all backing implementations are implemented only for [`Buffer`](https://nodejs.org/docs/latest/api/buffer.html).
 
-### `put(Key, Value, (err: ?Error) => void): void`
+### `put(key, value, callback)`
+
+- `key: Key`
+- `value: Value`
+- `callback: function(Error)`
 
 Store a value with the given key.
 
@@ -126,7 +130,10 @@ store.put(new Key('awesome'), new Buffer('datastores'), (err) => {
 })
 ```
 
-### `get(Key, (err: ?Error, val: ?Value) => void): void`
+### `get(key, callback)`
+
+- `key: Key`
+- `callback: function(Error, Value)`
 
 Retrieve the value stored under the given key.
 
@@ -140,7 +147,10 @@ store.get(new Key('awesome'), (err, value) => {
 })
 ```
 
-### `delete(Key, (err: ?Error) => void): void`
+### `delete(key, callback)`
+
+- `key: Key`
+- `callback: function(Error)`
 
 Delete the content stored under the given key.
 
@@ -153,7 +163,10 @@ store.delete(new Key('awesome'), (err) => {
 })
 ```
 
-### `query(Query<Value>): QueryResult<Value>)`
+### `query(query)`
+
+- `query: Query` see below for possible values
+- Returns: `pull-stream source`
 
 Search the store for some values. Returns a [pull-stream](https://pull-stream.github.io/) with each item being a `Value`.
 
@@ -174,14 +187,14 @@ pull(
 
 Object in the form with the following optional properties
 
-- `prefix?: string`
-- `filters?: Array<Filter<Value>>`
-- `orders?: Array<Order<Value>>`
-- `limit?: number`
-- `offset?: number`
-- `keysOnly?: bool`
+- `prefix: string` (optional) - only return values where the key starts with this prefix
+- `filters: Array<Filter<Value>>` (optional) - filter the results according to the these functions
+- `orders: Array<Order<Value>>` (optional) - order the results according to these functions
+- `limit: number` (optional) - only return this many records
+- `offset: number` (optional) - skip this many records at the beginning
+- `keysOnly: bool` (optional) - Only return keys, no values.
 
-### batch(): Batch<Value>
+### `batch()`
 
 This will return an object with which you can chain multiple operations together, with them only being executed on calling `commit`.
 
@@ -201,19 +214,28 @@ b.commit((err) => {
 
 ```
 
-#### `put(Key, Value): void`
+#### `put(key, value)`
+
+- `key: Key`
+- `value: Value`
 
 Queue a put operation to the store.
 
-#### `delete(Key): void`
+#### `delete(key)`
+
+- `key: Key`
 
 Queue a delete operation to the store.
 
-#### `commit((err: ?Error) => void): void`
+#### `commit(callback)`
+
+- `callback: function(Error)`
 
 Write all queued operations to the underyling store. The batch object should not be used after calling this.
 
-### `close((err: ?Error) => void): void`
+### `close(callback)`
+
+- `callback: function(Error)`
 
 Close the datastore, this should always be called to ensure resources are cleaned up.
 
