@@ -11,7 +11,7 @@ const map = require('async/map')
 const each = require('async/each')
 const crypto = require('libp2p-crypto')
 
-const Key = require('../src/key')
+const Key = require('../src').Key
 
 /* ::
 import type {Datastore, Callback} from '../src'
