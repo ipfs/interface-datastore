@@ -48,5 +48,10 @@
   "engines": {
     "node": ">=4.0.0",
     "npm": ">=3.0.0"
-  }
+  },
+  "contributors": [
+    "David Dias <daviddias.p@gmail.com>",
+    "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
+    "Juan Batiz-Benet <juan@benet.ai>"
+  ]
 }
