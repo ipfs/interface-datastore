@@ -1,92 +1,250 @@
-# node-datastore interface
+# interface-datastore
 
-datastore is a generic layer of abstraction for data store and database access. It is a simple API with the aim to enable application development in a datastore-agnostic way, allowing datastores to be swapped seamlessly without changing application code. Thus, one can leverage different datastores with different strengths without committing the application to one datastore throughout its lifetime.
+[![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
+[![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
+[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
+[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
+[![Build Status](https://travis-ci.org/ipfs/interface-datastore.svg)](https://travis-ci.org/ipfs/interface-datastore) [![Circle CI](https://circleci.com/gh/ipfs/interface-datastore.svg?style=svg)](https://circleci.com/gh/ipfs/interface-datastore)
+[![Coverage Status](https://coveralls.io/repos/github/ipfs/interface-datastore/badge.svg?branch=master)](https://coveralls.io/github/ipfs/interface-datastore?branch=master) [![Dependency Status](https://david-dm.org/diasdavid/js-peer-id.svg?style=flat-square)](https://david-dm.org/ipfs/interface-datastore)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
+![](https://img.shields.io/badge/npm-%3E%3D3.0.0-orange.svg?style=flat-square)
+![](https://img.shields.io/badge/Node.js-%3E%3D4.0.0-orange.svg?style=flat-square)
 
-In addition, grouped datastores significantly simplify interesting data access patterns (such as caching and sharding).
+> Implementation of the [datastore](https://github.com/ipfs/go-datastore) interface in JavaScript
 
-Based on [datastore.py](https://github.com/jbenet/datastore).
 
-Note: this is similar to [rvagg/abstract-leveldown](https://github.com/rvagg/abstract-leveldown/). Though I wrote [my original datastore](https://github.com/jbenet/datastore) many years ago. :)
+## Table of Contents
 
-## Example
+- [Implementations](#implementations)
+- [Install](#install)
+- [Usage](#usage)
+- [Api](#api)
+- [Contribute](#contribute)
+- [License](#license)
 
-### Usage
+## Implementations
 
-See [datastore.memory/try.js](https://github.com/jbenet/node-datastore.memory/blob/master/try.js):
+- Backed Implementations
+  - Memory: [`src/memory`](src/memory.js)
+  - level: [`datastore-level`](https://github.com/ipfs/js-datastore-level) (supports any levelup compatible backend)
+  - File System: [`datstore-fs`](https://github.com/ipfs/js-datastore-fs)
+- Wrapper Implementations
+  - Mount: [`datastore-core/src/mount`](https://github.com/ipfs/js-datastore-core/tree/master/src/mount.js)
+  - Keytransform: [`datstore-core/src/keytransform`](https://github.com/ipfs/js-datastore-core/tree/master/src/keytransform.js)
+  - Sharding: [`datastore-core/src/sharding`](https://github.com/ipfs/js-datastore-core/tree/master/src/sharding.js)
+  - Tiered: [`datstore-core/src/tiered`](https://github.com/ipfs/js-datastore-core/tree/master/src/tirered.js)
+  - Namespace: [`datastore-core/src/namespace`](https://github.com/ipfs/js-datastore-core/tree/master/src/namespace.js)
+
+If you want the same functionality as [go-ds-flatfs](https://github.com/ipfs/go-ds-flatfs), use sharding with fs.
 
 ```js
-var memDS = require('datastore.memory')
-ds.put('foo', 'bar', function(err, val, key) {
-  if (err) throw err
-  console.log('put ' + key + ': ' + val)
-  assert(val === 'bar')
-})
+const FsStore = require('datastore-fs)
+const ShardingStore = require('datastore-core').ShardingDatatstore
+const NextToLast = require('datastore-core').shard.NextToLast
 
-ds.has('foo', function(err, has, key) {
-  if (err) throw err
-  console.log(key + ' exists? ' + has)
-  assert(has === true)
-})
-
-ds.get('foo', function(err, val, key) {
-  if (err) throw err
-  console.log('get ' + key + ': ' + val)
-  assert(val === 'bar')
-})
-
-ds.delete('foo', function(err, key) {
-  if (err) throw err
-  console.log(key + ' deleted')
-})
-
-ds.has('foo', function(err, has, key) {
-  if (err) throw err
-  console.log(key + ' exists? ' + has)
-  assert(has === false)
+const fs = new FsStore('path/to/store')
+ShardingStore.createOrOpen(fs, new NextToLast(2), (err, flatfs) => {
+  // flatfs now works like go-flatfs
 })
 ```
 
-### Implementation
+## Install
 
-See [datastore.memory/index.js](https://github.com/jbenet/node-datastore.memory/blob/master/index.js):
-
-```js
-var DS = require('datastore.abstract')
-
-module.exports = MemDS
-
-function MemDS() {
-  if (!(this instanceof MemDS))
-    return new MemDS
-  DS.call(this)
-  this.values = {}
-}
-
-DS.inherits(MemDS)
-
-MemDS.prototype._get = function(key, cb) {
-  var val = this.values[key.toString()]
-  if (val !== undefined) cb(null, val, key)
-  else cb(MemDS.errors.NotFound, null, key)
-}
-
-MemDS.prototype._put = function(key, val, cb) {
-  this.values[key.toString()] = val
-  cb(null, val, key)
-}
-
-MemDS.prototype._delete = function(key, cb) {
-  delete this.values[key.toString()]
-  cb(null, key)
-}
-
-MemDS.prototype._has = function(key, cb) {
-  var has = (this.values[key.toString()] !== undefined)
-  cb(null, has, key)
-}
+```
+$ npm install interface-datastore
 ```
 
+## Usage
+
+### Wrapping Stores
+
+```js
+const MemoryStore = require('interface-datastore').MemoryDatastore
+const MountStore = require('datastore-core').MountDatastore
+const Key = require('interface-datastore').Key
+
+const store = new MountStore({prefix: new Key('/a'), datastore: new MemoryStore()})
+```
+
+### Testsuite
+
+Available under [`src/tests.js`](src/tests.js)
+
+```js
+describe('mystore', () => {
+  require('interface-datastore/src/tests)({
+    setup (callback) {
+      callback(null, instanceOfMyStore)
+    },
+    teardown (callback) {
+      // cleanup resources
+      callback()
+    }
+  })
+})
+```
+
+## API
+
+### Keys
+
+To allow a better abstraction on how to address values, there is a `Key` class which is used as identifier. It's easy to create a key from a `Buffer` or a `string`.
+
+```js
+const a = new Key('a')
+const b = new Key(new Buffer('hello'))
+```
+
+The key scheme is inspired by file systems and Google App Engine key model. Keys are meant to be unique across a system. They are typical hierarchical, incorporating more and more specific namespaces. Thus keys can be deemed 'children' or 'ancestors' of other keys:
+
+- `new Key('/Comedy')`
+- `new Key('/Comedy/MontyPython')`
+
+Also, every namespace can be parametrized to embed relevant object information. For example, the Key `name` (most specific namespace) could include the object type:
+
+- `new Key('/Comedy/MontyPython/Actor:JohnCleese')`
+- `new Key('/Comedy/MontyPython/Sketch:CheeseShop')`
+- `new Key('/Comedy/MontyPython/Sketch:CheeseShop/Character:Mousebender')`
+
+
+### Methods
+
+> The exact types can be found in [`src/index.js`](src/index.js).
+
+These methods will be present on every datastore. `Key` always means an instance of the above mentioned Key type. Every datastore is generic over the `Value` type, though currently all backing implementations are implemented only for [`Buffer`](https://nodejs.org/docs/latest/api/buffer.html).
+
+### `put(key, value, callback)`
+
+- `key: Key`
+- `value: Value`
+- `callback: function(Error)`
+
+Store a value with the given key.
+
+```js
+store.put(new Key('awesome'), new Buffer('datastores'), (err) => {
+  if (err) {
+    throw err
+  }
+  console.log('put content')
+})
+```
+
+### `get(key, callback)`
+
+- `key: Key`
+- `callback: function(Error, Value)`
+
+Retrieve the value stored under the given key.
+
+```js
+store.get(new Key('awesome'), (err, value) => {
+  if (err) {
+    throw err
+  }
+  console.log(got content: %s', value.toString())
+  // => got content: datastore
+})
+```
+
+### `delete(key, callback)`
+
+- `key: Key`
+- `callback: function(Error)`
+
+Delete the content stored under the given key.
+
+```js
+store.delete(new Key('awesome'), (err) => {
+  if (err) {
+    throw err
+  }
+  console.log(deleted awesome content :(')
+})
+```
+
+### `query(query)`
+
+- `query: Query` see below for possible values
+- Returns: `pull-stream source`
+
+Search the store for some values. Returns a [pull-stream](https://pull-stream.github.io/) with each item being a `Value`.
+
+```js
+// retrieve __all__ values from the store
+pull(
+  store.query({}),
+  pull.collect((err, list) => {
+    if (err) {
+      console.error(err)
+    }
+    console.log('ALL THE VALUES', list)
+  })
+)
+```
+
+#### `Query`
+
+Object in the form with the following optional properties
+
+- `prefix: string` (optional) - only return values where the key starts with this prefix
+- `filters: Array<Filter<Value>>` (optional) - filter the results according to the these functions
+- `orders: Array<Order<Value>>` (optional) - order the results according to these functions
+- `limit: number` (optional) - only return this many records
+- `offset: number` (optional) - skip this many records at the beginning
+- `keysOnly: bool` (optional) - Only return keys, no values.
+
+### `batch()`
+
+This will return an object with which you can chain multiple operations together, with them only being executed on calling `commit`.
+
+```js
+const b = store.batch()
+
+for (let i = 0; i < 100; i++) {
+  b.put(new Key(`hello${i}`), new Buffer(`hello world ${i}`))
+}
+
+b.commit((err) => {
+  if (err) {
+    throw err
+  }
+  console.log(put 100 values')
+})
+
+```
+
+#### `put(key, value)`
+
+- `key: Key`
+- `value: Value`
+
+Queue a put operation to the store.
+
+#### `delete(key)`
+
+- `key: Key`
+
+Queue a delete operation to the store.
+
+#### `commit(callback)`
+
+- `callback: function(Error)`
+
+Write all queued operations to the underyling store. The batch object should not be used after calling this.
+
+### `close(callback)`
+
+- `callback: function(Error)`
+
+Close the datastore, this should always be called to ensure resources are cleaned up.
+
+## Contribute
+
+PRs accepted.
+
+Small note: If editing the Readme, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
 
 ## License
 
-MIT
+MIT 2017 © IPFS
