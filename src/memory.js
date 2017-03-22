@@ -17,6 +17,10 @@ class MemoryDatastore {
     this.data = {}
   }
 
+  open (callback /* : Callback<void> */) /* : void */ {
+    setImmediate(callback)
+  }
+
   put (key /* : Key */, val /* : Buffer */, callback /* : Callback<void> */) /* : void */ {
     this.data[key.toString()] = val
 

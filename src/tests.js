@@ -3,8 +3,10 @@
 /* eslint max-nested-callbacks: ["error", 8] */
 'use strict'
 
+const chai = require('chai')
+chai.use(require('dirty-chai'))
+const expect = chai.expect
 const pull = require('pull-stream')
-const expect = require('chai').expect
 const series = require('async/series')
 const parallel = require('async/parallel')
 const map = require('async/map')
@@ -67,11 +69,11 @@ module.exports = (test/* : Test */) => {
       each(data, (d, cb) => {
         check(store).put(d[0], d[1], cb)
       }, (err) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         map(data, (d, cb) => {
           check(store).get(d[0], cb)
         }, (err, res) => {
-          expect(err).to.not.exist
+          expect(err).to.not.exist()
           res.forEach((res, i) => {
             expect(res).to.be.eql(data[i][1])
           })
@@ -103,7 +105,7 @@ module.exports = (test/* : Test */) => {
       series([
         (cb) => check(store).put(k, new Buffer('hello'), cb),
         (cb) => check(store).get(k, (err, res) => {
-          expect(err).to.not.exist
+          expect(err).to.not.exist()
           expect(res).to.be.eql(new Buffer('hello'))
           cb()
         })
@@ -133,13 +135,13 @@ module.exports = (test/* : Test */) => {
       series([
         (cb) => check(store).put(k, new Buffer('hello'), cb),
         (cb) => check(store).get(k, (err, res) => {
-          expect(err).to.not.exist
+          expect(err).to.not.exist()
           expect(res).to.be.eql(new Buffer('hello'))
           cb()
         }),
         (cb) => check(store).delete(k, cb),
         (cb) => check(store).has(k, (err, exists) => {
-          expect(err).to.not.exist
+          expect(err).to.not.exist()
           expect(exists).to.be.eql(false)
           cb()
         })
@@ -159,7 +161,7 @@ module.exports = (test/* : Test */) => {
         (cb) => map(data, (d, cb) => {
           check(store).has(d[0], cb)
         }, (err, res) => {
-          expect(err).to.not.exist
+          expect(err).to.not.exist()
           res.forEach((res, i) => {
             expect(res).to.be.eql(true)
           })
@@ -171,7 +173,7 @@ module.exports = (test/* : Test */) => {
         (cb) => map(data, (d, cb) => {
           check(store).has(d[0], cb)
         }, (err, res) => {
-          expect(err).to.not.exist
+          expect(err).to.not.exist()
           res.forEach((res, i) => {
             expect(res).to.be.eql(false)
           })
@@ -214,7 +216,7 @@ module.exports = (test/* : Test */) => {
           ['/a/one', '/q/two', '/q/three', '/z/old'],
           (k, cb) => check(store).has(new Key(k), cb),
           (err, res) => {
-            expect(err).to.not.exist
+            expect(err).to.not.exist()
             expect(res).to.be.eql([true, true, true, false])
             cb()
           }
@@ -238,7 +240,7 @@ module.exports = (test/* : Test */) => {
           (cb) => pull(check(store).query({prefix: '/z'}), pull.collect(cb)),
           (cb) => pull(check(store).query({prefix: '/q'}), pull.collect(cb))
         ], (err, res) => {
-          expect(err).to.not.exist
+          expect(err).to.not.exist()
           expect(res[0]).to.have.length(count)
           expect(res[1]).to.have.length(count)
           expect(res[2]).to.have.length(count)
@@ -321,7 +323,7 @@ module.exports = (test/* : Test */) => {
       pull(
         check(store).query(t[1]),
         pull.collect((err, res) => {
-          expect(err).to.not.exist
+          expect(err).to.not.exist()
           const expected = t[2]
           if (Array.isArray(expected)) {
             if (t[1].orders == null) {
@@ -339,7 +341,7 @@ module.exports = (test/* : Test */) => {
                 expect(r.key.toString()).to.be.eql(exp[i].key.toString())
 
                 if (r.value == null) {
-                  expect(exp[i].value).to.not.exist
+                  expect(exp[i].value).to.not.exist()
                 } else {
                   expect(r.value.equals(exp[i].value)).to.be.eql(true)
                 }
@@ -354,5 +356,31 @@ module.exports = (test/* : Test */) => {
         })
       )
     }))
+  })
+
+  describe('lifecycle', () => {
+    let store
+    before((done) => {
+      test.setup((err, s) => {
+        if (err) {
+          return done(err)
+        }
+        store = s
+        done()
+      })
+    })
+
+    after((done) => {
+      cleanup(store, done)
+    })
+
+    it('close and open', (done) => {
+      series([
+        (cb) => store.close(cb),
+        (cb) => store.open(cb),
+        (cb) => store.close(cb),
+        (cb) => store.open(cb)
+      ], done)
+    })
   })
 }

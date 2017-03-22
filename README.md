@@ -233,6 +233,12 @@ Queue a delete operation to the store.
 
 Write all queued operations to the underyling store. The batch object should not be used after calling this.
 
+### `open(callback)`
+
+- `callback: function(Error)`
+
+Opens the datastore, this is only needed if the store was closed before, otherwise this is taken care of by the constructor.
+
 ### `close(callback)`
 
 - `callback: function(Error)`

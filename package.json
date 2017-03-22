@@ -34,9 +34,10 @@
   },
   "homepage": "https://github.com/ipfs/interface-datastore#readme",
   "devDependencies": {
-    "aegir": "^10.0.0",
+    "aegir": "^11.0.1",
     "chai": "^3.5.0",
-    "flow-bin": "^0.41.0"
+    "dirty-chai": "^1.2.2",
+    "flow-bin": "^0.42.0"
   },
   "dependencies": {
     "async": "^2.1.5",
