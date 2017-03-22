@@ -376,10 +376,10 @@ module.exports = (test/* : Test */) => {
 
     it('close and open', (done) => {
       series([
-        (cb) => store.close(cb),
-        (cb) => store.open(cb),
-        (cb) => store.close(cb),
-        (cb) => store.open(cb)
+        (cb) => check(store).close(cb),
+        (cb) => check(store).open(cb),
+        (cb) => check(store).close(cb),
+        (cb) => check(store).open(cb)
       ], done)
     })
   })

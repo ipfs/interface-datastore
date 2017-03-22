@@ -28,6 +28,7 @@ export interface Datastore<Value> {
   // eslint-disable-next-line
   batch(): Batch<Value>;
   close(Callback<void>): void;
+  open(Callback<void>): void;
 }
 
 // -- Batch
