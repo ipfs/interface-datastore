@@ -3,7 +3,9 @@
 'use strict'
 
 const pull = require('pull-stream')
-const expect = require('chai').expect
+const chai = require('chai')
+chai.use(require('dirty-chai'))
+const expect = chai.expect
 
 const utils = require('../src').utils
 
@@ -15,7 +17,7 @@ describe('utils', () => {
         cb(null, val % 2 === 0)
       }),
       pull.collect((err, res) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         expect(res).to.be.eql([2, 4])
         done()
       })
@@ -31,7 +33,7 @@ describe('utils', () => {
         }, 10)
       }),
       pull.collect((err, res) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         expect(res).to.be.eql([2, 4])
         done()
       })
@@ -47,7 +49,7 @@ describe('utils', () => {
         }, 10)
       }),
       pull.collect((err, res) => {
-        expect(err).to.not.exist
+        expect(err).to.not.exist()
         expect(res).to.be.eql([4, 3, 2, 1])
         done()
       })
