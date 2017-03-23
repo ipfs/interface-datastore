@@ -1,3 +1,13 @@
+<a name="0.2.0"></a>
+# [0.2.0](https://github.com/ipfs/interface-datastore/compare/v0.1.1...v0.2.0) (2017-03-23)
+
+
+### Features
+
+* add open method ([#4](https://github.com/ipfs/interface-datastore/issues/4)) ([cbe8f7f](https://github.com/ipfs/interface-datastore/commit/cbe8f7f))
+
+
+
 <a name="0.1.1"></a>
 ## [0.1.1](https://github.com/ipfs/interface-datastore/compare/v0.1.0...v0.1.1) (2017-03-15)
 
