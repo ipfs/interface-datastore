@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "async": "^2.1.5",
-    "libp2p-crypto": "^0.8.6",
+    "libp2p-crypto": "^0.8.7",
     "pull-defer": "^0.2.2",
     "pull-many": "^1.0.8",
     "uuid": "^3.0.1"
