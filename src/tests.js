@@ -12,8 +12,10 @@ const parallel = require('async/parallel')
 const map = require('async/map')
 const each = require('async/each')
 const crypto = require('libp2p-crypto')
+const path = require('path')
 
 const Key = require('../src').Key
+const n = (p) => path.normalize(p)
 
 /* ::
 import type {Datastore, Callback} from '../src'
@@ -44,7 +46,7 @@ module.exports = (test/* : Test */) => {
     beforeEach((done) => {
       test.setup((err, s) => {
         if (err) {
-          return done(err)
+          throw err
         }
         store = s
         done()
@@ -89,7 +91,7 @@ module.exports = (test/* : Test */) => {
     beforeEach((done) => {
       test.setup((err, s) => {
         if (err) {
-          return done(err)
+          throw err
         }
         store = s
         done()
@@ -119,7 +121,7 @@ module.exports = (test/* : Test */) => {
     beforeEach((done) => {
       test.setup((err, s) => {
         if (err) {
-          return done(err)
+          throw err
         }
         store = s
         done()
@@ -189,7 +191,7 @@ module.exports = (test/* : Test */) => {
     beforeEach((done) => {
       test.setup((err, s) => {
         if (err) {
-          return done(err)
+          throw err
         }
         store = s
         done()
@@ -236,9 +238,9 @@ module.exports = (test/* : Test */) => {
       series([
         (cb) => b.commit(cb),
         (cb) => parallel([
-          (cb) => pull(check(store).query({prefix: '/a'}), pull.collect(cb)),
-          (cb) => pull(check(store).query({prefix: '/z'}), pull.collect(cb)),
-          (cb) => pull(check(store).query({prefix: '/q'}), pull.collect(cb))
+          (cb) => pull(check(store).query({prefix: n('/a')}), pull.collect(cb)),
+          (cb) => pull(check(store).query({prefix: n('/z')}), pull.collect(cb)),
+          (cb) => pull(check(store).query({prefix: n('/q')}), pull.collect(cb))
         ], (err, res) => {
           expect(err).to.not.exist()
           expect(res[0]).to.have.length(count)
@@ -288,7 +290,7 @@ module.exports = (test/* : Test */) => {
 
     const tests = [
       ['empty', {}, [hello, world, hello2]],
-      ['prefix', {prefix: '/z'}, [world, hello2]],
+      ['prefix', {prefix: n('/z')}, [world, hello2]],
       ['1 filter', {filters: [filter1]}, [world, hello2]],
       ['2 filters', {filters: [filter1, filter2]}, [hello2]],
       ['limit', {limit: 1}, 1],
@@ -301,7 +303,7 @@ module.exports = (test/* : Test */) => {
     before((done) => {
       test.setup((err, s) => {
         if (err) {
-          return done(err)
+          throw err
         }
         store = s
 
@@ -363,7 +365,7 @@ module.exports = (test/* : Test */) => {
     before((done) => {
       test.setup((err, s) => {
         if (err) {
-          return done(err)
+          throw err
         }
         store = s
         done()

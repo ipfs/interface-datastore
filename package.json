@@ -37,7 +37,7 @@
     "aegir": "^11.0.2",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
-    "flow-bin": "^0.46.0"
+    "flow-bin": "^0.47.0"
   },
   "dependencies": {
     "async": "^2.4.1",
@@ -55,5 +55,6 @@
     "Erin Dachtler <download333@gmail.com>",
     "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
     "Juan Batiz-Benet <juan@benet.ai>"
-  ]
+  ],
+  "bundleDependencies": []
 }
