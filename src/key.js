@@ -111,7 +111,7 @@ class Key {
       this._buf = Buffer.concat([new Buffer('/'), this._buf])
     }
 
-    this._buf = new Buffer(path.normalize(this.toString()))
+    this._buf = new Buffer(normalizePath(this.toString()))
 
     // normalize does not remove trailing slashes
     if (this.toString().length > 1) {
@@ -364,6 +364,16 @@ function namespaceType (ns /* : string */) /* : string */ {
 function namespaceValue (ns /* : string */) /* : string */ {
   const parts = ns.split(':')
   return parts[parts.length - 1]
+}
+
+/**
+ * Normalized version of a key path
+ *
+ * @param {string} pathStr
+ * @returns {string}
+ */
+function normalizePath (pathStr /* : string */) /* : string */ {
+  return path.normalize(pathStr).replace(/\\+/g, '/');
 }
 
 module.exports = Key

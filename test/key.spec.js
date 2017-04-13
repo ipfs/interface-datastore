@@ -8,7 +8,7 @@ const path = require('path')
 const Key = require('../src').Key
 
 const clean = (s) => {
-  let fixed = path.normalize(s)
+  let fixed = path.normalize(s).replace(/\\+/g, '/')
   if (fixed.length > 1) {
     return fixed.replace(/\/$/, '')
   }
