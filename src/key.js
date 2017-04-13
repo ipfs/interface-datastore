@@ -373,7 +373,7 @@ function namespaceValue (ns /* : string */) /* : string */ {
  * @returns {string}
  */
 function normalizePath (pathStr /* : string */) /* : string */ {
-  return path.normalize(pathStr).replace(/\\+/g, '/');
+  return path.normalize(pathStr).replace(/\\+/g, '/')
 }
 
 module.exports = Key
