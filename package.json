@@ -44,6 +44,7 @@
     "libp2p-crypto": "^0.8.7",
     "pull-defer": "^0.2.2",
     "pull-many": "^1.0.8",
+    "pull-stream": "^3.5.0",
     "uuid": "^3.0.1"
   },
   "engines": {
