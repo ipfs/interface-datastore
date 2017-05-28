@@ -2,6 +2,7 @@
 .*/radium/.*
 .*/standard-changelog/.*
 .*/conventional-changelog-core/.*
+.*/documentation/.*
 
 [include]
 
