@@ -1,3 +1,13 @@
+<a name="0.2.2"></a>
+## [0.2.2](https://github.com/ipfs/interface-datastore/compare/v0.2.1...v0.2.2) (2017-06-03)
+
+
+### Bug Fixes
+
+* use os specific path separator ([d7ec65a](https://github.com/ipfs/interface-datastore/commit/d7ec65a))
+
+
+
 <a name="0.2.1"></a>
 ## [0.2.1](https://github.com/ipfs/interface-datastore/compare/v0.2.0...v0.2.1) (2017-05-23)
 
