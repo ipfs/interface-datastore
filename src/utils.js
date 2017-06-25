@@ -2,7 +2,7 @@
 
 const pull = require('pull-stream')
 const Source = require('pull-defer/source')
-const path = require('path')
+const path = require('./path')
 const os = require('os')
 const uuid = require('uuid/v4')
 

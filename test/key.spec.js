@@ -3,7 +3,7 @@
 'use strict'
 
 const expect = require('chai').expect
-const path = require('path')
+const path = require('../src/path')
 
 const Key = require('../src').Key
 
