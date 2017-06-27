@@ -1,7 +1,7 @@
 /* @flow */
 'use strict'
 
-const path = require('path')
+const path = require('./path')
 const uuid = require('uuid/v4')
 
 const pathSepS = path.sep

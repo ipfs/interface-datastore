@@ -12,7 +12,7 @@ const parallel = require('async/parallel')
 const map = require('async/map')
 const each = require('async/each')
 const crypto = require('libp2p-crypto')
-const path = require('path')
+const path = require('./path')
 
 const Key = require('../src').Key
 const n = (p) => path.normalize(p)
