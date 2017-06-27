@@ -35,7 +35,7 @@
   "homepage": "https://github.com/ipfs/interface-datastore#readme",
   "devDependencies": {
     "aegir": "^11.0.2",
-    "chai": "^4.0.1",
+    "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
     "flow-bin": "^0.47.0"
   },
@@ -54,7 +54,8 @@
     "David Dias <daviddias.p@gmail.com>",
     "Erin Dachtler <download333@gmail.com>",
     "Juan Batiz-Benet <juan@benet.ai>",
-    "dignifiedquire <dignifiedquire@gmail.com>"
+    "dignifiedquire <dignifiedquire@gmail.com>",
+    "Justin Chase <justin.m.chase@gmail.com>"
   ],
   "bundleDependencies": []
 }
