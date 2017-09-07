@@ -35,13 +35,13 @@
   "homepage": "https://github.com/ipfs/interface-datastore#readme",
   "devDependencies": {
     "aegir": "^11.0.2",
-    "chai": "^4.1.0",
+    "chai": "^4.1.2",
     "dirty-chai": "^2.0.1",
-    "flow-bin": "^0.51.0"
+    "flow-bin": "^0.54.1"
   },
   "dependencies": {
     "async": "^2.5.0",
-    "libp2p-crypto": "^0.9.4",
+    "libp2p-crypto": "^0.10.3",
     "pull-defer": "^0.2.2",
     "pull-stream": "^3.6.0",
     "uuid": "^3.1.0"
