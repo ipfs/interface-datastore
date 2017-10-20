@@ -4,7 +4,7 @@
 const path = require('path')
 const uuid = require('uuid/v4')
 
-const pathSepS = path.sep
+const pathSepS = '/'
 const pathSep = new Buffer(pathSepS, 'utf8')[0]
 
 /**
