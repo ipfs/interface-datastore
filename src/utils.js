@@ -2,6 +2,9 @@
 
 const pull = require('pull-stream')
 const Source = require('pull-defer/source')
+const path = require('path')
+const os = require('os')
+const uuid = require('uuid/v4')
 
 exports.asyncFilter = function (test) {
   let busy = false
@@ -69,4 +72,8 @@ exports.asyncSort = function (sorter) {
 exports.replaceStartWith = function (s, r) {
   const matcher = new RegExp('^' + r)
   return s.replace(matcher, '')
+}
+
+exports.tmpdir = () => {
+  return path.join(os.tmpdir(), uuid())
 }
