@@ -112,13 +112,14 @@ describe('Key', () => {
 
   it('random', () => {
     const keys = {}
-    for (let i = 0; i < 1000; i++) {
+    const k = 100
+    for (let i = 0; i < k; i++) {
       const r = Key.random()
       expect(keys).to.not.have.key(r.toString())
       keys[r.toString()] = true
     }
 
-    expect(Object.keys(keys)).to.have.length(1000)
+    expect(Object.keys(keys)).to.have.length(k)
   })
 
   it('less', () => {
