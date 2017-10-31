@@ -2,7 +2,6 @@
 
 const pull = require('pull-stream')
 const Source = require('pull-defer/source')
-const uuid = require('uuid/v4')
 
 exports.asyncFilter = function (test) {
   let busy = false
