@@ -1,10 +1,10 @@
 /* @flow */
 'use strict'
 
-const path = require('path')
 const uuid = require('uuid/v4')
+const path = require('path')
 
-const pathSepS = path.sep
+const pathSepS = '/'
 const pathSep = new Buffer(pathSepS, 'utf8')[0]
 
 /**
@@ -110,7 +110,7 @@ class Key {
       this._buf = new Buffer(pathSepS, 'utf8')
     }
 
-    this._buf = new Buffer(path.normalize(this.toString()))
+    this._buf = new Buffer(path.posix.normalize(this.toString()))
 
     if (this._buf[0] !== pathSep) {
       this._buf = Buffer.concat([new Buffer(pathSepS, 'utf8'), this._buf])

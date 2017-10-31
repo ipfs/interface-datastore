@@ -2,8 +2,6 @@
 
 const pull = require('pull-stream')
 const Source = require('pull-defer/source')
-const path = require('path')
-const os = require('os')
 const uuid = require('uuid/v4')
 
 exports.asyncFilter = function (test) {
@@ -74,6 +72,3 @@ exports.replaceStartWith = function (s, r) {
   return s.replace(matcher, '')
 }
 
-exports.tmpdir = () => {
-  return path.join(os.tmpdir(), uuid())
-}
