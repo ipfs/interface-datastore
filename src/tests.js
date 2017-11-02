@@ -327,6 +327,7 @@ module.exports = (test/* : Test */) => {
           const expected = t[2]
           if (Array.isArray(expected)) {
             if (t[1].orders == null) {
+              expect(res).to.have.length(expected.length)
               const s = (a, b) => {
                 if (a.key.toString() < b.key.toString()) {
                   return 1
