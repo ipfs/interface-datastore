@@ -63,7 +63,7 @@ module.exports = (test/* : Test */) => {
     it('parallel', (done) => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push([new Key(`/z/key${i}`),  Buffer.from(`data${i}`)])
+        data.push([new Key(`/z/key${i}`), Buffer.from(`data${i}`)])
       }
 
       each(data, (d, cb) => {
