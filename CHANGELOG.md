@@ -1,3 +1,13 @@
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/ipfs/interface-datastore/compare/v0.3.1...v0.4.0) (2017-11-03)
+
+
+### Bug Fixes
+
+* make datastore OS agnostic (path things) ([#13](https://github.com/ipfs/interface-datastore/issues/13)) ([5697173](https://github.com/ipfs/interface-datastore/commit/5697173))
+
+
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/ipfs/interface-datastore/compare/v0.3.0...v0.3.1) (2017-09-07)
 
