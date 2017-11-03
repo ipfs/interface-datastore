@@ -4,7 +4,7 @@
 const uuid = require('uuid/v4')
 
 const pathSepS = '/'
-const pathSepB = new Buffer(pathSepS, 'utf8')
+const pathSepB = Buffer.from(pathSepS)
 const pathSep = pathSepB[0]
 
 /**
@@ -28,7 +28,7 @@ class Key {
 
   constructor (s /* : string|Buffer */, clean /* : ?bool */) {
     if (typeof s === 'string') {
-      this._buf = new Buffer(s)
+      this._buf = Buffer.from(s)
     } else if (Buffer.isBuffer(s)) {
       this._buf = s
     }
@@ -107,7 +107,7 @@ class Key {
    */
   clean () {
     if (!this._buf || this._buf.length === 0) {
-      this._buf = new Buffer(pathSepS, 'utf8')
+      this._buf = Buffer.from(pathSepS)
     }
 
     if (this._buf[0] !== pathSep) {

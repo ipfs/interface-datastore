@@ -57,13 +57,13 @@ module.exports = (test/* : Test */) => {
 
     it('simple', (done) => {
       const k = new Key('/z/one')
-      check(store).put(k, new Buffer('one'), done)
+      check(store).put(k, Buffer.from('one'), done)
     })
 
     it('parallel', (done) => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push([new Key(`/z/key${i}`), new Buffer(`data${i}`)])
+        data.push([new Key(`/z/key${i}`),  Buffer.from(`data${i}`)])
       }
 
       each(data, (d, cb) => {
@@ -103,10 +103,10 @@ module.exports = (test/* : Test */) => {
     it('simple', (done) => {
       const k = new Key('/z/one')
       series([
-        (cb) => check(store).put(k, new Buffer('hello'), cb),
+        (cb) => check(store).put(k, Buffer.from('hello'), cb),
         (cb) => check(store).get(k, (err, res) => {
           expect(err).to.not.exist()
-          expect(res).to.be.eql(new Buffer('hello'))
+          expect(res).to.be.eql(Buffer.from('hello'))
           cb()
         })
       ], done)
@@ -133,10 +133,10 @@ module.exports = (test/* : Test */) => {
     it('simple', (done) => {
       const k = new Key('/z/one')
       series([
-        (cb) => check(store).put(k, new Buffer('hello'), cb),
+        (cb) => check(store).put(k, Buffer.from('hello'), cb),
         (cb) => check(store).get(k, (err, res) => {
           expect(err).to.not.exist()
-          expect(res).to.be.eql(new Buffer('hello'))
+          expect(res).to.be.eql(Buffer.from('hello'))
           cb()
         }),
         (cb) => check(store).delete(k, cb),
@@ -151,7 +151,7 @@ module.exports = (test/* : Test */) => {
     it('parallel', (done) => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push([new Key(`/a/key${i}`), new Buffer(`data${i}`)])
+        data.push([new Key(`/a/key${i}`), Buffer.from(`data${i}`)])
       }
 
       series([
@@ -204,11 +204,11 @@ module.exports = (test/* : Test */) => {
       const b = check(store).batch()
 
       series([
-        (cb) => check(store).put(new Key('/z/old'), new Buffer('old'), cb),
+        (cb) => check(store).put(new Key('/z/old'), Buffer.from('old'), cb),
         (cb) => {
-          b.put(new Key('/a/one'), new Buffer('1'))
-          b.put(new Key('/q/two'), new Buffer('2'))
-          b.put(new Key('/q/three'), new Buffer('3'))
+          b.put(new Key('/a/one'), Buffer.from('1'))
+          b.put(new Key('/q/two'), Buffer.from('2'))
+          b.put(new Key('/q/three'), Buffer.from('3'))
           b.delete(new Key('/z/old'))
           b.commit(cb)
         },
@@ -252,9 +252,9 @@ module.exports = (test/* : Test */) => {
 
   describe('query', () => {
     let store
-    const hello = {key: new Key('/q/1hello'), value: new Buffer('1')}
-    const world = {key: new Key('/z/2world'), value: new Buffer('2')}
-    const hello2 = {key: new Key('/z/3hello2'), value: new Buffer('3')}
+    const hello = {key: new Key('/q/1hello'), value: Buffer.from('1')}
+    const world = {key: new Key('/z/2world'), value: Buffer.from('2')}
+    const hello2 = {key: new Key('/z/3hello2'), value: Buffer.from('3')}
     const filter1 = (entry, cb) => {
       cb(null, !entry.key.toString().endsWith('hello'))
     }
