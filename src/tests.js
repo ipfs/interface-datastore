@@ -11,7 +11,7 @@ const series = require('async/series')
 const parallel = require('async/parallel')
 const map = require('async/map')
 const each = require('async/each')
-const crypto = require('libp2p-crypto')
+const randomBytes = require('libp2p-crypto/src/random-bytes')
 const path = require('path')
 
 const Key = require('../src').Key
@@ -230,9 +230,9 @@ module.exports = (test/* : Test */) => {
       const b = check(store).batch()
       const count = 400
       for (let i = 0; i < count; i++) {
-        b.put(new Key(`/a/hello${i}`), crypto.randomBytes(32))
-        b.put(new Key(`/q/hello${i}`), crypto.randomBytes(64))
-        b.put(new Key(`/z/hello${i}`), crypto.randomBytes(128))
+        b.put(new Key(`/a/hello${i}`), randomBytes(32))
+        b.put(new Key(`/q/hello${i}`), randomBytes(64))
+        b.put(new Key(`/z/hello${i}`), randomBytes(128))
       }
 
       series([
