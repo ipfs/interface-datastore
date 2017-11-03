@@ -1,11 +1,11 @@
 /* @flow */
 'use strict'
 
-const path = require('path')
 const uuid = require('uuid/v4')
 
-const pathSepS = path.sep
-const pathSep = new Buffer(pathSepS, 'utf8')[0]
+const pathSepS = '/'
+const pathSepB = Buffer.from(pathSepS)
+const pathSep = pathSepB[0]
 
 /**
  * A Key represents the unique identifier of an object.
@@ -28,7 +28,7 @@ class Key {
 
   constructor (s /* : string|Buffer */, clean /* : ?bool */) {
     if (typeof s === 'string') {
-      this._buf = new Buffer(s)
+      this._buf = Buffer.from(s)
     } else if (Buffer.isBuffer(s)) {
       this._buf = s
     }
@@ -107,17 +107,15 @@ class Key {
    */
   clean () {
     if (!this._buf || this._buf.length === 0) {
-      this._buf = new Buffer(pathSepS, 'utf8')
+      this._buf = Buffer.from(pathSepS)
     }
 
-    this._buf = new Buffer(path.normalize(this.toString()))
-
     if (this._buf[0] !== pathSep) {
-      this._buf = Buffer.concat([new Buffer(pathSepS, 'utf8'), this._buf])
+      this._buf = Buffer.concat([pathSepB, this._buf])
     }
 
     // normalize does not remove trailing slashes
-    if (this.toString().length > 1 && this._buf[this._buf.length - 1] === pathSep) {
+    while (this._buf.length > 1 && this._buf[this._buf.length - 1] === pathSep) {
       this._buf = this._buf.slice(0, -1)
     }
   }
@@ -252,7 +250,12 @@ class Key {
    *
    */
   path () /* : Key */ {
-    return new Key(this.parent().toString() + pathSepS + this.type())
+    let p = this.parent().toString()
+    if (!p.endsWith(pathSepS)) {
+      p += pathSepS
+    }
+    p += this.type()
+    return new Key(p)
   }
 
   /**
@@ -268,7 +271,7 @@ class Key {
   parent () /* : Key */ {
     const list = this.list()
     if (list.length === 1) {
-      return new Key(pathSepS, false)
+      return new Key(pathSepS)
     }
 
     return new Key(list.slice(0, -1).join(pathSepS))

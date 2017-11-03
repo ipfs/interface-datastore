@@ -12,10 +12,8 @@ const parallel = require('async/parallel')
 const map = require('async/map')
 const each = require('async/each')
 const crypto = require('libp2p-crypto')
-const path = require('path')
 
 const Key = require('../src').Key
-const n = (p) => path.normalize(p)
 
 /* ::
 import type {Datastore, Callback} from '../src'
@@ -59,13 +57,13 @@ module.exports = (test/* : Test */) => {
 
     it('simple', (done) => {
       const k = new Key('/z/one')
-      check(store).put(k, new Buffer('one'), done)
+      check(store).put(k, Buffer.from('one'), done)
     })
 
     it('parallel', (done) => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push([new Key(`/z/key${i}`), new Buffer(`data${i}`)])
+        data.push([new Key(`/z/key${i}`), Buffer.from(`data${i}`)])
       }
 
       each(data, (d, cb) => {
@@ -105,10 +103,10 @@ module.exports = (test/* : Test */) => {
     it('simple', (done) => {
       const k = new Key('/z/one')
       series([
-        (cb) => check(store).put(k, new Buffer('hello'), cb),
+        (cb) => check(store).put(k, Buffer.from('hello'), cb),
         (cb) => check(store).get(k, (err, res) => {
           expect(err).to.not.exist()
-          expect(res).to.be.eql(new Buffer('hello'))
+          expect(res).to.be.eql(Buffer.from('hello'))
           cb()
         })
       ], done)
@@ -135,10 +133,10 @@ module.exports = (test/* : Test */) => {
     it('simple', (done) => {
       const k = new Key('/z/one')
       series([
-        (cb) => check(store).put(k, new Buffer('hello'), cb),
+        (cb) => check(store).put(k, Buffer.from('hello'), cb),
         (cb) => check(store).get(k, (err, res) => {
           expect(err).to.not.exist()
-          expect(res).to.be.eql(new Buffer('hello'))
+          expect(res).to.be.eql(Buffer.from('hello'))
           cb()
         }),
         (cb) => check(store).delete(k, cb),
@@ -153,7 +151,7 @@ module.exports = (test/* : Test */) => {
     it('parallel', (done) => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push([new Key(`/a/key${i}`), new Buffer(`data${i}`)])
+        data.push([new Key(`/a/key${i}`), Buffer.from(`data${i}`)])
       }
 
       series([
@@ -206,11 +204,11 @@ module.exports = (test/* : Test */) => {
       const b = check(store).batch()
 
       series([
-        (cb) => check(store).put(new Key('/z/old'), new Buffer('old'), cb),
+        (cb) => check(store).put(new Key('/z/old'), Buffer.from('old'), cb),
         (cb) => {
-          b.put(new Key('/a/one'), new Buffer('1'))
-          b.put(new Key('/q/two'), new Buffer('2'))
-          b.put(new Key('/q/three'), new Buffer('3'))
+          b.put(new Key('/a/one'), Buffer.from('1'))
+          b.put(new Key('/q/two'), Buffer.from('2'))
+          b.put(new Key('/q/three'), Buffer.from('3'))
           b.delete(new Key('/z/old'))
           b.commit(cb)
         },
@@ -238,9 +236,9 @@ module.exports = (test/* : Test */) => {
       series([
         (cb) => b.commit(cb),
         (cb) => parallel([
-          (cb) => pull(check(store).query({prefix: n('/a')}), pull.collect(cb)),
-          (cb) => pull(check(store).query({prefix: n('/z')}), pull.collect(cb)),
-          (cb) => pull(check(store).query({prefix: n('/q')}), pull.collect(cb))
+          (cb) => pull(check(store).query({prefix: '/a'}), pull.collect(cb)),
+          (cb) => pull(check(store).query({prefix: '/z'}), pull.collect(cb)),
+          (cb) => pull(check(store).query({prefix: '/q'}), pull.collect(cb))
         ], (err, res) => {
           expect(err).to.not.exist()
           expect(res[0]).to.have.length(count)
@@ -254,9 +252,9 @@ module.exports = (test/* : Test */) => {
 
   describe('query', () => {
     let store
-    const hello = {key: new Key('/q/1hello'), value: new Buffer('1')}
-    const world = {key: new Key('/z/2world'), value: new Buffer('2')}
-    const hello2 = {key: new Key('/z/3hello2'), value: new Buffer('3')}
+    const hello = {key: new Key('/q/1hello'), value: Buffer.from('1')}
+    const world = {key: new Key('/z/2world'), value: Buffer.from('2')}
+    const hello2 = {key: new Key('/z/3hello2'), value: Buffer.from('3')}
     const filter1 = (entry, cb) => {
       cb(null, !entry.key.toString().endsWith('hello'))
     }
@@ -290,7 +288,7 @@ module.exports = (test/* : Test */) => {
 
     const tests = [
       ['empty', {}, [hello, world, hello2]],
-      ['prefix', {prefix: n('/z')}, [world, hello2]],
+      ['prefix', {prefix: '/z'}, [world, hello2]],
       ['1 filter', {filters: [filter1]}, [world, hello2]],
       ['2 filters', {filters: [filter1, filter2]}, [hello2]],
       ['limit', {limit: 1}, 1],
@@ -329,6 +327,7 @@ module.exports = (test/* : Test */) => {
           const expected = t[2]
           if (Array.isArray(expected)) {
             if (t[1].orders == null) {
+              expect(res).to.have.length(expected.length)
               const s = (a, b) => {
                 if (a.key.toString() < b.key.toString()) {
                   return 1

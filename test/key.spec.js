@@ -3,16 +3,14 @@
 'use strict'
 
 const expect = require('chai').expect
-const path = require('path')
 
 const Key = require('../src').Key
 
-const pathSep = path.sep
-const n = (p) => path.normalize(p)
+const pathSep = '/'
 
 describe('Key', () => {
   const clean = (s) => {
-    let fixed = n(s)
+    let fixed = s
     if (fixed.startsWith(pathSep + pathSep)) {
       fixed = fixed.slice(1)
     }
@@ -34,7 +32,7 @@ describe('Key', () => {
         ktype = lnparts.slice(0, -1).join(':')
       }
       const kname = lnparts[lnparts.length - 1]
-      const kchild = clean(fixed + n('/cchildd'))
+      const kchild = clean(fixed + '/cchildd')
       const kparent = pathSep + namespaces.slice(0, -1).join(pathSep)
       const kpath = clean(kparent + pathSep + ktype)
       const kinstance = fixed + ':inst'
@@ -62,35 +60,33 @@ describe('Key', () => {
     validKey('')
     validKey('abcde')
     validKey('disahfidsalfhduisaufidsail')
-    validKey(n('/fdisahfodisa/fdsa/fdsafdsafdsafdsa/fdsafdsa/'))
+    validKey('/fdisahfodisa/fdsa/fdsafdsafdsafdsa/fdsafdsa/')
     validKey('4215432143214321432143214321')
-    validKey(n('a\\b\\c//d\\'))
-    validKey(n('/fdisaha////fdsa////fdsafdsafdsafdsa/fdsafdsa/'))
+    validKey('a/b/c/d/')
     validKey('abcde:fdsfd')
     validKey('disahfidsalfhduisaufidsail:fdsa')
-    validKey(n('/fdisahfodisa/fdsa/fdsafdsafdsafdsa/fdsafdsa/:'))
+    validKey('/fdisahfodisa/fdsa/fdsafdsafdsafdsa/fdsafdsa/:')
     validKey('4215432143214321432143214321:')
-    validKey(n('fdisaha////fdsa////fdsafdsafdsafdsa/fdsafdsa/f:fdaf'))
   })
 
   it('ancestry', () => {
-    const k1 = new Key(n('/A/B/C'))
-    const k2 = new Key(n('/A/B/C/D'))
+    const k1 = new Key('/A/B/C')
+    const k2 = new Key('/A/B/C/D')
 
-    expect(k1.toString()).to.be.eql(n('/A/B/C'))
-    expect(k2.toString()).to.be.eql(n('/A/B/C/D'))
+    expect(k1.toString()).to.be.eql('/A/B/C')
+    expect(k2.toString()).to.be.eql('/A/B/C/D')
 
     const checks = [
       k1.isAncestorOf(k2),
       k2.isDecendantOf(k1),
-      new Key(n('/A')).isAncestorOf(k2),
-      new Key(n('/A')).isAncestorOf(k1),
-      !new Key(n('/A')).isDecendantOf(k2),
-      !new Key(n('/A')).isDecendantOf(k1),
-      k2.isDecendantOf(new Key(n('/A'))),
-      k1.isDecendantOf(new Key(n('/A'))),
-      !k2.isAncestorOf(new Key(n('/A'))),
-      !k1.isAncestorOf(new Key(n('/A'))),
+      new Key('/A').isAncestorOf(k2),
+      new Key('/A').isAncestorOf(k1),
+      !new Key('/A').isDecendantOf(k2),
+      !new Key('/A').isDecendantOf(k1),
+      k2.isDecendantOf(new Key('/A')),
+      k1.isDecendantOf(new Key('/A')),
+      !k2.isAncestorOf(new Key('/A')),
+      !k1.isAncestorOf(new Key('/A')),
       !k2.isAncestorOf(k2),
       !k1.isAncestorOf(k1)
     ]
@@ -103,8 +99,8 @@ describe('Key', () => {
   })
 
   it('type', () => {
-    const k1 = new Key(n('/A/B/C:c'))
-    const k2 = new Key(n('/A/B/C:c/D:d'))
+    const k1 = new Key('/A/B/C:c')
+    const k2 = new Key('/A/B/C:c/D:d')
 
     expect(k1.isAncestorOf(k2)).to.eql(true)
     expect(k2.isDecendantOf(k1)).to.eql(true)
@@ -116,13 +112,14 @@ describe('Key', () => {
 
   it('random', () => {
     const keys = {}
-    for (let i = 0; i < 1000; i++) {
+    const k = 100
+    for (let i = 0; i < k; i++) {
       const r = Key.random()
       expect(keys).to.not.have.key(r.toString())
       keys[r.toString()] = true
     }
 
-    expect(Object.keys(keys)).to.have.length(1000)
+    expect(Object.keys(keys)).to.have.length(k)
   })
 
   it('less', () => {
@@ -134,12 +131,12 @@ describe('Key', () => {
       expect(bk.less(ak)).to.eql(false)
     }
 
-    checkLess(n('/a/b/c'), n('/a/b/c/d'))
-    checkLess(n('/a/b'), n('/a/b/c/d'))
-    checkLess(n('/a'), n('/a/b/c/d'))
-    checkLess(n('/a/a/c'), n('/a/b/c'))
-    checkLess(n('/a/a/d'), n('/a/b/c'))
-    checkLess(n('/a/b/c/d/e/f/g/h'), n('/b'))
-    checkLess(pathSep, n('/a'))
+    checkLess('/a/b/c', '/a/b/c/d')
+    checkLess('/a/b', '/a/b/c/d')
+    checkLess('/a', '/a/b/c/d')
+    checkLess('/a/a/c', '/a/b/c')
+    checkLess('/a/a/d', '/a/b/c')
+    checkLess('/a/b/c/d/e/f/g/h', '/b')
+    checkLess(pathSep, '/a')
   })
 })
