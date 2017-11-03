@@ -84,4 +84,8 @@ describe('utils', () => {
       'helloworld'
     )
   })
+
+  it('provides a temp folder', () => {
+    expect(utils.tmpdir()).to.not.equal('')
+  })
 })
