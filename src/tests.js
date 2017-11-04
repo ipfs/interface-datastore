@@ -11,7 +11,7 @@ const series = require('async/series')
 const parallel = require('async/parallel')
 const map = require('async/map')
 const each = require('async/each')
-const crypto = require('crypto') // TODO: change to 'webcrypto'
+const crypto = require('crypto')
 
 const Key = require('../src').Key
 
