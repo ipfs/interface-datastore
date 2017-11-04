@@ -11,7 +11,7 @@ const series = require('async/series')
 const parallel = require('async/parallel')
 const map = require('async/map')
 const each = require('async/each')
-const randomBytes = require('libp2p-crypto/src/random-bytes')
+const { randomBytes } = require('crypto') // TODO: change to 'webcrypto'
 const path = require('path')
 
 const Key = require('../src').Key
