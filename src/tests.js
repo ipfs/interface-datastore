@@ -224,7 +224,8 @@ module.exports = (test/* : Test */) => {
       ], done)
     })
 
-    it('many (3 * 400)', (done) => {
+    it('many (3 * 400)', function (done) {
+      this.timeout(20 * 1000)
       const b = check(store).batch()
       const count = 400
       for (let i = 0; i < count; i++) {
