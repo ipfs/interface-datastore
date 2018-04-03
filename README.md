@@ -113,6 +113,22 @@ Also, every namespace can be parametrized to embed relevant object information. 
 
 These methods will be present on every datastore. `Key` always means an instance of the above mentioned Key type. Every datastore is generic over the `Value` type, though currently all backing implementations are implemented only for [`Buffer`](https://nodejs.org/docs/latest/api/buffer.html).
 
+### `has(key, callback)`
+
+- `key: Key`
+- `callback: function(Error, bool)`
+
+Check for the existence of a given key
+
+```js
+store.has(new Key('awesome'), (err, exists) => {
+  if (err) {
+    throw err
+  }
+  console.log('is it there', exists)
+})
+```
+
 ### `put(key, value, callback)`
 
 - `key: Key`
