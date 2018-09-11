@@ -34,17 +34,17 @@
   },
   "homepage": "https://github.com/ipfs/interface-datastore#readme",
   "devDependencies": {
-    "aegir": "^12.2.0",
+    "aegir": "^15.1.0",
     "chai": "^4.1.2",
     "dirty-chai": "^2.0.1",
-    "flow-bin": "^0.60.1"
+    "flow-bin": "~0.60.1"
   },
   "dependencies": {
-    "async": "^2.6.0",
+    "async": "^2.6.1",
     "err-code": "^1.1.2",
-    "pull-defer": "^0.2.2",
-    "pull-stream": "^3.6.1",
-    "uuid": "^3.1.0"
+    "pull-defer": "~0.2.3",
+    "pull-stream": "^3.6.9",
+    "uuid": "^3.3.2"
   },
   "engines": {
     "node": ">=6.0.0",
