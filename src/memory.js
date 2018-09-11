@@ -10,6 +10,10 @@ const asyncFilter = require('./utils').asyncFilter
 const asyncSort = require('./utils').asyncSort
 const Key = require('./key')
 
+// Errors
+const Errors = require('./errors')
+const ERR_NOT_FOUND = Errors.ERR_NOT_FOUND
+
 class MemoryDatastore {
   /* :: data: {[key: string]: Buffer} */
 
@@ -34,7 +38,7 @@ class MemoryDatastore {
       }
 
       if (!exists) {
-        return callback(new Error('No value'))
+        return callback(ERR_NOT_FOUND())
       }
 
       callback(null, this.data[key.toString()])
