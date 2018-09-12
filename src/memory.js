@@ -12,7 +12,6 @@ const Key = require('./key')
 
 // Errors
 const Errors = require('./errors')
-const ERR_NOT_FOUND = Errors.ERR_NOT_FOUND
 
 class MemoryDatastore {
   /* :: data: {[key: string]: Buffer} */
@@ -38,7 +37,7 @@ class MemoryDatastore {
       }
 
       if (!exists) {
-        return callback(ERR_NOT_FOUND())
+        return callback(Errors.notFoundError())
       }
 
       callback(null, this.data[key.toString()])
