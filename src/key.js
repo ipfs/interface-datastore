@@ -2,6 +2,7 @@
 'use strict'
 
 const uuid = require('uuid/v4')
+const withIs = require('class-is')
 
 const pathSepS = '/'
 const pathSepB = Buffer.from(pathSepS)
@@ -372,4 +373,4 @@ function namespaceValue (ns /* : string */) /* : string */ {
   return parts[parts.length - 1]
 }
 
-module.exports = Key
+module.exports = withIs(Key, { className: 'Key', symbolName: '@ipfs/interface-datastore/key' })
