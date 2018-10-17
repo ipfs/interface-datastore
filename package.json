@@ -41,6 +41,8 @@
   },
   "dependencies": {
     "async": "^2.6.1",
+    "class-is": "^1.1.0",
+    "err-code": "^1.1.2",
     "pull-defer": "~0.2.2",
     "pull-stream": "^3.6.8",
     "uuid": "^3.2.1"
@@ -60,5 +62,5 @@
     "tcme <hi@this-connect.me>",
     "ᴠɪᴄᴛᴏʀ ʙᴊᴇʟᴋʜᴏʟᴍ <victorbjelkholm@gmail.com>"
   ],
-  "bundleDependencies": [],
+  "bundleDependencies": []
 }
