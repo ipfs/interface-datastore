@@ -28,7 +28,6 @@
     "ipfs",
     "datastore"
   ],
-  "author": "Juan Benet <juan@benet.ai> (http://juan.benet.ai/)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ipfs/interface-datastore/issues"
@@ -59,8 +58,4 @@
     "tcme <hi@this-connect.me>"
   ],
   "bundleDependencies": [],
-  "pre-push": [
-    "lint",
-    "test"
-  ]
 }
