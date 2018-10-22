@@ -13,6 +13,10 @@
 > Implementation of the [datastore](https://github.com/ipfs/go-datastore) interface in JavaScript
 
 
+## Lead Maintainer
+
+[Pedro Teixeira](https://github.com/pgte)
+
 ## Table of Contents
 
 - [Implementations](#implementations)

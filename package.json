@@ -2,6 +2,7 @@
   "name": "interface-datastore",
   "version": "0.5.0",
   "description": "datastore interface",
+  "leadMaintainer": "Pedro Teixeira <i@pgte.me>",
   "main": "src/index.js",
   "scripts": {
     "lint": "aegir lint",
@@ -27,28 +28,26 @@
     "ipfs",
     "datastore"
   ],
-  "author": "Juan Benet <juan@benet.ai> (http://juan.benet.ai/)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ipfs/interface-datastore/issues"
   },
   "homepage": "https://github.com/ipfs/interface-datastore#readme",
   "devDependencies": {
-    "aegir": "^15.1.0",
+    "aegir": "^14.0.0",
     "chai": "^4.1.2",
     "dirty-chai": "^2.0.1",
-    "flow-bin": "~0.60.1"
+    "flow-bin": "~0.73.0"
   },
   "dependencies": {
     "async": "^2.6.1",
-    "err-code": "^1.1.2",
-    "pull-defer": "~0.2.3",
-    "pull-stream": "^3.6.9",
-    "uuid": "^3.3.2"
+    "pull-defer": "~0.2.2",
+    "pull-stream": "^3.6.8",
+    "uuid": "^3.2.1"
   },
   "engines": {
-    "node": ">=6.0.0",
-    "npm": ">=3.0.0"
+    "node": ">=8.0.0",
+    "npm": ">=6.0.0"
   },
   "contributors": [
     "David Dias <daviddias.p@gmail.com>",
@@ -61,5 +60,5 @@
     "tcme <hi@this-connect.me>",
     "ᴠɪᴄᴛᴏʀ ʙᴊᴇʟᴋʜᴏʟᴍ <victorbjelkholm@gmail.com>"
   ],
-  "bundleDependencies": []
+  "bundleDependencies": [],
 }
