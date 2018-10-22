@@ -1,3 +1,13 @@
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/ipfs/interface-datastore/compare/v0.4.2...v0.5.0) (2018-09-17)
+
+
+### Features
+
+* add basic error codes ([bbf5f70](https://github.com/ipfs/interface-datastore/commit/bbf5f70))
+
+
+
 <a name="0.4.2"></a>
 ## [0.4.2](https://github.com/ipfs/interface-datastore/compare/v0.4.1...v0.4.2) (2017-12-05)
 
