@@ -1,3 +1,18 @@
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/ipfs/interface-datastore/compare/v0.5.0...v0.6.0) (2018-10-24)
+
+
+### Bug Fixes
+
+* add _key to the API functions using the instance ([5a377ed](https://github.com/ipfs/interface-datastore/commit/5a377ed))
+
+
+### Features
+
+* add class-is module ([362eff8](https://github.com/ipfs/interface-datastore/commit/362eff8))
+
+
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/ipfs/interface-datastore/compare/v0.4.2...v0.5.0) (2018-09-17)
 
