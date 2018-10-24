@@ -1,6 +1,6 @@
 {
   "name": "interface-datastore",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "datastore interface",
   "leadMaintainer": "Pedro Teixeira <i@pgte.me>",
   "main": "src/index.js",
@@ -57,7 +57,10 @@
     "Jacob Heun <jacobheun@gmail.com>",
     "Jacob Heun <jake@andyet.net>",
     "Juan Batiz-Benet <juan@benet.ai>",
+    "Pedro Teixeira <i@pgte.me>",
+    "Pedro Teixeira <pedro@protocol.ai>",
     "Richard Schneider <makaretu@gmail.com>",
+    "Vasco Santos <vasco.santos@moxy.studio>",
     "dignifiedquire <dignifiedquire@gmail.com>",
     "tcme <hi@this-connect.me>",
     "ᴠɪᴄᴛᴏʀ ʙᴊᴇʟᴋʜᴏʟᴍ <victorbjelkholm@gmail.com>"
