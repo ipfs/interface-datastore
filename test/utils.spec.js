@@ -70,7 +70,7 @@ describe('utils', () => {
     const data = [1, 2, 3, 4]
     const n = 0
     const res = []
-    for await (const val of utils.take(data, n)) {
+    for await (const _ of utils.take(data, n)) { // eslint-disable-line
       throw new Error('took a value')
     }
     expect(res).to.be.eql([])

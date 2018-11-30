@@ -98,7 +98,7 @@ module.exports = (test/* : Test */) => {
     it('simple', async () => {
       const k = new Key('/z/one')
       await store.put(k, Buffer.from('hello'))
-      const res = await store.get(k)
+      await store.get(k)
       await store.delete(k)
       const exists = await store.has(k)
       expect(exists).to.be.eql(false)
@@ -163,13 +163,13 @@ module.exports = (test/* : Test */) => {
 
       const total = async iterable => {
         let count = 0
-        for await (const _ of iterable) count++
+        for await (const _ of iterable) count++ // eslint-disable-line
         return count
       }
 
-      expect(await total(store.query({prefix: '/a'}))).to.equal(count)
-      expect(await total(store.query({prefix: '/z'}))).to.equal(count)
-      expect(await total(store.query({prefix: '/q'}))).to.equal(count)
+      expect(await total(store.query({ prefix: '/a' }))).to.equal(count)
+      expect(await total(store.query({ prefix: '/z' }))).to.equal(count)
+      expect(await total(store.query({ prefix: '/q' }))).to.equal(count)
     })
   })
 
