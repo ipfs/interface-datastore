@@ -69,11 +69,9 @@ describe('utils', () => {
   it('should take nothing from iterator', async () => {
     const data = [1, 2, 3, 4]
     const n = 0
-    const res = []
     for await (const _ of utils.take(data, n)) { // eslint-disable-line
       throw new Error('took a value')
     }
-    expect(res).to.be.eql([])
   })
 
   it('should map iterator values', async () => {
