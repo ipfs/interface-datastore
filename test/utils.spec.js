@@ -2,7 +2,6 @@
 /* eslint-env mocha */
 'use strict'
 
-const pull = require('pull-stream')
 const chai = require('chai')
 chai.use(require('dirty-chai'))
 const expect = chai.expect
@@ -10,65 +9,81 @@ const expect = chai.expect
 const utils = require('../src').utils
 
 describe('utils', () => {
-  it('asyncFilter - sync', (done) => {
-    pull(
-      pull.values([1, 2, 3, 4]),
-      utils.asyncFilter((val, cb) => {
-        cb(null, val % 2 === 0)
-      }),
-      pull.collect((err, res) => {
-        expect(err).to.not.exist()
-        expect(res).to.be.eql([2, 4])
-        done()
-      })
-    )
+  it('filter - sync', async () => {
+    const data = [1, 2, 3, 4]
+    const filterer = val => val % 2 === 0
+    const res = []
+    for await (const val of utils.filter(data, filterer)) {
+      res.push(val)
+    }
+    expect(res).to.be.eql([2, 4])
   })
 
-  it('asyncFilter - async', (done) => {
-    pull(
-      pull.values([1, 2, 3, 4]),
-      utils.asyncFilter((val, cb) => {
-        setTimeout(() => {
-          cb(null, val % 2 === 0)
-        }, 10)
-      }),
-      pull.collect((err, res) => {
-        expect(err).to.not.exist()
-        expect(res).to.be.eql([2, 4])
-        done()
-      })
-    )
+  it('filter - async', async () => {
+    const data = [1, 2, 3, 4]
+    const filterer = async val => val % 2 === 0
+    const res = []
+    for await (const val of utils.filter(data, filterer)) {
+      res.push(val)
+    }
+    expect(res).to.be.eql([2, 4])
   })
 
-  it('asyncSort', (done) => {
-    pull(
-      pull.values([1, 2, 3, 4]),
-      utils.asyncSort((res, cb) => {
-        setTimeout(() => {
-          cb(null, res.reverse())
-        }, 10)
-      }),
-      pull.collect((err, res) => {
-        expect(err).to.not.exist()
-        expect(res).to.be.eql([4, 3, 2, 1])
-        done()
-      })
-    )
+  it('sortAll', async () => {
+    const data = [1, 2, 3, 4]
+    const sorter = async vals => vals.reverse()
+    const res = []
+    for await (const val of utils.sortAll(data, sorter)) {
+      res.push(val)
+    }
+    expect(res).to.be.eql([4, 3, 2, 1])
   })
 
-  it('asyncSort - fail', (done) => {
-    pull(
-      pull.values([1, 2, 3, 4]),
-      utils.asyncSort((res, cb) => {
-        setTimeout(() => {
-          cb(new Error('fail'))
-        }, 10)
-      }),
-      pull.collect((err, res) => {
-        expect(err.message).to.be.eql('fail')
-        done()
-      })
-    )
+  it('sortAll - fail', async () => {
+    const data = [1, 2, 3, 4]
+    const sorter = async vals => { throw new Error('fail') }
+    const res = []
+
+    try {
+      for await (const val of utils.sortAll(data, sorter)) {
+        res.push(val)
+      }
+    } catch (err) {
+      expect(err.message).to.be.eql('fail')
+      return
+    }
+
+    throw new Error('expected error to be thrown')
+  })
+
+  it('should take n values from iterator', async () => {
+    const data = [1, 2, 3, 4]
+    const n = 3
+    const res = []
+    for await (const val of utils.take(data, n)) {
+      res.push(val)
+    }
+    expect(res).to.be.eql([1, 2, 3])
+  })
+
+  it('should take nothing from iterator', async () => {
+    const data = [1, 2, 3, 4]
+    const n = 0
+    const res = []
+    for await (const val of utils.take(data, n)) {
+      throw new Error('took a value')
+    }
+    expect(res).to.be.eql([])
+  })
+
+  it('should map iterator values', async () => {
+    const data = [1, 2, 3, 4]
+    const mapper = n => n * 2
+    const res = []
+    for await (const val of utils.map(data, mapper)) {
+      res.push(val)
+    }
+    expect(res).to.be.eql([2, 4, 6, 8])
   })
 
   it('replaceStartWith', () => {

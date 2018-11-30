@@ -40,11 +40,8 @@
     "flow-bin": "~0.83.0"
   },
   "dependencies": {
-    "async": "^2.6.1",
     "class-is": "^1.1.0",
     "err-code": "^1.1.2",
-    "pull-defer": "~0.2.3",
-    "pull-stream": "^3.6.9",
     "uuid": "^3.2.2"
   },
   "engines": {

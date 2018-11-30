@@ -47,14 +47,14 @@ const ShardingStore = require('datastore-core').ShardingDatatstore
 const NextToLast = require('datastore-core').shard.NextToLast
 
 const fs = new FsStore('path/to/store')
-ShardingStore.createOrOpen(fs, new NextToLast(2), (err, flatfs) => {
-  // flatfs now works like go-flatfs
-})
+
+// flatfs now works like go-flatfs
+const flatfs = await ShardingStore.createOrOpen(fs, new NextToLast(2))
 ```
 
 ## Install
 
-```
+```sh
 $ npm install interface-datastore
 ```
 
@@ -67,22 +67,21 @@ const MemoryStore = require('interface-datastore').MemoryDatastore
 const MountStore = require('datastore-core').MountDatastore
 const Key = require('interface-datastore').Key
 
-const store = new MountStore({prefix: new Key('/a'), datastore: new MemoryStore()})
+const store = new MountStore({ prefix: new Key('/a'), datastore: new MemoryStore() })
 ```
 
-### Testsuite
+### Test suite
 
 Available under [`src/tests.js`](src/tests.js)
 
 ```js
 describe('mystore', () => {
   require('interface-datastore/src/tests')({
-    setup (callback) {
-      callback(null, instanceOfMyStore)
+    async setup () {
+      return instanceOfMyStore
     },
-    teardown (callback) {
+    async teardown () {
       // cleanup resources
-      callback()
     }
   })
 })
@@ -99,12 +98,12 @@ const a = new Key('a')
 const b = new Key(new Buffer('hello'))
 ```
 
-The key scheme is inspired by file systems and Google App Engine key model. Keys are meant to be unique across a system. They are typical hierarchical, incorporating more and more specific namespaces. Thus keys can be deemed 'children' or 'ancestors' of other keys:
+The key scheme is inspired by file systems and Google App Engine key model. Keys are meant to be unique across a system. They are typically hierarchical, incorporating more and more specific namespaces. Thus keys can be deemed 'children' or 'ancestors' of other keys:
 
 - `new Key('/Comedy')`
 - `new Key('/Comedy/MontyPython')`
 
-Also, every namespace can be parametrized to embed relevant object information. For example, the Key `name` (most specific namespace) could include the object type:
+Also, every namespace can be parameterized to embed relevant object information. For example, the Key `name` (most specific namespace) could include the object type:
 
 - `new Key('/Comedy/MontyPython/Actor:JohnCleese')`
 - `new Key('/Comedy/MontyPython/Sketch:CheeseShop')`
@@ -117,90 +116,65 @@ Also, every namespace can be parametrized to embed relevant object information. 
 
 These methods will be present on every datastore. `Key` always means an instance of the above mentioned Key type. Every datastore is generic over the `Value` type, though currently all backing implementations are implemented only for [`Buffer`](https://nodejs.org/docs/latest/api/buffer.html).
 
-### `has(key, callback)`
+### `has(key)` -> `Promise<Boolean>`
 
 - `key: Key`
-- `callback: function(Error, bool)`
 
 Check for the existence of a given key
 
 ```js
-store.has(new Key('awesome'), (err, exists) => {
-  if (err) {
-    throw err
-  }
-  console.log('is it there', exists)
-})
+const exists = await store.has(new Key('awesome'))
+console.log('is it there', exists)
 ```
 
-### `put(key, value, callback)`
+### `put(key, value)` -> `Promise`
 
 - `key: Key`
 - `value: Value`
-- `callback: function(Error)`
 
 Store a value with the given key.
 
 ```js
-store.put(new Key('awesome'), new Buffer('datastores'), (err) => {
-  if (err) {
-    throw err
-  }
-  console.log('put content')
-})
+await store.put(new Key('awesome'), new Buffer('datastores'))
+console.log('put content')
 ```
 
-### `get(key, callback)`
+### `get(key)` -> `Promise<Value>`
 
 - `key: Key`
-- `callback: function(Error, Value)`
 
 Retrieve the value stored under the given key.
 
 ```js
-store.get(new Key('awesome'), (err, value) => {
-  if (err) {
-    throw err
-  }
-  console.log('got content: %s', value.toString())
-  // => got content: datastore
-})
+const value = await store.get(new Key('awesome'))
+console.log('got content: %s', value.toString())
+// => got content: datastore
 ```
 
-### `delete(key, callback)`
+### `delete(key)` -> `Promise`
 
 - `key: Key`
-- `callback: function(Error)`
 
 Delete the content stored under the given key.
 
 ```js
-store.delete(new Key('awesome'), (err) => {
-  if (err) {
-    throw err
-  }
-  console.log('deleted awesome content :(')
-})
+await store.delete(new Key('awesome'))
+console.log('deleted awesome content :(')
 ```
 
-### `query(query)`
+### `query(query)` -> `Iterable`
 
 - `query: Query` see below for possible values
-- Returns: `pull-stream source`
 
-Search the store for some values. Returns a [pull-stream](https://pull-stream.github.io/) with each item being a `Value`.
+Search the store for some values. Returns an [Iterable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) with each item being a `Value`.
 
 ```js
 // retrieve __all__ values from the store
-pull(
-  store.query({}),
-  pull.collect((err, list) => {
-    if (err) {
-      console.error(err)
-    }
-    console.log('ALL THE VALUES', list)
-  })
-)
+let list = []
+for await (const value of store.query({})) {
+  list.push(value)
+}
+console.log('ALL THE VALUES', list)
 ```
 
 #### `Query`
@@ -210,9 +184,9 @@ Object in the form with the following optional properties
 - `prefix: string` (optional) - only return values where the key starts with this prefix
 - `filters: Array<Filter<Value>>` (optional) - filter the results according to the these functions
 - `orders: Array<Order<Value>>` (optional) - order the results according to these functions
-- `limit: number` (optional) - only return this many records
-- `offset: number` (optional) - skip this many records at the beginning
-- `keysOnly: bool` (optional) - Only return keys, no values.
+- `limit: Number` (optional) - only return this many records
+- `offset: Number` (optional) - skip this many records at the beginning
+- `keysOnly: Boolean` (optional) - Only return keys, no values.
 
 ### `batch()`
 
@@ -225,13 +199,8 @@ for (let i = 0; i < 100; i++) {
   b.put(new Key(`hello${i}`), new Buffer(`hello world ${i}`))
 }
 
-b.commit((err) => {
-  if (err) {
-    throw err
-  }
-  console.log('put 100 values')
-})
-
+await b.commit()
+console.log('put 100 values')
 ```
 
 #### `put(key, value)`
@@ -247,21 +216,15 @@ Queue a put operation to the store.
 
 Queue a delete operation to the store.
 
-#### `commit(callback)`
-
-- `callback: function(Error)`
+#### `commit()` -> `Promise`
 
 Write all queued operations to the underyling store. The batch object should not be used after calling this.
 
-### `open(callback)`
-
-- `callback: function(Error)`
+### `open()` -> `Promise`
 
 Opens the datastore, this is only needed if the store was closed before, otherwise this is taken care of by the constructor.
 
-### `close(callback)`
-
-- `callback: function(Error)`
+### `close()` -> `Promise`
 
 Close the datastore, this should always be called to ensure resources are cleaned up.
 

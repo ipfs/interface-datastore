@@ -3,11 +3,7 @@
 
 /* :: import type {Batch, Query, QueryResult, Callback} from './' */
 
-const pull = require('pull-stream')
-const setImmediate = require('async/setImmediate')
-
-const asyncFilter = require('./utils').asyncFilter
-const asyncSort = require('./utils').asyncSort
+const { filter, sortAll, take, map } = require('./utils')
 const Key = require('./key')
 
 // Errors
@@ -20,42 +16,24 @@ class MemoryDatastore {
     this.data = {}
   }
 
-  open (callback /* : Callback<void> */) /* : void */ {
-    setImmediate(callback)
-  }
+  async open () /* : Promise */ {}
 
-  put (key /* : Key */, val /* : Buffer */, callback /* : Callback<void> */) /* : void */ {
+  async put (key /* : Key */, val /* : Buffer */) /* : Promise */ {
     this.data[key.toString()] = val
-
-    setImmediate(callback)
   }
 
-  get (key /* : Key */, callback /* : Callback<Buffer> */) /* : void */ {
-    this.has(key, (err, exists) => {
-      if (err) {
-        return callback(err)
-      }
-
-      if (!exists) {
-        return callback(Errors.notFoundError())
-      }
-
-      callback(null, this.data[key.toString()])
-    })
+  async get (key /* : Key */) /* : Promise<Buffer> */ {
+    const exists = await this.has(key)
+    if (!exists) throw Errors.notFoundError()
+    return this.data[key.toString()]
   }
 
-  has (key /* : Key */, callback /* : Callback<bool> */) /* : void */ {
-    setImmediate(() => {
-      callback(null, this.data[key.toString()] !== undefined)
-    })
+  async has (key /* : Key */) /* : Promise<Boolean> */ {
+    return this.data[key.toString()] !== undefined
   }
 
-  delete (key /* : Key */, callback /* : Callback<void> */) /* : void */ {
+  async delete (key /* : Key */) /* : Promise */ {
     delete this.data[key.toString()]
-
-    setImmediate(() => {
-      callback()
-    })
   }
 
   batch () /* : Batch<Buffer> */ {
@@ -69,65 +47,54 @@ class MemoryDatastore {
       delete (key /* : Key */) /* : void */ {
         dels.push(key)
       },
-      commit: (callback /* : Callback<void> */) /* : void */ => {
+      commit: async () /* : Promise */ => {
         puts.forEach(v => {
           this.data[v[0].toString()] = v[1]
         })
-
         puts = []
+
         dels.forEach(key => {
           delete this.data[key.toString()]
         })
         dels = []
-
-        setImmediate(callback)
       }
     }
   }
 
-  query (q /* : Query<Buffer> */) /* : QueryResult<Buffer> */ {
-    let tasks = [pull.keys(this.data), pull.map(k => ({
-      key: new Key(k),
-      value: this.data[k]
-    }))]
+  query (q /* : Query<Buffer> */) /* : Iterator */ {
+    let it = Object.entries(this.data)
 
-    let filters = []
+    it = map(it, entry => ({ key: new Key(entry[0]), value: entry[1] }))
 
     if (q.prefix != null) {
-      const prefix = q.prefix
-      filters.push((e, cb) => cb(null, e.key.toString().startsWith(prefix)))
+      it = filter(it, e => e.key.toString().startsWith(q.prefix))
     }
 
-    if (q.filters != null) {
-      filters = filters.concat(q.filters)
+    if (Array.isArray(q.filters)) {
+      it = q.filters.reduce((it, f) => filter(it, f), it)
     }
 
-    tasks = tasks.concat(filters.map(f => asyncFilter(f)))
-
-    if (q.orders != null) {
-      tasks = tasks.concat(q.orders.map(o => asyncSort(o)))
+    if (Array.isArray(q.orders)) {
+      it = q.orders.reduce((it, f) => sortAll(it, f), it)
     }
 
     if (q.offset != null) {
       let i = 0
-      // $FlowFixMe
-      tasks.push(pull.filter(() => i++ >= q.offset))
+      it = filter(it, () => i++ >= q.offset)
     }
 
     if (q.limit != null) {
-      tasks.push(pull.take(q.limit))
+      it = take(it, q.limit)
     }
 
     if (q.keysOnly === true) {
-      tasks.push(pull.map(e => ({ key: e.key })))
+      it = map(it, e => ({ key: e.key }))
     }
 
-    return pull.apply(null, tasks)
+    return it
   }
 
-  close (callback /* : Callback<void> */) /* : void */ {
-    setImmediate(callback)
-  }
+  async close () /* : Promise */ {}
 }
 
 module.exports = MemoryDatastore
