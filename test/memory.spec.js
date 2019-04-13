@@ -7,12 +7,10 @@ const MemoryDatastore = require('../src').MemoryDatastore
 describe('Memory', () => {
   describe('interface-datastore', () => {
     require('../src/tests')({
-      setup (callback) {
-        callback(null, new MemoryDatastore())
+      setup () {
+        return new MemoryDatastore()
       },
-      teardown (callback) {
-        callback()
-      }
+      teardown () {}
     })
   })
 })
