@@ -8,9 +8,9 @@ matrix:
 
 script:
   - npm run lint
+  - npm run build
   - npm run test
   - npm run coverage
-  - make test
 
 before_script:
   - export DISPLAY=:99.0
