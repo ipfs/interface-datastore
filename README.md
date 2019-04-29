@@ -15,7 +15,7 @@
 
 ## Lead Maintainer
 
-[Pedro Teixeira](https://github.com/pgte)
+[Alex Potsides](https://github.com/achingbrain)
 
 ## Table of Contents
 
