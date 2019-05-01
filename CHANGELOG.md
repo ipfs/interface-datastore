@@ -1,3 +1,13 @@
+<a name="0.7.0"></a>
+# [0.7.0](https://github.com/ipfs/interface-datastore/compare/v0.6.0...v0.7.0) (2019-05-01)
+
+
+### Features
+
+* refactor to async iterators ([#25](https://github.com/ipfs/interface-datastore/issues/25)) ([ab2f2b9](https://github.com/ipfs/interface-datastore/commit/ab2f2b9))
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/ipfs/interface-datastore/compare/v0.5.0...v0.6.0) (2018-10-24)
 
