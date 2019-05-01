@@ -2,7 +2,7 @@
   "name": "interface-datastore",
   "version": "0.6.0",
   "description": "datastore interface",
-  "leadMaintainer": "Pedro Teixeira <i@pgte.me>",
+  "leadMaintainer": "Alex Potsides <alex.potsides@protocol.ai>",
   "main": "src/index.js",
   "scripts": {
     "lint": "aegir lint",
