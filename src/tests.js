@@ -1,4 +1,3 @@
-/* @flow */
 /* eslint-env mocha */
 /* eslint max-nested-callbacks: ["error", 8] */
 'use strict'
@@ -10,15 +9,7 @@ const crypto = require('crypto')
 
 const Key = require('../src').Key
 
-/* ::
-import type {Datastore, Callback} from '../src'
-type Test = {
-  setup: (cb: Callback<Datastore<Buffer>>) => void;
-  teardown: (cb: Callback<void>) => void;
-}
-*/
-
-module.exports = (test/* : Test */) => {
+module.exports = (test) => {
   const cleanup = async store => {
     await store.close()
     await test.teardown()

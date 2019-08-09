@@ -1,7 +1,4 @@
-/* @flow */
 'use strict'
-
-/* :: import type {Batch, Query, QueryResult, Callback} from './' */
 
 const { filter, sortAll, take, map } = require('./utils')
 const Key = require('./key')
@@ -10,44 +7,42 @@ const Key = require('./key')
 const Errors = require('./errors')
 
 class MemoryDatastore {
-  /* :: data: {[key: string]: Buffer} */
-
   constructor () {
     this.data = {}
   }
 
-  async open () /* : Promise */ {}
+  async open () {}
 
-  async put (key /* : Key */, val /* : Buffer */) /* : Promise */ { // eslint-disable-line require-await
+  async put (key, val) { // eslint-disable-line require-await
     this.data[key.toString()] = val
   }
 
-  async get (key /* : Key */) /* : Promise<Buffer> */ {
+  async get (key) {
     const exists = await this.has(key)
     if (!exists) throw Errors.notFoundError()
     return this.data[key.toString()]
   }
 
-  async has (key /* : Key */) /* : Promise<Boolean> */ { // eslint-disable-line require-await
+  async has (key) { // eslint-disable-line require-await
     return this.data[key.toString()] !== undefined
   }
 
-  async delete (key /* : Key */) /* : Promise */ { // eslint-disable-line require-await
+  async delete (key) { // eslint-disable-line require-await
     delete this.data[key.toString()]
   }
 
-  batch () /* : Batch<Buffer> */ {
+  batch () {
     let puts = []
     let dels = []
 
     return {
-      put (key /* : Key */, value /* : Buffer */) /* : void */ {
+      put (key, value) {
         puts.push([key, value])
       },
-      delete (key /* : Key */) /* : void */ {
+      delete (key) {
         dels.push(key)
       },
-      commit: async () /* : Promise */ => { // eslint-disable-line require-await
+      commit: async () => { // eslint-disable-line require-await
         puts.forEach(v => {
           this.data[v[0].toString()] = v[1]
         })
@@ -61,7 +56,7 @@ class MemoryDatastore {
     }
   }
 
-  query (q /* : Query<Buffer> */) /* : Iterator */ {
+  query (q) {
     let it = Object.entries(this.data)
 
     it = map(it, entry => ({ key: new Key(entry[0]), value: entry[1] }))
@@ -94,7 +89,7 @@ class MemoryDatastore {
     return it
   }
 
-  async close () /* : Promise */ {}
+  async close () {}
 }
 
 module.exports = MemoryDatastore
