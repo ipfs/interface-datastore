@@ -139,4 +139,22 @@ describe('Key', () => {
     checkLess('/a/b/c/d/e/f/g/h', '/b')
     checkLess(pathSep, '/a')
   })
+
+  it('concat', () => {
+    const originalKey = new Key('/a/b/c')
+
+    const concattedKey = originalKey.concat(new Key('/d/e/f'))
+    expect(concattedKey.toString()).to.equal('/a/b/c/d/e/f')
+
+    // Original key is not changed
+    expect(originalKey.toString()).to.equal('/a/b/c')
+
+    const concattedMultipleKeys = originalKey.concat(new Key('/d/e'), new Key('/f/g'))
+    expect(concattedMultipleKeys.toString()).to.equal('/a/b/c/d/e/f/g')
+
+    // New instance of Key is always created
+    expect(originalKey.concat()).to.not.equal(originalKey)
+    // but has the same value
+    expect(originalKey.concat().toString()).to.equal('/a/b/c')
+  })
 })

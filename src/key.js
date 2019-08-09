@@ -346,6 +346,16 @@ class Key {
   isTopLevel () /* : bool */ {
     return this.list().length === 1
   }
+
+  /**
+   * Concats one or more Keys into one new Key.
+   *
+   * @param {Array<Key>} keys
+   * @returns {Key}
+   */
+  concat (...keys /* : Array<Key> */) /* : Key */ {
+    return Key.withNamespaces([...this.namespaces(), ...flatten(keys.map(key => key.namespaces()))])
+  }
 }
 
 /**
@@ -371,6 +381,15 @@ function namespaceType (ns /* : string */) /* : string */ {
 function namespaceValue (ns /* : string */) /* : string */ {
   const parts = ns.split(':')
   return parts[parts.length - 1]
+}
+
+/**
+ * Flatten array of arrays (only one level)
+ * @param {Array<Array>} arr
+ * @return {*}
+ */
+function flatten (arr) {
+  return [].concat(...arr)
 }
 
 const _Key = withIs(Key, { className: 'Key', symbolName: '@ipfs/interface-datastore/key' })
