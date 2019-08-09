@@ -1,3 +1,13 @@
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/ipfs/interface-datastore/compare/v0.7.0...v0.8.0) (2019-08-09)
+
+
+### Features
+
+* concat operation on Key ([8c9226c](https://github.com/ipfs/interface-datastore/commit/8c9226c))
+
+
+
 <a name="0.7.0"></a>
 # [0.7.0](https://github.com/ipfs/interface-datastore/compare/v0.6.0...v0.7.0) (2019-05-01)
 
