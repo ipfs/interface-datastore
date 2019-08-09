@@ -1,6 +1,6 @@
 {
   "name": "interface-datastore",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "datastore interface",
   "leadMaintainer": "Alex Potsides <alex.potsides@protocol.ai>",
   "main": "src/index.js",
@@ -47,6 +47,7 @@
     "npm": ">=6.0.0"
   },
   "contributors": [
+    "Adam Uhlir <adam@uhlir.dev>",
     "Alan Shaw <alan.shaw@protocol.ai>",
     "David Dias <daviddias.p@gmail.com>",
     "Erin Dachtler <download333@gmail.com>",
