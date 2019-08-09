@@ -18,7 +18,7 @@ class MemoryDatastore {
 
   async open () /* : Promise */ {}
 
-  async put (key /* : Key */, val /* : Buffer */) /* : Promise */ {
+  async put (key /* : Key */, val /* : Buffer */) /* : Promise */ { // eslint-disable-line require-await
     this.data[key.toString()] = val
   }
 
@@ -28,11 +28,11 @@ class MemoryDatastore {
     return this.data[key.toString()]
   }
 
-  async has (key /* : Key */) /* : Promise<Boolean> */ {
+  async has (key /* : Key */) /* : Promise<Boolean> */ { // eslint-disable-line require-await
     return this.data[key.toString()] !== undefined
   }
 
-  async delete (key /* : Key */) /* : Promise */ {
+  async delete (key /* : Key */) /* : Promise */ { // eslint-disable-line require-await
     delete this.data[key.toString()]
   }
 
@@ -47,7 +47,7 @@ class MemoryDatastore {
       delete (key /* : Key */) /* : void */ {
         dels.push(key)
       },
-      commit: async () /* : Promise */ => {
+      commit: async () /* : Promise */ => { // eslint-disable-line require-await
         puts.forEach(v => {
           this.data[v[0].toString()] = v[1]
         })

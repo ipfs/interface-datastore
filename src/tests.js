@@ -179,10 +179,10 @@ module.exports = (test/* : Test */) => {
     const world = { key: new Key('/z/2world'), value: Buffer.from('2') }
     const hello2 = { key: new Key('/z/3hello2'), value: Buffer.from('3') }
 
-    const filter1 = async entry => !entry.key.toString().endsWith('hello')
+    const filter1 = entry => !entry.key.toString().endsWith('hello')
     const filter2 = entry => entry.key.toString().endsWith('hello2')
 
-    const order1 = async res => {
+    const order1 = res => {
       return res.sort((a, b) => {
         if (a.value.toString() < b.value.toString()) {
           return -1

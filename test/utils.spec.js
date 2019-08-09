@@ -21,7 +21,7 @@ describe('utils', () => {
 
   it('filter - async', async () => {
     const data = [1, 2, 3, 4]
-    const filterer = async val => val % 2 === 0
+    const filterer = val => val % 2 === 0
     const res = []
     for await (const val of utils.filter(data, filterer)) {
       res.push(val)
@@ -31,7 +31,7 @@ describe('utils', () => {
 
   it('sortAll', async () => {
     const data = [1, 2, 3, 4]
-    const sorter = async vals => vals.reverse()
+    const sorter = vals => vals.reverse()
     const res = []
     for await (const val of utils.sortAll(data, sorter)) {
       res.push(val)
@@ -41,7 +41,7 @@ describe('utils', () => {
 
   it('sortAll - fail', async () => {
     const data = [1, 2, 3, 4]
-    const sorter = async vals => { throw new Error('fail') }
+    const sorter = vals => { throw new Error('fail') }
     const res = []
 
     try {
