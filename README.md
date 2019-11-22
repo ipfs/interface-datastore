@@ -127,15 +127,19 @@ const exists = await store.has(new Key('awesome'))
 console.log('is it there', exists)
 ```
 
-### `put(key, value)` -> `Promise`
+### `put(key, value, options)` -> `Promise`
 
 - `key: Key`
 - `value: Value`
+- `options: Object` (optional) - An object that may contain the following keys:
+  - `nonatomic: boolean` - If true, `Value` should be stored nonatomically if supported by the implementation (defaults to `false`)
 
 Store a value with the given key.
 
 ```js
-await store.put(new Key('awesome'), new Buffer('datastores'))
+await store.put(new Key('awesome'), new Buffer('datastores'), {
+  nonatomic: true
+})
 console.log('put content')
 ```
 
@@ -203,10 +207,12 @@ await b.commit()
 console.log('put 100 values')
 ```
 
-#### `put(key, value)`
+#### `put(key, value, options)`
 
 - `key: Key`
 - `value: Value`
+- `options: Object` (optional) - An object that may contain the following keys:
+  - `nonatomic: boolean` - If true, `Value` should be stored nonatomically if supported by the implementation (defaults to `false`)
 
 Queue a put operation to the store.
 
