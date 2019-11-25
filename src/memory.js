@@ -13,7 +13,7 @@ class MemoryDatastore {
 
   async open () {}
 
-  async put (key, val) { // eslint-disable-line require-await
+  async put (key, val, options) { // eslint-disable-line require-await
     this.data[key.toString()] = val
   }
 
@@ -31,7 +31,7 @@ class MemoryDatastore {
     delete this.data[key.toString()]
   }
 
-  batch () {
+  batch (options) {
     let puts = []
     let dels = []
 

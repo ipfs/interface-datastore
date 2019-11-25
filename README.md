@@ -192,7 +192,10 @@ Object in the form with the following optional properties
 - `offset: Number` (optional) - skip this many records at the beginning
 - `keysOnly: Boolean` (optional) - Only return keys, no values.
 
-### `batch()`
+### `batch(options)`
+
+- `options: Object` (optional) - An object that may contain the following keys:
+  - `nonatomic: boolean` - If true, `Value` should be stored nonatomically if supported by the implementation (defaults to `false`)
 
 This will return an object with which you can chain multiple operations together, with them only being executed on calling `commit`.
 
@@ -207,12 +210,10 @@ await b.commit()
 console.log('put 100 values')
 ```
 
-#### `put(key, value, options)`
+#### `put(key, value)`
 
 - `key: Key`
 - `value: Value`
-- `options: Object` (optional) - An object that may contain the following keys:
-  - `nonatomic: boolean` - If true, `Value` should be stored nonatomically if supported by the implementation (defaults to `false`)
 
 Queue a put operation to the store.
 
