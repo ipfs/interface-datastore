@@ -58,6 +58,12 @@ const flatfs = await ShardingStore.createOrOpen(fs, new NextToLast(2))
 $ npm install interface-datastore
 ```
 
+The type definitions for this package are available on http://definitelytyped.org/. To install just use:
+
+```sh
+$ npm install -D @types/interface-datastore
+```
+
 ## Usage
 
 ### Wrapping Stores
