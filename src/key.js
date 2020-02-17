@@ -40,7 +40,7 @@ class Key {
     }
 
     if (this._buf.length === 0 || this._buf[0] !== pathSep) {
-      throw new Error(`Invalid key: ${this.toString()}`)
+      throw new Error('Invalid key')
     }
   }
 
