@@ -1,3 +1,13 @@
+<a name="0.8.1"></a>
+## [0.8.1](https://github.com/ipfs/interface-datastore/compare/v0.8.0...v0.8.1) (2020-02-17)
+
+
+### Bug Fixes
+
+* do not stringify potentially invalid characters ([#34](https://github.com/ipfs/interface-datastore/issues/34)) ([0034ede](https://github.com/ipfs/interface-datastore/commit/0034ede))
+
+
+
 <a name="0.8.0"></a>
 # [0.8.0](https://github.com/ipfs/interface-datastore/compare/v0.7.0...v0.8.0) (2019-08-09)
 
