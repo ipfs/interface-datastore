@@ -1,7 +1,5 @@
 'use strict'
 
-const path = require('path')
-const os = require('os')
 const uuid = require('nanoid')
 
 exports.filter = (iterable, filterer) => {
@@ -51,5 +49,5 @@ exports.replaceStartWith = function (s, r) {
 }
 
 exports.tmpdir = () => {
-  return path.join(os.tmpdir(), uuid())
+  return `datastore_${uuid()}`
 }

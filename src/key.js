@@ -1,6 +1,7 @@
 'use strict'
 
-const uuid = require('uuid/v4')
+const { Buffer } = require('buffer')
+const uuid = require('nanoid')
 const withIs = require('class-is')
 
 const pathSepS = '/'
