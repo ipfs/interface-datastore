@@ -33,14 +33,17 @@
   },
   "homepage": "https://github.com/ipfs/interface-datastore#readme",
   "devDependencies": {
-    "aegir": "^20.0.0",
+    "aegir": "^21.4.5",
     "chai": "^4.1.2",
     "dirty-chai": "^2.0.1"
   },
   "dependencies": {
+    "buffer": "^5.5.0",
     "class-is": "^1.1.0",
     "err-code": "^2.0.0",
-    "uuid": "^3.2.2"
+    "ipfs-utils": "^1.1.0",
+    "iso-random-stream": "^1.1.1",
+    "nanoid": "^2.1.11"
   },
   "engines": {
     "node": ">=8.0.0",

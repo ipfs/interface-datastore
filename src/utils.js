@@ -1,8 +1,6 @@
 'use strict'
 
-const path = require('path')
-const os = require('os')
-const uuid = require('uuid/v4')
+const tempdir = require('ipfs-utils/src/temp-dir')
 
 exports.filter = (iterable, filterer) => {
   return (async function * () {
@@ -50,6 +48,4 @@ exports.replaceStartWith = function (s, r) {
   return s.replace(matcher, '')
 }
 
-exports.tmpdir = () => {
-  return path.join(os.tmpdir(), uuid())
-}
+exports.tmpdir = tempdir

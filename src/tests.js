@@ -2,10 +2,11 @@
 /* eslint max-nested-callbacks: ["error", 8] */
 'use strict'
 
+const { Buffer } = require('buffer')
+const randomBytes = require('iso-random-stream/src/random')
 const chai = require('chai')
 chai.use(require('dirty-chai'))
 const expect = chai.expect
-const crypto = require('crypto')
 
 const Key = require('../src').Key
 
@@ -145,9 +146,9 @@ module.exports = (test) => {
       const b = store.batch()
       const count = 400
       for (let i = 0; i < count; i++) {
-        b.put(new Key(`/a/hello${i}`), crypto.randomBytes(32))
-        b.put(new Key(`/q/hello${i}`), crypto.randomBytes(64))
-        b.put(new Key(`/z/hello${i}`), crypto.randomBytes(128))
+        b.put(new Key(`/a/hello${i}`), randomBytes(32))
+        b.put(new Key(`/q/hello${i}`), randomBytes(64))
+        b.put(new Key(`/z/hello${i}`), randomBytes(128))
       }
 
       await b.commit()
