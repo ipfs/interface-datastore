@@ -1,3 +1,13 @@
+<a name="0.8.2"></a>
+## [0.8.2](https://github.com/ipfs/interface-datastore/compare/v0.8.1...v0.8.2) (2020-04-01)
+
+
+### Bug Fixes
+
+* remove node globals ([#35](https://github.com/ipfs/interface-datastore/issues/35)) ([a9130c0](https://github.com/ipfs/interface-datastore/commit/a9130c0))
+
+
+
 <a name="0.8.1"></a>
 ## [0.8.1](https://github.com/ipfs/interface-datastore/compare/v0.8.0...v0.8.1) (2020-02-17)
 
