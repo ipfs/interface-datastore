@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>interface-datastore 0.8.1 | Documentation</title>
+  <title>interface-datastore 0.8.2 | Documentation</title>
   <meta name='description' content='datastore interface'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
@@ -15,11 +15,14 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>interface-datastore</h3>
-          <div class='mb1'><code>0.8.1</code></div>
+          <div class='mb1'><code>0.8.2</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
             class='col12 block input'
+            spellcheck='false'
+            autocapitalize='off'
+            autocorrect='off'
             type='text' />
           <div id='toc'>
             <ul class='list-reset h5 py1-ul'>
@@ -241,10 +244,10 @@
 <p>You can then <code>require()</code> interface-datastore as normal:</p>
 <pre class='hljs'><span class="hljs-keyword">const</span> interfaceDatastore = <span class="hljs-built_in">require</span>(<span class="hljs-string">'interface-datastore'</span>)</pre>
 <h2>In the Browser</h2>
-<p>Interface-datastore should work in any ES2015 environment out of the box.</p>
+<p><code>interface-datastore</code> should work in any ECMAScript 2018 environment out of the box.</p>
 <p>Usage:</p>
 <pre class='hljs'><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"index.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></pre>
-<p>The portable versions of interface-datastore, including <code>index.js</code> and <code>index.min.js</code>, are included in the <code>/dist</code> folder. Interface-datastore can also be found on <a href="https://unpkg.com">unpkg.com</a> under</p>
+<p>The portable versions of <code>interface-datastore</code>, including <code>index.js</code> and <code>index.min.js</code>, are included in the <code>/dist</code> folder. <code>interface-datastore</code> can also be found on <a href="https://unpkg.com">unpkg.com</a> under</p>
 <ul>
 <li><a href="https://unpkg.com/interface-datastore/dist/index.min.js">https://unpkg.com/interface-datastore/dist/index.min.js</a></li>
 <li><a href="https://unpkg.com/interface-datastore/dist/index.js">https://unpkg.com/interface-datastore/dist/index.js</a></li>
@@ -265,7 +268,7 @@
     </h3>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L26-L357'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L27-L358'>
       <span>src/key.js</span>
       </a>
     
@@ -331,6 +334,8 @@ include the object type:</li>
   
 
   
+
+  
     <div class='py1 quiet mt1 prose-big'>Static Members</div>
     <div class="clearfix">
   
@@ -348,7 +353,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L84-L86'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L85-L87'>
       <span>src/key.js</span>
       </a>
     
@@ -398,6 +403,8 @@ include the object type:</li>
   
 
   
+
+  
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
@@ -432,7 +439,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L98-L100'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L99-L101'>
       <span>src/key.js</span>
       </a>
     
@@ -464,6 +471,8 @@ include the object type:</li>
 
       
     
+  
+
   
 
   
@@ -511,7 +520,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L53-L55'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L54-L56'>
       <span>src/key.js</span>
       </a>
     
@@ -570,6 +579,8 @@ include the object type:</li>
   
 
   
+
+  
 </section>
 
       </div>
@@ -589,7 +600,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L62-L64'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L63-L65'>
       <span>src/key.js</span>
       </a>
     
@@ -634,6 +645,8 @@ include the object type:</li>
   
 
   
+
+  
 </section>
 
       </div>
@@ -653,7 +666,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L69-L71'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L70-L72'>
       <span>src/key.js</span>
       </a>
     
@@ -697,6 +710,8 @@ include the object type:</li>
   
 
   
+
+  
 </section>
 
       </div>
@@ -716,7 +731,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L107-L120'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L108-L121'>
       <span>src/key.js</span>
       </a>
     
@@ -761,6 +776,8 @@ include the object type:</li>
   
 
   
+
+  
 </section>
 
       </div>
@@ -780,7 +797,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L128-L148'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L129-L149'>
       <span>src/key.js</span>
       </a>
     
@@ -838,6 +855,8 @@ include the object type:</li>
   
 
   
+
+  
 </section>
 
       </div>
@@ -857,7 +876,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L159-L161'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L160-L162'>
       <span>src/key.js</span>
       </a>
     
@@ -889,6 +908,8 @@ include the object type:</li>
 
       
     
+  
+
   
 
   
@@ -928,7 +949,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L168-L170'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L169-L171'>
       <span>src/key.js</span>
       </a>
     
@@ -973,6 +994,8 @@ include the object type:</li>
   
 
   
+
+  
 </section>
 
       </div>
@@ -992,7 +1015,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L181-L184'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L182-L185'>
       <span>src/key.js</span>
       </a>
     
@@ -1024,6 +1047,8 @@ include the object type:</li>
 
       
     
+  
+
   
 
   
@@ -1063,7 +1088,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L196-L198'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L197-L199'>
       <span>src/key.js</span>
       </a>
     
@@ -1095,6 +1120,8 @@ include the object type:</li>
 
       
     
+  
+
   
 
   
@@ -1134,7 +1161,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L210-L212'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L211-L213'>
       <span>src/key.js</span>
       </a>
     
@@ -1166,6 +1193,8 @@ include the object type:</li>
 
       
     
+  
+
   
 
   
@@ -1205,7 +1234,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L223-L225'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L224-L226'>
       <span>src/key.js</span>
       </a>
     
@@ -1237,6 +1266,8 @@ include the object type:</li>
 
       
     
+  
+
   
 
   
@@ -1276,7 +1307,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L237-L239'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L238-L240'>
       <span>src/key.js</span>
       </a>
     
@@ -1326,6 +1357,8 @@ include the object type:</li>
   
 
   
+
+  
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
@@ -1360,7 +1393,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L251-L258'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L252-L259'>
       <span>src/key.js</span>
       </a>
     
@@ -1392,6 +1425,8 @@ include the object type:</li>
 
       
     
+  
+
   
 
   
@@ -1431,7 +1466,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L270-L277'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L271-L278'>
       <span>src/key.js</span>
       </a>
     
@@ -1463,6 +1498,8 @@ include the object type:</li>
 
       
     
+  
+
   
 
   
@@ -1502,7 +1539,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L290-L298'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L291-L299'>
       <span>src/key.js</span>
       </a>
     
@@ -1552,6 +1589,8 @@ include the object type:</li>
   
 
   
+
+  
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
@@ -1586,7 +1625,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L311-L317'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L312-L318'>
       <span>src/key.js</span>
       </a>
     
@@ -1636,6 +1675,8 @@ include the object type:</li>
   
 
   
+
+  
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
@@ -1670,7 +1711,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L330-L336'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L331-L337'>
       <span>src/key.js</span>
       </a>
     
@@ -1720,6 +1761,8 @@ include the object type:</li>
   
 
   
+
+  
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
@@ -1754,7 +1797,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L344-L346'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L345-L347'>
       <span>src/key.js</span>
       </a>
     
@@ -1799,6 +1842,8 @@ include the object type:</li>
   
 
   
+
+  
 </section>
 
       </div>
@@ -1818,7 +1863,7 @@ include the object type:</li>
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L354-L356'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L355-L357'>
       <span>src/key.js</span>
       </a>
     
@@ -1876,6 +1921,8 @@ include the object type:</li>
   
 
   
+
+  
 </section>
 
       </div>
@@ -1903,7 +1950,7 @@ include the object type:</li>
     </h3>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L365-L371'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L366-L372'>
       <span>src/key.js</span>
       </a>
     
@@ -1961,6 +2008,8 @@ include the object type:</li>
   
 
   
+
+  
 </section>
 
           
@@ -1976,7 +2025,7 @@ include the object type:</li>
     </h3>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L379-L382'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L380-L383'>
       <span>src/key.js</span>
       </a>
     
@@ -2034,6 +2083,8 @@ include the object type:</li>
   
 
   
+
+  
 </section>
 
           
@@ -2049,7 +2100,7 @@ include the object type:</li>
     </h3>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/be967cd9acac28d72213b15dde01e0d906c639dc/src/key.js#L389-L391'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/interface-datastore/blob/f4d15b88594a67c9cf4dc9838452e19786896948/src/key.js#L390-L392'>
       <span>src/key.js</span>
       </a>
     
@@ -2094,6 +2145,8 @@ include the object type:</li>
 
       
     
+  
+
   
 
   
