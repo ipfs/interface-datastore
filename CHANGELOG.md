@@ -1,3 +1,8 @@
+<a name="0.8.3"></a>
+## [0.8.3](https://github.com/ipfs/interface-datastore/compare/v0.8.2...v0.8.3) (2020-04-07)
+
+
+
 <a name="0.8.2"></a>
 ## [0.8.2](https://github.com/ipfs/interface-datastore/compare/v0.8.1...v0.8.2) (2020-04-01)
 
