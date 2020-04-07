@@ -1,7 +1,7 @@
 'use strict'
 
 const { Buffer } = require('buffer')
-const uuid = require('nanoid')
+const { nanoid } = require('nanoid')
 const withIs = require('class-is')
 
 const pathSepS = '/'
@@ -97,7 +97,7 @@ class Key {
    *
    */
   static random () {
-    return new _Key(uuid().replace(/-/g, ''))
+    return new _Key(nanoid().replace(/-/g, ''))
   }
 
   /**

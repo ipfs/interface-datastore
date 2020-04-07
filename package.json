@@ -41,9 +41,9 @@
     "buffer": "^5.5.0",
     "class-is": "^1.1.0",
     "err-code": "^2.0.0",
-    "ipfs-utils": "^1.1.0",
+    "ipfs-utils": "^1.2.3",
     "iso-random-stream": "^1.1.1",
-    "nanoid": "^2.1.11"
+    "nanoid": "^3.0.2"
   },
   "engines": {
     "node": ">=8.0.0",
