@@ -6,6 +6,12 @@ const Key = require('./key')
 // Errors
 const Errors = require('./errors')
 
+function throwIfAborted (signal) {
+  if (signal && signal.aborted) {
+    throw Error.abortedError()
+  }
+}
+
 class MemoryDatastore {
   constructor () {
     this.data = {}
@@ -17,10 +23,29 @@ class MemoryDatastore {
     this.data[key.toString()] = val
   }
 
+  async * putMany (source, options = {}) {
+    throwIfAborted(options.signal)
+
+    for await (const { key, value } of source) {
+      throwIfAborted(options.signal)
+      await this.put(key, value)
+      yield { key, value }
+    }
+  }
+
   async get (key) {
     const exists = await this.has(key)
     if (!exists) throw Errors.notFoundError()
     return this.data[key.toString()]
+  }
+
+  async * getMany (source, options = {}) {
+    throwIfAborted(options.signal)
+
+    for await (const key of source) {
+      throwIfAborted(options.signal)
+      yield this.get(key)
+    }
   }
 
   async has (key) { // eslint-disable-line require-await
@@ -31,26 +56,33 @@ class MemoryDatastore {
     delete this.data[key.toString()]
   }
 
+  async * deleteMany (source, options = {}) {
+    throwIfAborted(options.signal)
+
+    for await (const key of source) {
+      throwIfAborted(options.signal)
+      await this.delete(key)
+      yield key
+    }
+  }
+
   batch () {
     let puts = []
     let dels = []
 
+    const self = this
+
     return {
       put (key, value) {
-        puts.push([key, value])
+        puts.push({ key, value })
       },
       delete (key) {
         dels.push(key)
       },
-      commit: async () => { // eslint-disable-line require-await
-        puts.forEach(v => {
-          this.data[v[0].toString()] = v[1]
-        })
+      async * commit (options) { // eslint-disable-line require-await
+        yield * self.putMany(puts, options)
         puts = []
-
-        dels.forEach(key => {
-          delete this.data[key.toString()]
-        })
+        yield * self.deleteMany(dels, options)
         dels = []
       }
     }

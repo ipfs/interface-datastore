@@ -1,4 +1,4 @@
-# interface-datastore
+# interface-datastore <!-- omit in toc -->
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
 [![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
@@ -13,16 +13,52 @@
 
 > Implementation of the [datastore](https://github.com/ipfs/go-datastore) interface in JavaScript
 
-## Lead Maintainer
+## Lead Maintainer <!-- omit in toc -->
 
 [Alex Potsides](https://github.com/achingbrain)
 
-## Table of Contents
+## Table of Contents <!-- omit in toc -->
 
 - [Implementations](#implementations)
 - [Install](#install)
 - [Usage](#usage)
-- [Api](#api)
+  - [Wrapping Stores](#wrapping-stores)
+  - [Test suite](#test-suite)
+  - [Keys](#keys)
+- [API](#api)
+  - [`has(key, [options])` -> `Promise<Boolean>`](#haskey-options---promiseboolean)
+    - [Arguments](#arguments)
+    - [Example](#example)
+  - [`put(key, value, [options])` -> `Promise`](#putkey-value-options---promise)
+    - [Arguments](#arguments-1)
+    - [Example](#example-1)
+  - [`putMany(source, [options])` -> `AsyncIterator<{ key: Key, value: Buffer }>`](#putmanysource-options---asynciterator-key-key-value-buffer-)
+    - [Arguments](#arguments-2)
+    - [Example](#example-2)
+  - [`get(key, [options])` -> `Promise<Buffer>`](#getkey-options---promisebuffer)
+    - [Arguments](#arguments-3)
+    - [Example](#example-3)
+  - [`getMany(source, [options])` -> `AsyncIterator<Buffer>`](#getmanysource-options---asynciteratorbuffer)
+    - [Arguments](#arguments-4)
+    - [Example](#example-4)
+  - [`delete(key, [options])` -> `Promise`](#deletekey-options---promise)
+    - [Arguments](#arguments-5)
+    - [Example](#example-5)
+  - [`deleteMany(source, [options])` -> `AsyncIterator<Key>`](#deletemanysource-options---asynciteratorkey)
+    - [Arguments](#arguments-6)
+    - [Example](#example-6)
+  - [`query(query, [options])` -> `AsyncIterable<Buffer>`](#queryquery-options---asynciterablebuffer)
+    - [Arguments](#arguments-7)
+    - [Example](#example-7)
+  - [`batch()`](#batch)
+    - [Example](#example-8)
+    - [`put(key, value)`](#putkey-value)
+    - [`delete(key)`](#deletekey)
+    - [`commit([options])` -> `AsyncIterator<?>`](#commitoptions---asynciterator)
+    - [Arguments](#arguments-8)
+    - [Example](#example-9)
+  - [`open()` -> `Promise`](#open---promise)
+  - [`close()` -> `Promise`](#close---promise)
 - [Contribute](#contribute)
 - [License](#license)
 
@@ -93,7 +129,26 @@ describe('mystore', () => {
 })
 ```
 
-## API
+### Aborting requests
+
+Most API methods accept an [AbortSignal][] as part of an options object.  Implementations may listen for an `abort` event emitted by this object, or test the `signal.aborted` property. When received implementations should tear down any long-lived requests or resources created.
+
+### Concurrency
+
+The streaming `(put|get|delete)Many` methods are intended to be used with modules such as [it-parallel-batch](https://www.npmjs.com/package/it-parallel-batch) to allow calling code to control levels of parallelisation.  The batching method ensures results are returned in the correct order, but interface implementations should be thread safe.
+
+```js
+const batch = require('it-parallel-batch')
+const source = [{
+  key: ..,
+  value: ..
+}]
+
+// put values into the datastore concurrently, max 10 at a time
+for await (const { key, data } of batch(store.putMany(source), 10)) {
+  console.info(`Put ${key}`)
+}
+```
 
 ### Keys
 
@@ -101,7 +156,7 @@ To allow a better abstraction on how to address values, there is a `Key` class w
 
 ```js
 const a = new Key('a')
-const b = new Key(new Buffer('hello'))
+const b = new Key(Buffer.from('hello'))
 ```
 
 The key scheme is inspired by file systems and Google App Engine key model. Keys are meant to be unique across a system. They are typically hierarchical, incorporating more and more specific namespaces. Thus keys can be deemed 'children' or 'ancestors' of other keys:
@@ -115,64 +170,177 @@ Also, every namespace can be parameterized to embed relevant object information.
 - `new Key('/Comedy/MontyPython/Sketch:CheeseShop')`
 - `new Key('/Comedy/MontyPython/Sketch:CheeseShop/Character:Mousebender')`
 
+## API
 
-### Methods
+Implementations of this interface should make the following methods available:
 
-> The exact types can be found in [`src/index.js`](src/index.js).
-
-These methods will be present on every datastore. `Key` always means an instance of the above mentioned Key type. Every datastore is generic over the `Value` type, though currently all backing implementations are implemented only for [`Buffer`](https://nodejs.org/docs/latest/api/buffer.html).
-
-### `has(key)` -> `Promise<Boolean>`
-
-- `key: Key`
+### `has(key, [options])` -> `Promise<Boolean>`
 
 Check for the existence of a given key
 
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| key | [Key][] | The key to check the existance of |
+| options | [Object][] | An options object, all properties are optional |
+| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
+
+#### Example
+
 ```js
 const exists = await store.has(new Key('awesome'))
-console.log('is it there', exists)
+
+if (exists) {
+  console.log('it is there')
+} else {
+  console.log('it is not there')
+}
 ```
 
-### `put(key, value)` -> `Promise`
-
-- `key: Key`
-- `value: Value`
+### `put(key, value, [options])` -> `Promise`
 
 Store a value with the given key.
 
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| key | [Key][] | The key to store the value under |
+| value | [Buffer][] | Value to store |
+| options | [Object][] | An options object, all properties are optional |
+| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
+
+#### Example
+
 ```js
-await store.put(new Key('awesome'), new Buffer('datastores'))
+await store.put([{ key: new Key('awesome'), value: Buffer.from('datastores') }])
 console.log('put content')
 ```
 
-### `get(key)` -> `Promise<Value>`
+### `putMany(source, [options])` -> `AsyncIterator<{ key: Key, value: Buffer }>`
 
-- `key: Key`
+Store many key-value pairs.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| source | [AsyncIterator][]<{ key: [Key][], value: [Buffer][] }> | The key to store the value under |
+| value | [Buffer][] | Value to store |
+| options | [Object][] | An options object, all properties are optional |
+| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
+
+#### Example
+
+```js
+const source = [{ key: new Key('awesome'), value: Buffer.from('datastores') }]
+
+for await (const { key, value } of store.putMany(source)) {
+  console.info(`put content for key ${key}`)
+}
+```
+
+### `get(key, [options])` -> `Promise<Buffer>`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| key | [Key][] | The key retrieve the value for |
+| options | [Object][] | An options object, all properties are optional |
+| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
+
+#### Example
 
 Retrieve the value stored under the given key.
 
 ```js
 const value = await store.get(new Key('awesome'))
-console.log('got content: %s', value.toString())
+console.log('got content: %s', value.toString('utf8'))
 // => got content: datastore
 ```
 
-### `delete(key)` -> `Promise`
+### `getMany(source, [options])` -> `AsyncIterator<Buffer>`
 
-- `key: Key`
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| source | [AsyncIterator][]<[Key][]> | One or more keys to retrieve values for |
+| options | [Object][] | An options object, all properties are optional |
+| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
+
+#### Example
+
+Retrieve a stream of values stored under the given keys.
+
+```js
+for await (const value of store.getMany([new Key('awesome')])) {
+  console.log('got content: %s', value.toString('utf8'))
+  // => got content: datastore
+}
+```
+
+### `delete(key, [options])` -> `Promise`
 
 Delete the content stored under the given key.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| key | [Key][] | The key to remove the value for |
+| options | [Object][] | An options object, all properties are optional |
+| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
+
+#### Example
 
 ```js
 await store.delete(new Key('awesome'))
 console.log('deleted awesome content :(')
 ```
 
-### `query(query)` -> `Iterable`
+### `deleteMany(source, [options])` -> `AsyncIterator<Key>`
 
-- `query: Query` see below for possible values
+Delete the content stored under the given keys.
 
-Search the store for some values. Returns an [Iterable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) with each item being a `Value`.
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| source | [AsyncIterator][]<[Key][]> | One or more keys to remove values for |
+| options | [Object][] | An options object, all properties are optional |
+| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
+
+#### Example
+
+```js
+const source = [new Key('awesome')]
+
+for await (const key of store.deleteMany(source)) {
+  console.log(`deleted content with key ${key}`)
+}
+```
+
+### `query(query, [options])` -> `AsyncIterable<Buffer>`
+
+Search the store for some values. Returns an [AsyncIterable][] with each item being a [Buffer][].
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| query | [Object][] | A query object, all properties are optional |
+| query.prefix | [String][] | Only return values where the key starts with this prefix |
+| query.filters | [Array][]<[Function][]([Buffer][]) -> [Boolean][]> | Filter the results according to the these functions |
+| query.orders | [Array][]<[Function][]([Array][]<[Buffer][]>) -> [Array][]<[Buffer][]>> | Order the results according to these functions |
+| query.limit | [Number][] | Only return this many records |
+| query.offset | [Number][] | Skip this many records at the beginning |
+| options | [Object][] | An options object, all properties are optional |
+| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
+
+#### Example
 
 ```js
 // retrieve __all__ values from the store
@@ -183,26 +351,17 @@ for await (const value of store.query({})) {
 console.log('ALL THE VALUES', list)
 ```
 
-#### `Query`
-
-Object in the form with the following optional properties
-
-- `prefix: string` (optional) - only return values where the key starts with this prefix
-- `filters: Array<Filter<Value>>` (optional) - filter the results according to the these functions
-- `orders: Array<Order<Value>>` (optional) - order the results according to these functions
-- `limit: Number` (optional) - only return this many records
-- `offset: Number` (optional) - skip this many records at the beginning
-- `keysOnly: Boolean` (optional) - Only return keys, no values.
-
 ### `batch()`
 
 This will return an object with which you can chain multiple operations together, with them only being executed on calling `commit`.
+
+#### Example
 
 ```js
 const b = store.batch()
 
 for (let i = 0; i < 100; i++) {
-  b.put(new Key(`hello${i}`), new Buffer(`hello world ${i}`))
+  b.put(new Key(`hello${i}`), Buffer.from(`hello world ${i}`))
 }
 
 await b.commit()
@@ -211,20 +370,48 @@ console.log('put 100 values')
 
 #### `put(key, value)`
 
-- `key: Key`
-- `value: Value`
-
 Queue a put operation to the store.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| key | [Key][] | The key to store the value under |
+| value | [Buffer][] | Value to store |
 
 #### `delete(key)`
 
-- `key: Key`
-
 Queue a delete operation to the store.
 
-#### `commit()` -> `Promise`
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| key | [Key][] | The key to remove the value for |
+
+#### `commit([options])` -> `AsyncIterator<?>`
 
 Write all queued operations to the underyling store. The batch object should not be used after calling this.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| options | [Object][] | An options object, all properties are optional |
+| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
+
+#### Example
+
+```js
+const batch = store.batch()
+
+batch.put(new Key('to-put'), Buffer.from('hello world'))
+batch.del(new Key('to-remove'))
+
+for await (const res of batch.commit()) {
+  if (res.key) {
+    console.info('put', res.key)
+  } else {
+    console.info('del', res)
+  }
+}
+```
 
 ### `open()` -> `Promise`
 
@@ -243,3 +430,16 @@ Small note: If editing the Readme, please conform to the [standard-readme](https
 ## License
 
 MIT 2017 © IPFS
+
+
+[Key]: #Keys
+[Object]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
+[Buffer]: https://nodejs.org/api/buffer.html
+[AbortSignal]: https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal
+[AsyncIterator]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/asyncIterator
+[AsyncIterable]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
+[String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
+[Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+[Function]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function
+[Number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
+[Boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean

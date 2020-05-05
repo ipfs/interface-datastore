@@ -68,7 +68,7 @@ class Key {
    * @returns {String}
    */
   get [Symbol.toStringTag] () {
-    return `[Key ${this.toString()}]`
+    return `Key(${this.toString()})`
   }
 
   /**
