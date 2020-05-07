@@ -7,6 +7,8 @@ const randomBytes = require('iso-random-stream/src/random')
 const chai = require('chai')
 chai.use(require('dirty-chai'))
 const expect = chai.expect
+const all = require('it-all')
+const drain = require('it-drain')
 
 const Key = require('../src').Key
 
@@ -34,15 +36,43 @@ module.exports = (test) => {
     it('parallel', async () => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push([new Key(`/z/key${i}`), Buffer.from(`data${i}`)])
+        data.push({ key: new Key(`/z/key${i}`), value: Buffer.from(`data${i}`) })
       }
 
-      await Promise.all(data.map(d => store.put(d[0], d[1])))
-      const res = await Promise.all(data.map(d => store.get(d[0])))
+      await Promise.all(data.map(d => store.put(d.key, d.value)))
 
-      res.forEach((res, i) => {
-        expect(res).to.be.eql(data[i][1])
-      })
+      const res = await all(store.getMany(data.map(d => d.key)))
+      expect(res).to.deep.equal(data.map(d => d.value))
+    })
+  })
+
+  describe('putMany', () => {
+    let store
+
+    beforeEach(async () => {
+      store = await test.setup()
+      if (!store) throw new Error('missing store')
+    })
+
+    afterEach(() => cleanup(store))
+
+    it('streaming', async () => {
+      const data = []
+      for (let i = 0; i < 100; i++) {
+        data.push({ key: new Key(`/z/key${i}`), value: Buffer.from(`data${i}`) })
+      }
+
+      let index = 0
+
+      for await (const { key, value } of store.putMany(data)) {
+        expect(data[index]).to.deep.equal({ key, value })
+        index++
+      }
+
+      expect(index).to.equal(data.length)
+
+      const res = await all(store.getMany(data.map(d => d.key)))
+      expect(res).to.deep.equal(data.map(d => d.value))
     })
   })
 
@@ -68,6 +98,40 @@ module.exports = (test) => {
 
       try {
         await store.get(k)
+      } catch (err) {
+        expect(err).to.have.property('code', 'ERR_NOT_FOUND')
+        return
+      }
+
+      throw new Error('expected error to be thrown')
+    })
+  })
+
+  describe('getMany', () => {
+    let store
+
+    beforeEach(async () => {
+      store = await test.setup()
+      if (!store) throw new Error('missing store')
+    })
+
+    afterEach(() => cleanup(store))
+
+    it('streaming', async () => {
+      const k = new Key('/z/one')
+      await store.put(k, Buffer.from('hello'))
+      const source = [k]
+
+      const res = await all(store.getMany(source))
+      expect(res).to.have.lengthOf(1)
+      expect(res[0]).to.be.eql(Buffer.from('hello'))
+    })
+
+    it('should throw error for missing key', async () => {
+      const k = new Key('/does/not/exist')
+
+      try {
+        await drain(store.getMany([k]))
       } catch (err) {
         expect(err).to.have.property('code', 'ERR_NOT_FOUND')
         return
@@ -105,12 +169,47 @@ module.exports = (test) => {
       await Promise.all(data.map(d => store.put(d[0], d[1])))
 
       const res0 = await Promise.all(data.map(d => store.has(d[0])))
-      res0.forEach((res, i) => expect(res).to.be.eql(true))
+      res0.forEach(res => expect(res).to.be.eql(true))
 
       await Promise.all(data.map(d => store.delete(d[0])))
 
       const res1 = await Promise.all(data.map(d => store.has(d[0])))
-      res1.forEach((res, i) => expect(res).to.be.eql(false))
+      res1.forEach(res => expect(res).to.be.eql(false))
+    })
+  })
+
+  describe('deleteMany', () => {
+    let store
+
+    beforeEach(async () => {
+      store = await test.setup()
+      if (!store) throw new Error('missing store')
+    })
+
+    afterEach(() => cleanup(store))
+
+    it('streaming', async () => {
+      const data = []
+      for (let i = 0; i < 100; i++) {
+        data.push({ key: new Key(`/a/key${i}`), value: Buffer.from(`data${i}`) })
+      }
+
+      await drain(store.putMany(data))
+
+      const res0 = await Promise.all(data.map(d => store.has(d.key)))
+      res0.forEach(res => expect(res).to.be.eql(true))
+
+      let index = 0
+
+      for await (const key of store.deleteMany(data.map(d => d.key))) {
+        expect(data[index].key).to.deep.equal(key)
+        index++
+      }
+
+      expect(index).to.equal(data.length)
+
+      const res1 = await Promise.all(data.map(d => store.has(d.key)))
+      res1.forEach(res => expect(res).to.be.eql(false))
     })
   })
 
@@ -133,7 +232,7 @@ module.exports = (test) => {
       b.put(new Key('/q/two'), Buffer.from('2'))
       b.put(new Key('/q/three'), Buffer.from('3'))
       b.delete(new Key('/z/old'))
-      await b.commit()
+      await drain(b.commit())
 
       const keys = ['/a/one', '/q/two', '/q/three', '/z/old']
       const res = await Promise.all(keys.map(k => store.has(new Key(k))))
@@ -151,7 +250,7 @@ module.exports = (test) => {
         b.put(new Key(`/z/hello${i}`), randomBytes(128))
       }
 
-      await b.commit()
+      await drain(b.commit())
 
       const total = async iterable => {
         let count = 0
@@ -217,18 +316,16 @@ module.exports = (test) => {
       b.put(world.key, world.value)
       b.put(hello2.key, hello2.value)
 
-      return b.commit()
+      return drain(b.commit())
     })
 
     after(() => cleanup(store))
 
-    tests.forEach(t => it(t[0], async () => {
-      let res = []
-      for await (const value of store.query(t[1])) res.push(value)
+    tests.forEach(([name, query, expected]) => it(name, async () => {
+      let res = await all(store.query(query))
 
-      const expected = t[2]
       if (Array.isArray(expected)) {
-        if (t[1].orders == null) {
+        if (query.orders == null) {
           expect(res).to.have.length(expected.length)
           const s = (a, b) => {
             if (a.key.toString() < b.key.toString()) {
@@ -250,7 +347,7 @@ module.exports = (test) => {
             }
           })
         } else {
-          expect(res).to.be.eql(t[2])
+          expect(res).to.be.eql(expected)
         }
       } else if (typeof expected === 'number') {
         expect(res).to.have.length(expected)
