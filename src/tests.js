@@ -232,7 +232,7 @@ module.exports = (test) => {
       b.put(new Key('/q/two'), Buffer.from('2'))
       b.put(new Key('/q/three'), Buffer.from('3'))
       b.delete(new Key('/z/old'))
-      await drain(b.commit())
+      await b.commit()
 
       const keys = ['/a/one', '/q/two', '/q/three', '/z/old']
       const res = await Promise.all(keys.map(k => store.has(new Key(k))))
@@ -250,7 +250,7 @@ module.exports = (test) => {
         b.put(new Key(`/z/hello${i}`), randomBytes(128))
       }
 
-      await drain(b.commit())
+      await b.commit()
 
       const total = async iterable => {
         let count = 0
@@ -316,7 +316,7 @@ module.exports = (test) => {
       b.put(world.key, world.value)
       b.put(hello2.key, hello2.value)
 
-      return drain(b.commit())
+      return b.commit()
     })
 
     after(() => cleanup(store))

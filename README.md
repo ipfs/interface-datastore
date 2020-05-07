@@ -20,6 +20,7 @@
 ## Table of Contents <!-- omit in toc -->
 
 - [Implementations](#implementations)
+- [Adapter](#adapter)
 - [Install](#install)
 - [Usage](#usage)
   - [Wrapping Stores](#wrapping-stores)
@@ -54,7 +55,7 @@
     - [Example](#example-8)
     - [`put(key, value)`](#putkey-value)
     - [`delete(key)`](#deletekey)
-    - [`commit([options])` -> `AsyncIterator<?>`](#commitoptions---asynciterator)
+    - [`commit([options])` -> `Promise<void>`](#commitoptions---promisevoid)
     - [Arguments](#arguments-8)
     - [Example](#example-9)
   - [`open()` -> `Promise`](#open---promise)
@@ -87,6 +88,32 @@ const fs = new FsStore('path/to/store')
 // flatfs now works like go-flatfs
 const flatfs = await ShardingStore.createOrOpen(fs, new NextToLast(2))
 ```
+
+## Adapter
+
+An adapter is made available to make implementing your own datastore easier:
+
+```javascript
+const { Adapter } = require('interface-datastore')
+
+class MyDatastore extends Adapter {
+  constructor () {
+    super()
+  }
+
+  async put (key, val) {
+    // your implementation here
+  }
+
+  async get (key) {
+    // your implementation here
+  }
+
+  // etc...
+}
+```
+
+See the [MemoryDatastore](./src/memory.js) for an example of how it is used.
 
 ## Install
 
@@ -385,7 +412,7 @@ Queue a delete operation to the store.
 | ---- | ---- | ----------- |
 | key | [Key][] | The key to remove the value for |
 
-#### `commit([options])` -> `AsyncIterator<?>`
+#### `commit([options])` -> `Promise<void>`
 
 Write all queued operations to the underyling store. The batch object should not be used after calling this.
 
@@ -404,13 +431,7 @@ const batch = store.batch()
 batch.put(new Key('to-put'), Buffer.from('hello world'))
 batch.del(new Key('to-remove'))
 
-for await (const res of batch.commit()) {
-  if (res.key) {
-    console.info('put', res.key)
-  } else {
-    console.info('del', res)
-  }
-}
+await batch.commit()
 ```
 
 ### `open()` -> `Promise`
