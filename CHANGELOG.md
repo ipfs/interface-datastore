@@ -1,3 +1,13 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/ipfs/interface-datastore/compare/v0.8.3...v1.0.0) (2020-05-07)
+
+
+### Features
+
+* add streaming methods and allow passing AbortSignals ([#36](https://github.com/ipfs/interface-datastore/issues/36)) ([6dace38](https://github.com/ipfs/interface-datastore/commit/6dace38))
+
+
+
 <a name="0.8.3"></a>
 ## [0.8.3](https://github.com/ipfs/interface-datastore/compare/v0.8.2...v0.8.3) (2020-04-07)
 
