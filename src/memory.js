@@ -17,14 +17,14 @@ class MemoryDatastore extends Adapter {
     this.data[key.toString()] = val
   }
 
-  async get (key) {
-    const exists = await this.has(key)
-    if (!exists) throw Errors.notFoundError()
-    return this.data[key.toString()]
-  }
+  async get (key) { // eslint-disable-line require-await
+    key = key.toString()
 
-  async has (key) { // eslint-disable-line require-await
-    return this.data[key.toString()] !== undefined
+    if (!this.data[key]) {
+      throw Errors.notFoundError()
+    }
+
+    return this.data[key]
   }
 
   async delete (key) { // eslint-disable-line require-await

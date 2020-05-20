@@ -27,37 +27,34 @@
   - [Test suite](#test-suite)
   - [Keys](#keys)
 - [API](#api)
-  - [`has(key, [options])` -> `Promise<Boolean>`](#haskey-options---promiseboolean)
+  - [`put(key, value, [options])` -> `Promise`](#putkey-value-options---promise)
     - [Arguments](#arguments)
     - [Example](#example)
-  - [`put(key, value, [options])` -> `Promise`](#putkey-value-options---promise)
+  - [`putMany(source, [options])` -> `AsyncIterator<{ key: Key, value: Buffer }>`](#putmanysource-options---asynciterator-key-key-value-buffer-)
     - [Arguments](#arguments-1)
     - [Example](#example-1)
-  - [`putMany(source, [options])` -> `AsyncIterator<{ key: Key, value: Buffer }>`](#putmanysource-options---asynciterator-key-key-value-buffer-)
+  - [`get(key, [options])` -> `Promise<Buffer>`](#getkey-options---promisebuffer)
     - [Arguments](#arguments-2)
     - [Example](#example-2)
-  - [`get(key, [options])` -> `Promise<Buffer>`](#getkey-options---promisebuffer)
+  - [`getMany(source, [options])` -> `AsyncIterator<Buffer>`](#getmanysource-options---asynciteratorbuffer)
     - [Arguments](#arguments-3)
     - [Example](#example-3)
-  - [`getMany(source, [options])` -> `AsyncIterator<Buffer>`](#getmanysource-options---asynciteratorbuffer)
+  - [`delete(key, [options])` -> `Promise`](#deletekey-options---promise)
     - [Arguments](#arguments-4)
     - [Example](#example-4)
-  - [`delete(key, [options])` -> `Promise`](#deletekey-options---promise)
+  - [`deleteMany(source, [options])` -> `AsyncIterator<Key>`](#deletemanysource-options---asynciteratorkey)
     - [Arguments](#arguments-5)
     - [Example](#example-5)
-  - [`deleteMany(source, [options])` -> `AsyncIterator<Key>`](#deletemanysource-options---asynciteratorkey)
+  - [`query(query, [options])` -> `AsyncIterable<Buffer>`](#queryquery-options---asynciterablebuffer)
     - [Arguments](#arguments-6)
     - [Example](#example-6)
-  - [`query(query, [options])` -> `AsyncIterable<Buffer>`](#queryquery-options---asynciterablebuffer)
-    - [Arguments](#arguments-7)
-    - [Example](#example-7)
   - [`batch()`](#batch)
-    - [Example](#example-8)
+    - [Example](#example-7)
     - [`put(key, value)`](#putkey-value)
     - [`delete(key)`](#deletekey)
     - [`commit([options])` -> `Promise<void>`](#commitoptions---promisevoid)
-    - [Arguments](#arguments-8)
-    - [Example](#example-9)
+    - [Arguments](#arguments-7)
+    - [Example](#example-8)
   - [`open()` -> `Promise`](#open---promise)
   - [`close()` -> `Promise`](#close---promise)
 - [Contribute](#contribute)
@@ -201,30 +198,6 @@ Also, every namespace can be parameterized to embed relevant object information.
 
 Implementations of this interface should make the following methods available:
 
-### `has(key, [options])` -> `Promise<Boolean>`
-
-Check for the existence of a given key
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| key | [Key][] | The key to check the existance of |
-| options | [Object][] | An options object, all properties are optional |
-| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
-
-#### Example
-
-```js
-const exists = await store.has(new Key('awesome'))
-
-if (exists) {
-  console.log('it is there')
-} else {
-  console.log('it is not there')
-}
-```
-
 ### `put(key, value, [options])` -> `Promise`
 
 Store a value with the given key.
@@ -270,6 +243,8 @@ for await (const { key, value } of store.putMany(source)) {
 
 ### `get(key, [options])` -> `Promise<Buffer>`
 
+Returns the stored value for the passed key.  If no value is present, a [notFoundError][] should be thrown.
+
 #### Arguments
 
 | Name | Type | Description |
@@ -289,6 +264,8 @@ console.log('got content: %s', value.toString('utf8'))
 ```
 
 ### `getMany(source, [options])` -> `AsyncIterator<Buffer>`
+
+Returns an async iterator that yields stored values for the keys in the passed `source` iterable in order.  If a value is not present, a [notFoundError][] should be thrown and the stream ended.
 
 #### Arguments
 
@@ -464,3 +441,4 @@ MIT 2017 © IPFS
 [Function]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function
 [Number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
 [Boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[notFoundError]: ./src/errors.js

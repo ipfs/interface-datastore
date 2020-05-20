@@ -63,16 +63,6 @@ class InterfaceDatastoreAdapter {
   }
 
   /**
-   * Check for the existence of a value for the passed key
-   *
-   * @param {Key} key
-   * @returns {Promise<bool>}
-   */
-  async has (key) { // eslint-disable-line require-await
-
-  }
-
-  /**
    * Remove the record for the passed key
    *
    * @param {Key} key
