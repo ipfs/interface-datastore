@@ -156,12 +156,8 @@ module.exports = (test) => {
       await store.put(k, Buffer.from('hello'))
       await store.get(k)
       await store.delete(k)
-
-      try {
-        await store.get(k)
-      } catch (err) {
-        expect(err).to.have.property('code', 'ERR_NOT_FOUND')
-      }
+      const exists = await store.has(k)
+      expect(exists).to.be.eql(false)
     })
 
     it('parallel', async () => {
@@ -172,13 +168,13 @@ module.exports = (test) => {
 
       await Promise.all(data.map(d => store.put(d[0], d[1])))
 
-      const res0 = await Promise.all(data.map(d => store.get(d[0])))
-      res0.forEach(res => expect(res).to.be.ok())
+      const res0 = await Promise.all(data.map(d => store.has(d[0])))
+      res0.forEach(res => expect(res).to.be.eql(true))
 
       await Promise.all(data.map(d => store.delete(d[0])))
 
-      const res1 = await Promise.all(data.map(d => store.get(d[0]).catch(err => err)))
-      res1.forEach(res => expect(res).have.property('code', 'ERR_NOT_FOUND'))
+      const res1 = await Promise.all(data.map(d => store.has(d[0])))
+      res1.forEach(res => expect(res).to.be.eql(false))
     })
   })
 
@@ -200,8 +196,8 @@ module.exports = (test) => {
 
       await drain(store.putMany(data))
 
-      const res0 = await Promise.all(data.map(d => store.get(d.key)))
-      res0.forEach(res => expect(res).to.be.ok())
+      const res0 = await Promise.all(data.map(d => store.has(d.key)))
+      res0.forEach(res => expect(res).to.be.eql(true))
 
       let index = 0
 
@@ -212,8 +208,8 @@ module.exports = (test) => {
 
       expect(index).to.equal(data.length)
 
-      const res1 = await Promise.all(data.map(d => store.get(d.key).catch(err => err)))
-      res1.forEach(res => expect(res).to.have.property('code', 'ERR_NOT_FOUND'))
+      const res1 = await Promise.all(data.map(d => store.has(d.key)))
+      res1.forEach(res => expect(res).to.be.eql(false))
     })
   })
 
@@ -239,13 +235,9 @@ module.exports = (test) => {
       await b.commit()
 
       const keys = ['/a/one', '/q/two', '/q/three', '/z/old']
-      const res = await Promise.all(keys.map(k => store.get(new Key(k)).catch(err => err)))
+      const res = await Promise.all(keys.map(k => store.has(new Key(k))))
 
-      expect(res).to.have.lengthOf(4)
-      expect(res[0]).to.eql(Buffer.from('1'))
-      expect(res[1]).to.eql(Buffer.from('2'))
-      expect(res[2]).to.eql(Buffer.from('3'))
-      expect(res[3]).to.have.property('code', 'ERR_NOT_FOUND')
+      expect(res).to.be.eql([true, true, true, false])
     })
 
     it('many (3 * 400)', async function () {
