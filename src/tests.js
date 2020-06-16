@@ -380,7 +380,7 @@ module.exports = (test) => {
     })
 
     it('queries while the datastore is being mutated', async () => {
-      const writePromise = store.put(`/z/key-${Math.random()}`, Buffer.from('0'))
+      const writePromise = store.put(new Key(`/z/key-${Math.random()}`), Buffer.from('0'))
       const results = await all(store.query({}))
       expect(results.length).to.be.greaterThan(0)
       await writePromise
