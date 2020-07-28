@@ -372,7 +372,7 @@ module.exports = (test) => {
       const results = await all(store.query({}))
 
       expect(firstIteration).to.be.false('Query did not return anything')
-      expect(results.map(result => result.key)).to.deep.equal([
+      expect(results.map(result => result.key)).to.have.deep.members([
         hello.key,
         world.key,
         hello3.key
