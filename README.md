@@ -33,13 +33,13 @@
   - [`put(key, value, [options])` -> `Promise`](#putkey-value-options---promise)
     - [Arguments](#arguments-1)
     - [Example](#example-1)
-  - [`putMany(source, [options])` -> `AsyncIterator<{ key: Key, value: Buffer }>`](#putmanysource-options---asynciterator-key-key-value-buffer-)
+  - [`putMany(source, [options])` -> `AsyncIterator<{ key: Key, value: Uint8Array }>`](#putmanysource-options---asynciterator-key-key-value-uint8array-)
     - [Arguments](#arguments-2)
     - [Example](#example-2)
-  - [`get(key, [options])` -> `Promise<Buffer>`](#getkey-options---promisebuffer)
+  - [`get(key, [options])` -> `Promise<Uint8Array>`](#getkey-options---promiseuint8array)
     - [Arguments](#arguments-3)
     - [Example](#example-3)
-  - [`getMany(source, [options])` -> `AsyncIterator<Buffer>`](#getmanysource-options---asynciteratorbuffer)
+  - [`getMany(source, [options])` -> `AsyncIterator<Uint8Array>`](#getmanysource-options---asynciteratoruint8array)
     - [Arguments](#arguments-4)
     - [Example](#example-4)
   - [`delete(key, [options])` -> `Promise`](#deletekey-options---promise)
@@ -48,7 +48,7 @@
   - [`deleteMany(source, [options])` -> `AsyncIterator<Key>`](#deletemanysource-options---asynciteratorkey)
     - [Arguments](#arguments-6)
     - [Example](#example-6)
-  - [`query(query, [options])` -> `AsyncIterable<Buffer>`](#queryquery-options---asynciterablebuffer)
+  - [`query(query, [options])` -> `AsyncIterable<Uint8Array>`](#queryquery-options---asynciterableuint8array)
     - [Arguments](#arguments-7)
     - [Example](#example-7)
   - [`batch()`](#batch)
@@ -179,11 +179,11 @@ for await (const { key, data } of batch(store.putMany(source), 10)) {
 
 ### Keys
 
-To allow a better abstraction on how to address values, there is a `Key` class which is used as identifier. It's easy to create a key from a `Buffer` or a `string`.
+To allow a better abstraction on how to address values, there is a `Key` class which is used as identifier. It's easy to create a key from a `Uint8Array` or a `string`.
 
 ```js
 const a = new Key('a')
-const b = new Key(Buffer.from('hello'))
+const b = new Key(new Uint8Array([0, 1, 2, 3]))
 ```
 
 The key scheme is inspired by file systems and Google App Engine key model. Keys are meant to be unique across a system. They are typically hierarchical, incorporating more and more specific namespaces. Thus keys can be deemed 'children' or 'ancestors' of other keys:
@@ -234,18 +234,18 @@ Store a value with the given key.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | key | [Key][] | The key to store the value under |
-| value | [Buffer][] | Value to store |
+| value | [Uint8Array][] | Value to store |
 | options | [Object][] | An options object, all properties are optional |
 | options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
 
 #### Example
 
 ```js
-await store.put([{ key: new Key('awesome'), value: Buffer.from('datastores') }])
+await store.put([{ key: new Key('awesome'), value: new Uint8Array([0, 1, 2, 3]) }])
 console.log('put content')
 ```
 
-### `putMany(source, [options])` -> `AsyncIterator<{ key: Key, value: Buffer }>`
+### `putMany(source, [options])` -> `AsyncIterator<{ key: Key, value: Uint8Array }>`
 
 Store many key-value pairs.
 
@@ -253,22 +253,22 @@ Store many key-value pairs.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| source | [AsyncIterator][]<{ key: [Key][], value: [Buffer][] }> | The key to store the value under |
-| value | [Buffer][] | Value to store |
+| source | [AsyncIterator][]<{ key: [Key][], value: [Uint8Array][] }> | The key to store the value under |
+| value | [Uint8Array][] | Value to store |
 | options | [Object][] | An options object, all properties are optional |
 | options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
 
 #### Example
 
 ```js
-const source = [{ key: new Key('awesome'), value: Buffer.from('datastores') }]
+const source = [{ key: new Key('awesome'), value: new Uint8Array([0, 1, 2, 3]) }]
 
 for await (const { key, value } of store.putMany(source)) {
   console.info(`put content for key ${key}`)
 }
 ```
 
-### `get(key, [options])` -> `Promise<Buffer>`
+### `get(key, [options])` -> `Promise<Uint8Array>`
 
 #### Arguments
 
@@ -288,7 +288,7 @@ console.log('got content: %s', value.toString('utf8'))
 // => got content: datastore
 ```
 
-### `getMany(source, [options])` -> `AsyncIterator<Buffer>`
+### `getMany(source, [options])` -> `AsyncIterator<Uint8Array>`
 
 #### Arguments
 
@@ -304,7 +304,7 @@ Retrieve a stream of values stored under the given keys.
 
 ```js
 for await (const value of store.getMany([new Key('awesome')])) {
-  console.log('got content: %s', value.toString('utf8'))
+  console.log('got content:', new TextDecoder('utf8').decode(value))
   // => got content: datastore
 }
 ```
@@ -350,9 +350,9 @@ for await (const key of store.deleteMany(source)) {
 }
 ```
 
-### `query(query, [options])` -> `AsyncIterable<Buffer>`
+### `query(query, [options])` -> `AsyncIterable<Uint8Array>`
 
-Search the store for some values. Returns an [AsyncIterable][] with each item being a [Buffer][].
+Search the store for some values. Returns an [AsyncIterable][] with each item being a [Uint8Array][].
 
 #### Arguments
 
@@ -360,8 +360,8 @@ Search the store for some values. Returns an [AsyncIterable][] with each item be
 | ---- | ---- | ----------- |
 | query | [Object][] | A query object, all properties are optional |
 | query.prefix | [String][] | Only return values where the key starts with this prefix |
-| query.filters | [Array][]<[Function][]([Buffer][]) -> [Boolean][]> | Filter the results according to the these functions |
-| query.orders | [Array][]<[Function][]([Array][]<[Buffer][]>) -> [Array][]<[Buffer][]>> | Order the results according to these functions |
+| query.filters | [Array][]<[Function][]([Uint8Array][]) -> [Boolean][]> | Filter the results according to the these functions |
+| query.orders | [Array][]<[Function][]([Array][]<[Uint8Array][]>) -> [Array][]<[Uint8Array][]>> | Order the results according to these functions |
 | query.limit | [Number][] | Only return this many records |
 | query.offset | [Number][] | Skip this many records at the beginning |
 | options | [Object][] | An options object, all properties are optional |
@@ -388,7 +388,7 @@ This will return an object with which you can chain multiple operations together
 const b = store.batch()
 
 for (let i = 0; i < 100; i++) {
-  b.put(new Key(`hello${i}`), Buffer.from(`hello world ${i}`))
+  b.put(new Key(`hello${i}`), new TextEncoder('utf8').encode(`hello world ${i}`))
 }
 
 await b.commit()
@@ -402,7 +402,7 @@ Queue a put operation to the store.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | key | [Key][] | The key to store the value under |
-| value | [Buffer][] | Value to store |
+| value | [Uint8Array][] | Value to store |
 
 #### `delete(key)`
 
@@ -428,7 +428,7 @@ Write all queued operations to the underyling store. The batch object should not
 ```js
 const batch = store.batch()
 
-batch.put(new Key('to-put'), Buffer.from('hello world'))
+batch.put(new Key('to-put'), new TextEncoder('utf8').encode('hello world'))
 batch.del(new Key('to-remove'))
 
 await batch.commit()
@@ -455,7 +455,7 @@ MIT 2017 © IPFS
 
 [Key]: #Keys
 [Object]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
-[Buffer]: https://nodejs.org/api/buffer.html
+[Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
 [AbortSignal]: https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal
 [AsyncIterator]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/asyncIterator
 [AsyncIterable]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols

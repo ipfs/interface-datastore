@@ -16,7 +16,7 @@ class InterfaceDatastoreAdapter {
    * Store the passed value under the passed key
    *
    * @param {Key} key
-   * @param {Buffer} val
+   * @param {Uint8Array} val
    * @param {Object} options
    * @returns {Promise<void>}
    */
@@ -27,9 +27,9 @@ class InterfaceDatastoreAdapter {
   /**
    * Store the given key/value pairs
    *
-   * @param {AsyncIterator<{ key: Key, value: Buffer }>} source
+   * @param {AsyncIterator<{ key: Key, value: Uint8Array }>} source
    * @param {Object} options
-   * @returns {AsyncIterator<{ key: Key, value: Buffer }>}
+   * @returns {AsyncIterator<{ key: Key, value: Uint8Array }>}
    */
   async * putMany (source, options = {}) {
     for await (const { key, value } of source) {
@@ -43,7 +43,7 @@ class InterfaceDatastoreAdapter {
    *
    * @param {Key} key
    * @param {Object} options
-   * @returns {Promise<Buffer>}
+   * @returns {Promise<Uint8Array>}
    */
   async get (key, options = {}) { // eslint-disable-line require-await
 
@@ -54,7 +54,7 @@ class InterfaceDatastoreAdapter {
    *
    * @param {AsyncIterator<Key>} source
    * @param {Object} options
-   * @returns {AsyncIterator<Buffer>}
+   * @returns {AsyncIterator<Uint8Array>}
    */
   async * getMany (source, options = {}) {
     for await (const key of source) {
@@ -127,7 +127,7 @@ class InterfaceDatastoreAdapter {
    *
    * @param {Object} q
    * @param {Object} options
-   * @returns {AsyncIterable<{ key: Key, value: Buffer }>}
+   * @returns {AsyncIterable<{ key: Key, value: Uint8Array }>}
    */
   async * _all (q, options) { // eslint-disable-line require-await
 
@@ -138,7 +138,7 @@ class InterfaceDatastoreAdapter {
    *
    * @param {Object} q
    * @param {Object} options
-   * @returns {AsyncIterable<Buffer>}
+   * @returns {AsyncIterable<Uint8Array>}
    */
   async * query (q, options) { // eslint-disable-line require-await
     let it = this._all(q, options)

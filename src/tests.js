@@ -2,13 +2,13 @@
 /* eslint max-nested-callbacks: ["error", 8] */
 'use strict'
 
-const { Buffer } = require('buffer')
 const randomBytes = require('iso-random-stream/src/random')
 const chai = require('chai')
 chai.use(require('dirty-chai'))
 const expect = chai.expect
 const all = require('it-all')
 const drain = require('it-drain')
+const { utf8Encoder } = require('../src/utils')
 
 const Key = require('../src').Key
 
@@ -30,13 +30,13 @@ module.exports = (test) => {
 
     it('simple', () => {
       const k = new Key('/z/one')
-      return store.put(k, Buffer.from('one'))
+      return store.put(k, utf8Encoder.encode('one'))
     })
 
     it('parallel', async () => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push({ key: new Key(`/z/key${i}`), value: Buffer.from(`data${i}`) })
+        data.push({ key: new Key(`/z/key${i}`), value: utf8Encoder.encode(`data${i}`) })
       }
 
       await Promise.all(data.map(d => store.put(d.key, d.value)))
@@ -59,7 +59,7 @@ module.exports = (test) => {
     it('streaming', async () => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push({ key: new Key(`/z/key${i}`), value: Buffer.from(`data${i}`) })
+        data.push({ key: new Key(`/z/key${i}`), value: utf8Encoder.encode(`data${i}`) })
       }
 
       let index = 0
@@ -88,9 +88,9 @@ module.exports = (test) => {
 
     it('simple', async () => {
       const k = new Key('/z/one')
-      await store.put(k, Buffer.from('hello'))
+      await store.put(k, utf8Encoder.encode('hello'))
       const res = await store.get(k)
-      expect(res).to.be.eql(Buffer.from('hello'))
+      expect(res).to.be.eql(utf8Encoder.encode('hello'))
     })
 
     it('should throw error for missing key', async () => {
@@ -119,12 +119,12 @@ module.exports = (test) => {
 
     it('streaming', async () => {
       const k = new Key('/z/one')
-      await store.put(k, Buffer.from('hello'))
+      await store.put(k, utf8Encoder.encode('hello'))
       const source = [k]
 
       const res = await all(store.getMany(source))
       expect(res).to.have.lengthOf(1)
-      expect(res[0]).to.be.eql(Buffer.from('hello'))
+      expect(res[0]).to.be.eql(utf8Encoder.encode('hello'))
     })
 
     it('should throw error for missing key', async () => {
@@ -153,7 +153,7 @@ module.exports = (test) => {
 
     it('simple', async () => {
       const k = new Key('/z/one')
-      await store.put(k, Buffer.from('hello'))
+      await store.put(k, utf8Encoder.encode('hello'))
       await store.get(k)
       await store.delete(k)
       const exists = await store.has(k)
@@ -163,7 +163,7 @@ module.exports = (test) => {
     it('parallel', async () => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push([new Key(`/a/key${i}`), Buffer.from(`data${i}`)])
+        data.push([new Key(`/a/key${i}`), utf8Encoder.encode(`data${i}`)])
       }
 
       await Promise.all(data.map(d => store.put(d[0], d[1])))
@@ -191,7 +191,7 @@ module.exports = (test) => {
     it('streaming', async () => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push({ key: new Key(`/a/key${i}`), value: Buffer.from(`data${i}`) })
+        data.push({ key: new Key(`/a/key${i}`), value: utf8Encoder.encode(`data${i}`) })
       }
 
       await drain(store.putMany(data))
@@ -226,11 +226,11 @@ module.exports = (test) => {
     it('simple', async () => {
       const b = store.batch()
 
-      await store.put(new Key('/z/old'), Buffer.from('old'))
+      await store.put(new Key('/z/old'), utf8Encoder.encode('old'))
 
-      b.put(new Key('/a/one'), Buffer.from('1'))
-      b.put(new Key('/q/two'), Buffer.from('2'))
-      b.put(new Key('/q/three'), Buffer.from('3'))
+      b.put(new Key('/a/one'), utf8Encoder.encode('1'))
+      b.put(new Key('/q/two'), utf8Encoder.encode('2'))
+      b.put(new Key('/q/three'), utf8Encoder.encode('3'))
       b.delete(new Key('/z/old'))
       await b.commit()
 
@@ -266,9 +266,9 @@ module.exports = (test) => {
 
   describe('query', () => {
     let store
-    const hello = { key: new Key('/q/1hello'), value: Buffer.from('1') }
-    const world = { key: new Key('/z/2world'), value: Buffer.from('2') }
-    const hello2 = { key: new Key('/z/3hello2'), value: Buffer.from('3') }
+    const hello = { key: new Key('/q/1hello'), value: utf8Encoder.encode('1') }
+    const world = { key: new Key('/z/2world'), value: utf8Encoder.encode('2') }
+    const hello2 = { key: new Key('/z/3hello2'), value: utf8Encoder.encode('3') }
 
     const filter1 = entry => !entry.key.toString().endsWith('hello')
     const filter2 = entry => entry.key.toString().endsWith('hello2')
@@ -343,7 +343,7 @@ module.exports = (test) => {
             if (r.value == null) {
               expect(exp[i].value).to.not.exist()
             } else {
-              expect(r.value.equals(exp[i].value)).to.be.eql(true)
+              expect(r.value).to.deep.equal(exp[i].value)
             }
           })
         } else {
