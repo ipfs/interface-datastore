@@ -353,6 +353,38 @@ module.exports = (test) => {
         expect(res).to.have.length(expected)
       }
     }))
+
+    it('allows mutating the datastore during a query', async () => {
+      const hello3 = { key: new Key('/z/4hello3'), value: Buffer.from('4') }
+      let firstIteration = true
+
+      for await (const { key, value } of store.query({})) { // eslint-disable-line no-unused-vars
+        if (firstIteration) {
+          expect(await store.has(hello2.key)).to.be.true()
+          await store.delete(hello2.key)
+          expect(await store.has(hello2.key)).to.be.false()
+
+          await store.put(hello3.key, hello3.value)
+          firstIteration = false
+        }
+      }
+
+      const results = await all(store.query({}))
+
+      expect(firstIteration).to.be.false('Query did not return anything')
+      expect(results.map(result => result.key)).to.deep.equal([
+        hello.key,
+        world.key,
+        hello3.key
+      ])
+    })
+
+    it('queries while the datastore is being mutated', async () => {
+      const writePromise = store.put(new Key(`/z/key-${Math.random()}`), Buffer.from('0'))
+      const results = await all(store.query({}))
+      expect(results.length).to.be.greaterThan(0)
+      await writePromise
+    })
   })
 
   describe('lifecycle', () => {
