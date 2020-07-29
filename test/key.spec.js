@@ -156,4 +156,44 @@ describe('Key', () => {
     // but has the same value
     expect(originalKey.concat().toString()).to.equal('/a/b/c')
   })
+
+  it('uint8Array', () => {
+    const arr = Uint8Array.from(['/'.charCodeAt(0), 0, 1, 2, 3])
+    const key = new Key(arr)
+    const buf = key.uint8Array()
+
+    expect(buf).to.deep.equal(arr)
+  })
+
+  it('uint8Array with surplus bytes', () => {
+    const arr = Uint8Array.from(['/'.charCodeAt(0), 0, 1, 2, 3, 4])
+    const view = new Uint8Array(arr.buffer, 0, arr.length - 1)
+
+    // should be same buffer
+    expect(view.buffer).to.equal(arr.buffer)
+    expect(view.buffer.byteLength).to.equal(arr.buffer.byteLength)
+
+    // view should be shorter than wrapped buffer
+    expect(view.length).to.be.lessThan(arr.buffer.byteLength)
+    expect(view.byteLength).to.be.lessThan(arr.buffer.byteLength)
+
+    const key = new Key(view)
+    const buf = key.uint8Array()
+
+    expect(buf).to.deep.equal(view)
+  })
+
+  it('uint8Array with trailing slashes', () => {
+    const slash = '/'.charCodeAt(0)
+    const arrWithSlashes = Uint8Array.from([slash, 0, 1, 2, 3, slash, slash, slash])
+    const arrWithoutSlashes = Uint8Array.from([slash, 0, 1, 2, 3])
+    const key = new Key(arrWithSlashes)
+    const buf = key.uint8Array()
+
+    // slashes should have been stripped
+    expect(buf).to.deep.equal(arrWithoutSlashes)
+
+    // should be a view on the original buffer
+    expect(buf.buffer).to.equal(arrWithSlashes.buffer)
+  })
 })

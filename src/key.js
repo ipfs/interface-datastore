@@ -67,7 +67,7 @@ class Key {
    *
    * @returns {Uint8Array}
    */
-  toBuffer () {
+  uint8Array () {
     return this._buf
   }
 
@@ -118,12 +118,15 @@ class Key {
     }
 
     if (this._buf[0] !== pathSep) {
-      this._buf = Uint8Array.of(pathSep, ...this._buf)
+      const bytes = new Uint8Array(this._buf.byteLength + 1)
+      bytes.fill(pathSep, 0, 1)
+      bytes.set(this._buf, 1)
+      this._buf = bytes
     }
 
     // normalize does not remove trailing slashes
     while (this._buf.byteLength > 1 && this._buf[this._buf.byteLength - 1] === pathSep) {
-      this._buf = Uint8Array.of(...this._buf.slice(0, -1))
+      this._buf = this._buf.subarray(0, -1)
     }
   }
 
