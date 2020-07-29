@@ -1,3 +1,19 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/ipfs/interface-datastore/compare/v1.0.4...v2.0.0) (2020-07-29)
+
+
+### Bug Fixes
+
+* remove node buffer ([#43](https://github.com/ipfs/interface-datastore/issues/43)) ([b2f0963](https://github.com/ipfs/interface-datastore/commit/b2f0963))
+
+
+### BREAKING CHANGES
+
+* - node Buffers have been replaced with Uint8Arrays
+- `key.toBuffer` has been replaced with `key.uint8Array()`
+
+
+
 <a name="1.0.4"></a>
 ## [1.0.4](https://github.com/ipfs/interface-datastore/compare/v1.0.3...v1.0.4) (2020-06-10)
 
