@@ -1,11 +1,12 @@
 'use strict'
 
-const { Buffer } = require('buffer')
 const { nanoid } = require('nanoid')
 const withIs = require('class-is')
+const { utf8Encoder, utf8Decoder } = require('./utils')
+const TextDecoder = require('ipfs-utils/src/text-decoder')
 
 const pathSepS = '/'
-const pathSepB = Buffer.from(pathSepS)
+const pathSepB = utf8Encoder.encode(pathSepS)
 const pathSep = pathSepB[0]
 
 /**
@@ -27,9 +28,11 @@ const pathSep = pathSepB[0]
 class Key {
   constructor (s, clean) {
     if (typeof s === 'string') {
-      this._buf = Buffer.from(s)
-    } else if (Buffer.isBuffer(s)) {
+      this._buf = utf8Encoder.encode(s)
+    } else if (s instanceof Uint8Array) {
       this._buf = s
+    } else {
+      throw new Error('Invalid key, should be String of Uint8Array')
     }
 
     if (clean == null) {
@@ -40,7 +43,7 @@ class Key {
       this.clean()
     }
 
-    if (this._buf.length === 0 || this._buf[0] !== pathSep) {
+    if (this._buf.byteLength === 0 || this._buf[0] !== pathSep) {
       throw new Error('Invalid key')
     }
   }
@@ -51,16 +54,20 @@ class Key {
    * @param {string} [encoding='utf8']
    * @returns {string}
    */
-  toString (encoding) {
-    return this._buf.toString(encoding || 'utf8')
+  toString (encoding = 'utf8') {
+    if (encoding === 'utf8' || encoding === 'utf-8') {
+      return utf8Decoder.decode(this._buf)
+    }
+
+    return new TextDecoder(encoding).decode(this._buf)
   }
 
   /**
-   * Return the buffer representation of the key
+   * Return the Uint8Array representation of the key
    *
-   * @returns {Buffer}
+   * @returns {Uint8Array}
    */
-  toBuffer () {
+  uint8Array () {
     return this._buf
   }
 
@@ -106,17 +113,20 @@ class Key {
    * @returns {void}
    */
   clean () {
-    if (!this._buf || this._buf.length === 0) {
-      this._buf = Buffer.from(pathSepS)
+    if (!this._buf || this._buf.byteLength === 0) {
+      this._buf = pathSepB
     }
 
     if (this._buf[0] !== pathSep) {
-      this._buf = Buffer.concat([pathSepB, this._buf])
+      const bytes = new Uint8Array(this._buf.byteLength + 1)
+      bytes.fill(pathSep, 0, 1)
+      bytes.set(this._buf, 1)
+      this._buf = bytes
     }
 
     // normalize does not remove trailing slashes
-    while (this._buf.length > 1 && this._buf[this._buf.length - 1] === pathSep) {
-      this._buf = this._buf.slice(0, -1)
+    while (this._buf.byteLength > 1 && this._buf[this._buf.byteLength - 1] === pathSep) {
+      this._buf = this._buf.subarray(0, -1)
     }
   }
 

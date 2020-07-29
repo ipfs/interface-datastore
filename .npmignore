@@ -1,6 +1,16 @@
+yarn.lock
+package-lock.json
+
+**/node_modules/
+**/*.log
+test/repo-tests*
+
 # Logs
 logs
 *.log
+
+coverage
+.nyc_output
 
 # Runtime data
 pids
@@ -12,7 +22,6 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
-.nyc_output
 
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
@@ -20,11 +29,13 @@ coverage
 # node-waf configuration
 .lock-wscript
 
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
+build
 
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
 
+.travis.yml
+.github
+docs
 test
