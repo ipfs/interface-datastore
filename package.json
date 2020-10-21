@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/ipfs/interface-datastore#readme",
   "devDependencies": {
-    "aegir": "^25.0.0",
+    "aegir": "^28.0.2",
     "chai": "^4.1.2",
     "dirty-chai": "^2.0.1"
   },
