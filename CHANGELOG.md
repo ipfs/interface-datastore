@@ -1,3 +1,7 @@
+## [2.0.1](https://github.com/ipfs/interface-datastore/compare/v2.0.0...v2.0.1) (2020-11-09)
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/ipfs/interface-datastore/compare/v1.0.4...v2.0.0) (2020-07-29)
 
