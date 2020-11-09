@@ -72,7 +72,7 @@ class Key {
   }
 
   /**
-   * @returns {String}
+   * @returns {string}
    */
   get [Symbol.toStringTag] () {
     return `Key(${this.toString()})`
@@ -134,7 +134,7 @@ class Key {
    * Check if the given key is sorted lower than ourself.
    *
    * @param {Key} key
-   * @returns {bool}
+   * @returns {boolean}
    */
   less (key) {
     const list1 = this.list()
@@ -312,7 +312,7 @@ class Key {
    * Returns whether this key is a prefix of `other`
    *
    * @param {Key} other
-   * @returns {bool}
+   * @returns {boolean}
    *
    * @example
    * new Key('/Comedy').isAncestorOf('/Comedy/MontyPython')
@@ -331,7 +331,7 @@ class Key {
    * Returns whether this key is a contains another as prefix.
    *
    * @param {Key} other
-   * @returns {bool}
+   * @returns {boolean}
    *
    * @example
    * new Key('/Comedy/MontyPython').isDecendantOf('/Comedy')
@@ -349,7 +349,7 @@ class Key {
   /**
    * Returns wether this key has only one namespace.
    *
-   * @returns {bool}
+   * @returns {boolean}
    *
    */
   isTopLevel () {
@@ -394,8 +394,9 @@ function namespaceValue (ns) {
 
 /**
  * Flatten array of arrays (only one level)
+ *
  * @param {Array<Array>} arr
- * @return {*}
+ * @returns {*}
  */
 function flatten (arr) {
   return [].concat(...arr)
