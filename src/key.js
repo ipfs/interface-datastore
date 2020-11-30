@@ -56,7 +56,7 @@ class Key {
   /**
    * Convert to the string representation
    *
-   * @param {string} [encoding='utf8'] - The encoding to use. Should default to 'utf8'.
+   * @param {string} [encoding='utf8'] - The encoding to use.
    * @returns {string}
    */
   toString (encoding = 'utf8') {
