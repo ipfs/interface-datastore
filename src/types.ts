@@ -148,7 +148,7 @@ export interface IDatastore {
      * @param q
      * @param options
      */
-    _all(q: Query, options: Options): AsyncGenerator<Pair>
+    _all(q: Query, options?: Options): AsyncGenerator<Pair>
 }
 
 export interface Query {

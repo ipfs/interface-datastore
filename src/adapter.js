@@ -34,7 +34,7 @@ class Adapter {
    *
    * @param {Key} key
    * @param {Uint8Array} val
-   * @param {Options} options
+   * @param {Options} [options]
    * @returns {Promise<void>}
    */
   put (key, val, options) { // eslint-disable-line require-await
@@ -45,7 +45,7 @@ class Adapter {
    * Store the given key/value pairs
    *
    * @param {AnyIterable<Pair>} source
-   * @param {Object} options
+   * @param {Object} [options]
    * @returns {AsyncGenerator<Pair>}
    */
   async * putMany (source, options = {}) {
@@ -59,7 +59,7 @@ class Adapter {
    * Retrieve the value for the passed key
    *
    * @param {Key} key
-   * @param {Object} options
+   * @param {Object} [options]
    * @returns {Promise<Uint8Array>}
    */
   get (key, options = {}) {
@@ -79,6 +79,7 @@ class Adapter {
    * Check for the existence of a value for the passed key
    *
    * @param {Key} key
+   * @param {Options} [options]
    * @returns {Promise<boolean>}
    * @example
    * ```js
@@ -91,7 +92,7 @@ class Adapter {
    * }
    * ```
    */
-  has (key) { // eslint-disable-line require-await
+  has (key, options) { // eslint-disable-line require-await
     return Promise.resolve(false)
   }
 
@@ -99,7 +100,7 @@ class Adapter {
    * Remove the record for the passed key
    *
    * @param {Key} key
-   * @param {Object} options
+   * @param {Object} [options]
    * @returns {Promise<void>}
    */
   delete (key, options = {}) { // eslint-disable-line require-await
@@ -110,7 +111,7 @@ class Adapter {
    * Remove values for the passed keys
    *
    * @param {AnyIterable<Key>} source
-   * @param {Options} options
+   * @param {Options} [options]
    * @returns {AsyncGenerator<Key>}
    */
   async * deleteMany (source, options = {}) {
@@ -149,7 +150,7 @@ class Adapter {
    * Yield all datastore values
    *
    * @param {Query} q
-   * @param {Options} options
+   * @param {Options} [options]
    * @returns {AsyncGenerator<Pair>}
    */
   async * _all (q, options) { // eslint-disable-line require-await
@@ -158,7 +159,7 @@ class Adapter {
 
   /**
    * @param {Query} q
-   * @param {Options} options
+   * @param {Options} [options]
    * @returns {AsyncGenerator<Pair|{key: Key}>}
    */
   query (q, options) {
