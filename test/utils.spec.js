@@ -1,10 +1,7 @@
 /* eslint-env mocha */
 'use strict'
 
-const chai = require('chai')
-chai.use(require('dirty-chai'))
-const expect = chai.expect
-
+const { expect } = require('aegir/utils/chai')
 const utils = require('../src').utils
 
 describe('utils', () => {

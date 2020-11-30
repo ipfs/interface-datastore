@@ -3,13 +3,30 @@
 const { filter, sortAll, take, map } = require('./utils')
 const drain = require('it-drain')
 
-class InterfaceDatastoreAdapter {
-  async open () { // eslint-disable-line require-await
+/**
+ * @typedef {import('./key')} Key
+ * @typedef {import('./types').Pair} Pair
+ * @typedef {import('./types').IDatastore} IDatastore
+ * @typedef {import('./types').Options} Options
+ * @typedef {import('./types').Query} Query
+ * @typedef {import('./types').Batch} Batch
+ */
 
+/**
+ * @template O
+ * @typedef {import('./types').AnyIterable<O>} AnyIterable
+ */
+
+/**
+ * @implements {IDatastore}
+ */
+class Adapter {
+  open () {
+    return Promise.resolve()
   }
 
-  async close () { // eslint-disable-line require-await
-
+  close () {
+    return Promise.resolve()
   }
 
   /**
@@ -17,19 +34,19 @@ class InterfaceDatastoreAdapter {
    *
    * @param {Key} key
    * @param {Uint8Array} val
-   * @param {Object} options
+   * @param {Options} options
    * @returns {Promise<void>}
    */
-  async put (key, val, options = {}) { // eslint-disable-line require-await
-
+  put (key, val, options) { // eslint-disable-line require-await
+    return Promise.resolve()
   }
 
   /**
    * Store the given key/value pairs
    *
-   * @param {AsyncIterator<{ key: Key, value: Uint8Array }>} source
+   * @param {AnyIterable<Pair>} source
    * @param {Object} options
-   * @returns {AsyncIterator<{ key: Key, value: Uint8Array }>}
+   * @returns {AsyncGenerator<Pair>}
    */
   async * putMany (source, options = {}) {
     for await (const { key, value } of source) {
@@ -45,16 +62,12 @@ class InterfaceDatastoreAdapter {
    * @param {Object} options
    * @returns {Promise<Uint8Array>}
    */
-  async get (key, options = {}) { // eslint-disable-line require-await
-
+  get (key, options = {}) {
+    return Promise.resolve(new Uint8Array())
   }
 
   /**
-   * Retrieve values for the passed keys
-   *
-   * @param {AsyncIterator<Key>} source
-   * @param {Object} options
-   * @returns {AsyncIterator<Uint8Array>}
+   * @param {AnyIterable<Key>} source
    */
   async * getMany (source, options = {}) {
     for await (const key of source) {
@@ -67,9 +80,19 @@ class InterfaceDatastoreAdapter {
    *
    * @param {Key} key
    * @returns {Promise<boolean>}
+   * @example
+   * ```js
+   * const exists = await store.has(new Key('awesome'))
+   *
+   *   if (exists) {
+   *    console.log('it is there')
+   * } else {
+   *  console.log('it is not there')
+   * }
+   * ```
    */
-  async has (key) { // eslint-disable-line require-await
-
+  has (key) { // eslint-disable-line require-await
+    return Promise.resolve(false)
   }
 
   /**
@@ -79,16 +102,16 @@ class InterfaceDatastoreAdapter {
    * @param {Object} options
    * @returns {Promise<void>}
    */
-  async delete (key, options = {}) { // eslint-disable-line require-await
-
+  delete (key, options = {}) { // eslint-disable-line require-await
+    return Promise.resolve()
   }
 
   /**
    * Remove values for the passed keys
    *
-   * @param {AsyncIterator<Key>} source
-   * @param {Object} options
-   * @returns {AsyncIterator<Key>}
+   * @param {AnyIterable<Key>} source
+   * @param {Options} options
+   * @returns {AsyncGenerator<Key>}
    */
   async * deleteMany (source, options = {}) {
     for await (const key of source) {
@@ -100,7 +123,7 @@ class InterfaceDatastoreAdapter {
   /**
    * Create a new batch object.
    *
-   * @returns {Object}
+   * @returns {Batch}
    */
   batch () {
     let puts = []
@@ -125,26 +148,24 @@ class InterfaceDatastoreAdapter {
   /**
    * Yield all datastore values
    *
-   * @param {Object} q
-   * @param {Object} options
-   * @returns {AsyncIterable<{ key: Key, value: Uint8Array }>}
+   * @param {Query} q
+   * @param {Options} options
+   * @returns {AsyncGenerator<Pair>}
    */
   async * _all (q, options) { // eslint-disable-line require-await
 
   }
 
   /**
-   * Query the store.
-   *
-   * @param {Object} q
-   * @param {Object} options
-   * @returns {AsyncIterable<Uint8Array>}
+   * @param {Query} q
+   * @param {Options} options
+   * @returns {AsyncGenerator<Pair|{key: Key}>}
    */
-  async * query (q, options) { // eslint-disable-line require-await
+  query (q, options) {
     let it = this._all(q, options)
 
     if (q.prefix != null) {
-      it = filter(it, e => e.key.toString().startsWith(q.prefix))
+      it = filter(it, e => e.key.toString().startsWith(/** @type {string} */(q.prefix)))
     }
 
     if (Array.isArray(q.filters)) {
@@ -157,7 +178,7 @@ class InterfaceDatastoreAdapter {
 
     if (q.offset != null) {
       let i = 0
-      it = filter(it, () => i++ >= q.offset)
+      it = filter(it, () => i++ >= /** @type {number} */(q.offset))
     }
 
     if (q.limit != null) {
@@ -165,11 +186,11 @@ class InterfaceDatastoreAdapter {
     }
 
     if (q.keysOnly === true) {
-      it = map(it, e => ({ key: e.key }))
+      return map(it, e => ({ key: e.key }))
     }
 
-    yield * it
+    return it
   }
 }
 
-module.exports = InterfaceDatastoreAdapter
+module.exports = Adapter

@@ -3,13 +3,8 @@
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
 [![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
 [![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
-[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-[![Build Status](https://flat.badgen.net/travis/ipfs/interface-datastore)](https://travis-ci.com/ipfs/interface-datastore)
-[![Code Coverage](https://codecov.io/gh/ipfs/interface-datastore/branch/master/graph/badge.svg)](https://codecov.io/gh/ipfs/interface-datastore)
-[![Dependency Status](https://david-dm.org/ipfs/interface-datastore.svg?style=flat-square)](https://david-dm.org/ipfs/interface-datastore)
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
-![](https://img.shields.io/badge/npm-%3E%3D3.0.0-orange.svg?style=flat-square)
-![](https://img.shields.io/badge/Node.js-%3E%3D8.0.0-orange.svg?style=flat-square)
+[![codecov](https://img.shields.io/codecov/c/github/ipfs/interface-datastore.svg?style=flat-square)](https://codecov.io/gh/ipfs/interface-datastore)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ipfs/interface-datastore/ci?label=ci&style=flat-square)](https://github.com/ipfs/interface-datastore/actions?query=branch%3Amaster+workflow%3Aci+)
 
 > Implementation of the [datastore](https://github.com/ipfs/go-datastore) interface in JavaScript
 
@@ -25,41 +20,10 @@
 - [Usage](#usage)
   - [Wrapping Stores](#wrapping-stores)
   - [Test suite](#test-suite)
+  - [Aborting requests](#aborting-requests)
+  - [Concurrency](#concurrency)
   - [Keys](#keys)
 - [API](#api)
-  - [`has(key, [options])` -> `Promise<Boolean>`](#haskey-options---promiseboolean)
-    - [Arguments](#arguments)
-    - [Example](#example)
-  - [`put(key, value, [options])` -> `Promise`](#putkey-value-options---promise)
-    - [Arguments](#arguments-1)
-    - [Example](#example-1)
-  - [`putMany(source, [options])` -> `AsyncIterator<{ key: Key, value: Uint8Array }>`](#putmanysource-options---asynciterator-key-key-value-uint8array-)
-    - [Arguments](#arguments-2)
-    - [Example](#example-2)
-  - [`get(key, [options])` -> `Promise<Uint8Array>`](#getkey-options---promiseuint8array)
-    - [Arguments](#arguments-3)
-    - [Example](#example-3)
-  - [`getMany(source, [options])` -> `AsyncIterator<Uint8Array>`](#getmanysource-options---asynciteratoruint8array)
-    - [Arguments](#arguments-4)
-    - [Example](#example-4)
-  - [`delete(key, [options])` -> `Promise`](#deletekey-options---promise)
-    - [Arguments](#arguments-5)
-    - [Example](#example-5)
-  - [`deleteMany(source, [options])` -> `AsyncIterator<Key>`](#deletemanysource-options---asynciteratorkey)
-    - [Arguments](#arguments-6)
-    - [Example](#example-6)
-  - [`query(query, [options])` -> `AsyncIterable<Uint8Array>`](#queryquery-options---asynciterableuint8array)
-    - [Arguments](#arguments-7)
-    - [Example](#example-7)
-  - [`batch()`](#batch)
-    - [Example](#example-8)
-    - [`put(key, value)`](#putkey-value)
-    - [`delete(key)`](#deletekey)
-    - [`commit([options])` -> `Promise<void>`](#commitoptions---promisevoid)
-    - [Arguments](#arguments-8)
-    - [Example](#example-9)
-  - [`open()` -> `Promise`](#open---promise)
-  - [`close()` -> `Promise`](#close---promise)
 - [Contribute](#contribute)
 - [License](#license)
 
@@ -121,12 +85,6 @@ See the [MemoryDatastore](./src/memory.js) for an example of how it is used.
 $ npm install interface-datastore
 ```
 
-The type definitions for this package are available on http://definitelytyped.org/. To install just use:
-
-```sh
-$ npm install -D @types/interface-datastore
-```
-
 ## Usage
 
 ### Wrapping Stores
@@ -156,11 +114,11 @@ describe('mystore', () => {
 })
 ```
 
-### Aborting requests
+### Aborting requests
 
 Most API methods accept an [AbortSignal][] as part of an options object.  Implementations may listen for an `abort` event emitted by this object, or test the `signal.aborted` property. When received implementations should tear down any long-lived requests or resources created.
 
-### Concurrency
+### Concurrency
 
 The streaming `(put|get|delete)Many` methods are intended to be used with modules such as [it-parallel-batch](https://www.npmjs.com/package/it-parallel-batch) to allow calling code to control levels of parallelisation.  The batching method ensures results are returned in the correct order, but interface implementations should be thread safe.
 
@@ -198,249 +156,7 @@ Also, every namespace can be parameterized to embed relevant object information.
 - `new Key('/Comedy/MontyPython/Sketch:CheeseShop/Character:Mousebender')`
 
 ## API
-
-Implementations of this interface should make the following methods available:
-
-### `has(key, [options])` -> `Promise<Boolean>`
-
-Check for the existence of a given key
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| key | [Key][] | The key to check the existance of |
-| options | [Object][] | An options object, all properties are optional |
-| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
-
-#### Example
-
-```js
-const exists = await store.has(new Key('awesome'))
-
-if (exists) {
-  console.log('it is there')
-} else {
-  console.log('it is not there')
-}
-```
-
-### `put(key, value, [options])` -> `Promise`
-
-Store a value with the given key.
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| key | [Key][] | The key to store the value under |
-| value | [Uint8Array][] | Value to store |
-| options | [Object][] | An options object, all properties are optional |
-| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
-
-#### Example
-
-```js
-await store.put([{ key: new Key('awesome'), value: new Uint8Array([0, 1, 2, 3]) }])
-console.log('put content')
-```
-
-### `putMany(source, [options])` -> `AsyncIterator<{ key: Key, value: Uint8Array }>`
-
-Store many key-value pairs.
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| source | [AsyncIterator][]<{ key: [Key][], value: [Uint8Array][] }> | The key to store the value under |
-| value | [Uint8Array][] | Value to store |
-| options | [Object][] | An options object, all properties are optional |
-| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
-
-#### Example
-
-```js
-const source = [{ key: new Key('awesome'), value: new Uint8Array([0, 1, 2, 3]) }]
-
-for await (const { key, value } of store.putMany(source)) {
-  console.info(`put content for key ${key}`)
-}
-```
-
-### `get(key, [options])` -> `Promise<Uint8Array>`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| key | [Key][] | The key retrieve the value for |
-| options | [Object][] | An options object, all properties are optional |
-| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
-
-#### Example
-
-Retrieve the value stored under the given key.
-
-```js
-const value = await store.get(new Key('awesome'))
-console.log('got content: %s', value.toString('utf8'))
-// => got content: datastore
-```
-
-### `getMany(source, [options])` -> `AsyncIterator<Uint8Array>`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| source | [AsyncIterator][]<[Key][]> | One or more keys to retrieve values for |
-| options | [Object][] | An options object, all properties are optional |
-| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
-
-#### Example
-
-Retrieve a stream of values stored under the given keys.
-
-```js
-for await (const value of store.getMany([new Key('awesome')])) {
-  console.log('got content:', new TextDecoder('utf8').decode(value))
-  // => got content: datastore
-}
-```
-
-### `delete(key, [options])` -> `Promise`
-
-Delete the content stored under the given key.
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| key | [Key][] | The key to remove the value for |
-| options | [Object][] | An options object, all properties are optional |
-| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
-
-#### Example
-
-```js
-await store.delete(new Key('awesome'))
-console.log('deleted awesome content :(')
-```
-
-### `deleteMany(source, [options])` -> `AsyncIterator<Key>`
-
-Delete the content stored under the given keys.
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| source | [AsyncIterator][]<[Key][]> | One or more keys to remove values for |
-| options | [Object][] | An options object, all properties are optional |
-| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
-
-#### Example
-
-```js
-const source = [new Key('awesome')]
-
-for await (const key of store.deleteMany(source)) {
-  console.log(`deleted content with key ${key}`)
-}
-```
-
-### `query(query, [options])` -> `AsyncIterable<Uint8Array>`
-
-Search the store for some values. Returns an [AsyncIterable][] with each item being a [Uint8Array][].
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| query | [Object][] | A query object, all properties are optional |
-| query.prefix | [String][] | Only return values where the key starts with this prefix |
-| query.filters | [Array][]<[Function][]([Uint8Array][]) -> [Boolean][]> | Filter the results according to the these functions |
-| query.orders | [Array][]<[Function][]([Array][]<[Uint8Array][]>) -> [Array][]<[Uint8Array][]>> | Order the results according to these functions |
-| query.limit | [Number][] | Only return this many records |
-| query.offset | [Number][] | Skip this many records at the beginning |
-| options | [Object][] | An options object, all properties are optional |
-| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
-
-#### Example
-
-```js
-// retrieve __all__ values from the store
-let list = []
-for await (const value of store.query({})) {
-  list.push(value)
-}
-console.log('ALL THE VALUES', list)
-```
-
-### `batch()`
-
-This will return an object with which you can chain multiple operations together, with them only being executed on calling `commit`.
-
-#### Example
-
-```js
-const b = store.batch()
-
-for (let i = 0; i < 100; i++) {
-  b.put(new Key(`hello${i}`), new TextEncoder('utf8').encode(`hello world ${i}`))
-}
-
-await b.commit()
-console.log('put 100 values')
-```
-
-#### `put(key, value)`
-
-Queue a put operation to the store.
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| key | [Key][] | The key to store the value under |
-| value | [Uint8Array][] | Value to store |
-
-#### `delete(key)`
-
-Queue a delete operation to the store.
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| key | [Key][] | The key to remove the value for |
-
-#### `commit([options])` -> `Promise<void>`
-
-Write all queued operations to the underyling store. The batch object should not be used after calling this.
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| options | [Object][] | An options object, all properties are optional |
-| options.signal | [AbortSignal][] | A way to signal that the caller is no longer interested in the outcome of this operation |
-
-#### Example
-
-```js
-const batch = store.batch()
-
-batch.put(new Key('to-put'), new TextEncoder('utf8').encode('hello world'))
-batch.del(new Key('to-remove'))
-
-await batch.commit()
-```
-
-### `open()` -> `Promise`
-
-Opens the datastore, this is only needed if the store was closed before, otherwise this is taken care of by the constructor.
-
-### `close()` -> `Promise`
-
-Close the datastore, this should always be called to ensure resources are cleaned up.
+https://ipfs.github.io/interface-datastore/
 
 ## Contribute
 

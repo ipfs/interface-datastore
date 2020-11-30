@@ -3,9 +3,7 @@
 'use strict'
 
 const randomBytes = require('iso-random-stream/src/random')
-const chai = require('chai')
-chai.use(require('dirty-chai'))
-const expect = chai.expect
+const { expect } = require('aegir/utils/chai')
 const all = require('it-all')
 const drain = require('it-drain')
 const { utf8Encoder } = require('../src/utils')
@@ -294,6 +292,7 @@ module.exports = (test) => {
       })
     }
 
+    /** @type {Array<[string, any, any[]|number]>} */
     const tests = [
       ['empty', {}, [hello, world, hello2]],
       ['prefix', { prefix: '/z' }, [world, hello2]],
@@ -358,7 +357,7 @@ module.exports = (test) => {
       const hello3 = { key: new Key('/z/4hello3'), value: utf8Encoder.encode('4') }
       let firstIteration = true
 
-      for await (const { key, value } of store.query({})) { // eslint-disable-line no-unused-vars
+      for await (const {} of store.query({})) { // eslint-disable-line no-empty-pattern
         if (firstIteration) {
           expect(await store.has(hello2.key)).to.be.true()
           await store.delete(hello2.key)
