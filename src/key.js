@@ -430,7 +430,9 @@ function namespaceValue (ns) {
 /**
  * Flatten array of arrays (only one level)
  *
- * @param {Array<any>} arr
+ * @template T
+ * @param {Array<T|T[]>} arr
+ * @returns {T[]}
  * @returns {Array<any>}
  */
 function flatten (arr) {
