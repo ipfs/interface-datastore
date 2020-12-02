@@ -37,7 +37,7 @@ class Adapter {
    * @param {Options} [options]
    * @returns {Promise<void>}
    */
-  put (key, val, options) { // eslint-disable-line require-await
+  put (key, val, options) {
     return Promise.resolve()
   }
 
@@ -103,7 +103,7 @@ class Adapter {
    * @param {Object} [options]
    * @returns {Promise<void>}
    */
-  delete (key, options = {}) { // eslint-disable-line require-await
+  delete (key, options = {}) {
     return Promise.resolve()
   }
 

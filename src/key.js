@@ -31,7 +31,6 @@ class Key {
    * @param {boolean} [clean]
    */
   constructor (s, clean) {
-    Object.defineProperty(this, symbol, { value: true })
     if (typeof s === 'string') {
       this._buf = utf8Encoder.encode(s)
     } else if (s instanceof Uint8Array) {
@@ -56,7 +55,7 @@ class Key {
   /**
    * Convert to the string representation
    *
-   * @param {string} [encoding='utf8'] - The encoding to use. Should default to 'utf8'.
+   * @param {string} [encoding='utf8'] - The encoding to use.
    * @returns {string}
    */
   toString (encoding = 'utf8') {
@@ -76,6 +75,9 @@ class Key {
     return this._buf
   }
 
+  get [symbol] () {
+    return true
+  }
   /**
    * Return string representation of the key
    *
@@ -428,7 +430,9 @@ function namespaceValue (ns) {
 /**
  * Flatten array of arrays (only one level)
  *
- * @param {Array<any>} arr
+ * @template T
+ * @param {Array<T|T[]>} arr
+ * @returns {T[]}
  * @returns {Array<any>}
  */
 function flatten (arr) {
