@@ -37,7 +37,7 @@ class Adapter {
    * @param {Options} options
    * @returns {Promise<void>}
    */
-  put (key, val, options) { // eslint-disable-line require-await
+  put (key, val, options) {
     return Promise.resolve()
   }
 
