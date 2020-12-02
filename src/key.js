@@ -75,6 +75,9 @@ class Key {
     return this._buf
   }
 
+  get [symbol] () {
+    return true
+  }
   /**
    * Return string representation of the key
    *
