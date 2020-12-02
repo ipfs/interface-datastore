@@ -31,7 +31,6 @@ class Key {
    * @param {boolean} [clean]
    */
   constructor (s, clean) {
-    Object.defineProperty(this, symbol, { value: true })
     if (typeof s === 'string') {
       this._buf = utf8Encoder.encode(s)
     } else if (s instanceof Uint8Array) {
