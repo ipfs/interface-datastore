@@ -6,12 +6,12 @@ const _TextDecoder = require('ipfs-utils/src/text-decoder')
 
 /**
  * @template T
- * @typedef {import("./types").PromiseOrValue<T>} PromiseOrValue
+ * @typedef {import("./types").Await<T>} PromiseOrValue
  */
 
 /**
  * @template T
- * @typedef {import("./types").AnyIterable<T>} AnyIterable
+ * @typedef {import("./types").AwaitIterable<T>} AnyIterable
  */
 
 /** @type {TextEncoder} */
@@ -25,7 +25,7 @@ const utf8Decoder = new _TextDecoder('utf8')
  * @template T
  * @param {AnyIterable<T>} iterable
  * @param {(item: T) => PromiseOrValue<boolean>} filterer
- * @returns {AsyncGenerator<T>}
+ * @returns {AsyncIterable<T>}
  */
 const filter = (iterable, filterer) => {
   return (async function * () {
@@ -45,7 +45,7 @@ const filter = (iterable, filterer) => {
  * @template T
  * @param {AnyIterable<T>} iterable
  * @param {(items: T[]) => PromiseOrValue<T[]>} sorter
- * @returns {AsyncGenerator<T>}
+ * @returns {AsyncIterable<T>}
  */
 const sortAll = (iterable, sorter) => {
   return (async function * () {
@@ -61,7 +61,7 @@ const sortAll = (iterable, sorter) => {
  * @template T
  * @param {AsyncIterable<T> | Iterable<T>} iterable
  * @param {number} n
- * @returns {AsyncGenerator<T>}
+ * @returns {AsyncIterable<T>}
  */
 const take = (iterable, n) => {
   return (async function * () {
@@ -80,7 +80,7 @@ const take = (iterable, n) => {
  * @template T,O
  * @param {AsyncIterable<T> | Iterable<T>} iterable
  * @param {(item: T) => O} mapper
- * @returns {AsyncGenerator<O>}
+ * @returns {AsyncIterable<O>}
  */
 const map = (iterable, mapper) => {
   return (async function * () {

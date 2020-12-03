@@ -78,6 +78,7 @@ class Key {
   get [symbol] () {
     return true
   }
+
   /**
    * Return string representation of the key
    *
@@ -433,10 +434,9 @@ function namespaceValue (ns) {
  * @template T
  * @param {Array<T|T[]>} arr
  * @returns {T[]}
- * @returns {Array<any>}
  */
 function flatten (arr) {
-  return [].concat(...arr)
+  return /** @type {T[]} */([]).concat(...arr)
 }
 
 module.exports = Key

@@ -1,10 +1,10 @@
 import Key from './key'
 
-export type AnyIterable<T> = Iterable<T> | AsyncIterable<T>
-export type PromiseOrValue<T> = Promise<T> | T
+export type AwaitIterable<T> = Iterable<T> | AsyncIterable<T>;
+export type Await<T> = Promise<T> | T;
 export interface Pair {
-    key: Key,
-    value: Uint8Array
+    key: Key;
+    value: Uint8Array;
 }
 /**
  * Options for async operations.
@@ -19,9 +19,14 @@ export interface Batch {
     commit(options?: Options): Promise<void>;
 }
 
-export interface IDatastore {
-    open(): Promise<void>
-    close(): Promise<void>
+export interface DatastoreFactory extends Datastore {
+    prototype: Datastore;
+    new (): Datastore;
+}
+
+export interface Datastore {
+    open(): Promise<void>;
+    close(): Promise<void>;
     /**
      * Store the passed value under the passed key
      *
@@ -82,9 +87,9 @@ export interface IDatastore {
      * ```
      */
     putMany(
-        source: AnyIterable<Pair>,
-        options?: Options,
-    ): AsyncGenerator<Pair>;
+        source: AwaitIterable<Pair>,
+        options?: Options
+    ): AsyncIterable<Pair>;
     /**
      * Retrieve values for the passed keys
      *
@@ -96,7 +101,10 @@ export interface IDatastore {
      * }
      * ```
      */
-    getMany(source: AnyIterable<Key>, options?: Options): AsyncGenerator<Uint8Array>;
+    getMany(
+        source: AwaitIterable<Key>,
+        options?: Options
+    ): AsyncIterable<Uint8Array>;
     /**
      * Remove values for the passed keys
      *
@@ -110,7 +118,10 @@ export interface IDatastore {
      * }
      * ```
      */
-    deleteMany(source: AnyIterable<Key>, options?: Options): AsyncGenerator<Key>;
+    deleteMany(
+        source: AwaitIterable<Key>,
+        options?: Options
+    ): AsyncIterable<Key>;
     /**
      * This will return an object with which you can chain multiple operations together, with them only being executed on calling `commit`.
      *
@@ -140,7 +151,7 @@ export interface IDatastore {
      * console.log('ALL THE VALUES', list)
      * ```
      */
-    query(q: Query, options?: Options): AsyncGenerator<Pair|{key: Key}>;
+    query(q: Query, options?: Options): AsyncIterable<Pair | { key: Key }>;
     /**
      * Yield all datastore values
      *
@@ -148,7 +159,7 @@ export interface IDatastore {
      * @param q
      * @param options
      */
-    _all(q: Query, options?: Options): AsyncGenerator<Pair>
+    _all(q: Query, options?: Options): AsyncIterable<Pair>;
 }
 
 export interface Query {

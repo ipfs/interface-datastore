@@ -2,25 +2,31 @@
 
 const Key = require('./key')
 const Adapter = require('./adapter')
-
-// Errors
 const Errors = require('./errors')
 
 /**
  * @typedef {import('./types').Pair} Pair
- * @typedef {import('./types').IDatastore} IDatastore
+ * @typedef {import('./types').Datastore} Datastore
  * @typedef {import('./types').Options} Options
  */
 
 /**
  * @class MemoryDatastore
- * @implements {IDatastore}
+ * @implements {Datastore}
  */
 class MemoryDatastore extends Adapter {
   constructor () {
     super()
 
     this.data = {}
+  }
+
+  open () {
+    return Promise.resolve()
+  }
+
+  close () {
+    return Promise.resolve()
   }
 
   /**

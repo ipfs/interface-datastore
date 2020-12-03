@@ -6,7 +6,7 @@ const drain = require('it-drain')
 /**
  * @typedef {import('./key')} Key
  * @typedef {import('./types').Pair} Pair
- * @typedef {import('./types').IDatastore} IDatastore
+ * @typedef {import('./types').Datastore} Datastore
  * @typedef {import('./types').Options} Options
  * @typedef {import('./types').Query} Query
  * @typedef {import('./types').Batch} Batch
@@ -14,39 +14,78 @@ const drain = require('it-drain')
 
 /**
  * @template O
- * @typedef {import('./types').AnyIterable<O>} AnyIterable
+ * @typedef {import('./types').AwaitIterable<O>} AwaitIterable
  */
 
 /**
- * @implements {IDatastore}
+ * @implements {Datastore}
  */
-class Adapter {
+class DatastoreBase {
+  /**
+   * @returns {Promise<void>}
+   */
   open () {
-    return Promise.resolve()
-  }
-
-  close () {
-    return Promise.resolve()
+    return Promise.reject(new Error('.open is not implemented'))
   }
 
   /**
-   * Store the passed value under the passed key
-   *
+   * @returns {Promise<void>}
+   */
+  close () {
+    return Promise.reject(new Error('.close is not implemented'))
+  }
+
+  /**
    * @param {Key} key
    * @param {Uint8Array} val
    * @param {Options} [options]
    * @returns {Promise<void>}
    */
   put (key, val, options) {
-    return Promise.resolve()
+    return Promise.reject(new Error('.put is not implemented'))
   }
 
   /**
-   * Store the given key/value pairs
-   *
-   * @param {AnyIterable<Pair>} source
-   * @param {Object} [options]
-   * @returns {AsyncGenerator<Pair>}
+   * @param {Key} key
+   * @param {Options} [options]
+   * @returns {Promise<Uint8Array>}
+   */
+  get (key, options) {
+    return Promise.reject(new Error('.get is not implemented'))
+  }
+
+  /**
+   * @param {Key} key
+   * @param {Options} [options]
+   * @returns {Promise<boolean>}
+   */
+  has (key, options) {
+    return Promise.reject(new Error('.has is not implemented'))
+  }
+
+  /**
+   * @param {Key} key
+   * @param {Options} [options]
+   * @returns {Promise<void>}
+   */
+  delete (key, options) {
+    return Promise.reject(new Error('.delete is not implemented'))
+  }
+
+  /**
+   * @param {Query} q
+   * @param {Options} [options]
+   * @returns {AsyncIterable<Pair>}
+   */
+  // eslint-disable-next-line require-yield
+  async * _all (q, options) {
+    throw new Error('._all is not implemented')
+  }
+
+  /**
+   * @param {AwaitIterable<Pair>} source
+   * @param {Options} [options]
+   * @returns {AsyncIterable<Pair>}
    */
   async * putMany (source, options = {}) {
     for await (const { key, value } of source) {
@@ -56,18 +95,9 @@ class Adapter {
   }
 
   /**
-   * Retrieve the value for the passed key
-   *
-   * @param {Key} key
-   * @param {Object} [options]
-   * @returns {Promise<Uint8Array>}
-   */
-  get (key, options = {}) {
-    return Promise.resolve(new Uint8Array())
-  }
-
-  /**
-   * @param {AnyIterable<Key>} source
+   * @param {AwaitIterable<Key>} source
+   * @param {Options} [options]
+   * @returns {AsyncIterable<Uint8Array>}
    */
   async * getMany (source, options = {}) {
     for await (const key of source) {
@@ -76,43 +106,9 @@ class Adapter {
   }
 
   /**
-   * Check for the existence of a value for the passed key
-   *
-   * @param {Key} key
+   * @param {AwaitIterable<Key>} source
    * @param {Options} [options]
-   * @returns {Promise<boolean>}
-   * @example
-   * ```js
-   * const exists = await store.has(new Key('awesome'))
-   *
-   *   if (exists) {
-   *    console.log('it is there')
-   * } else {
-   *  console.log('it is not there')
-   * }
-   * ```
-   */
-  has (key, options) { // eslint-disable-line require-await
-    return Promise.resolve(false)
-  }
-
-  /**
-   * Remove the record for the passed key
-   *
-   * @param {Key} key
-   * @param {Object} [options]
-   * @returns {Promise<void>}
-   */
-  delete (key, options = {}) {
-    return Promise.resolve()
-  }
-
-  /**
-   * Remove values for the passed keys
-   *
-   * @param {AnyIterable<Key>} source
-   * @param {Options} [options]
-   * @returns {AsyncGenerator<Key>}
+   * @returns {AsyncIterable<Key>}
    */
   async * deleteMany (source, options = {}) {
     for await (const key of source) {
@@ -122,8 +118,6 @@ class Adapter {
   }
 
   /**
-   * Create a new batch object.
-   *
    * @returns {Batch}
    */
   batch () {
@@ -134,6 +128,7 @@ class Adapter {
       put (key, value) {
         puts.push({ key, value })
       },
+
       delete (key) {
         dels.push(key)
       },
@@ -147,26 +142,16 @@ class Adapter {
   }
 
   /**
-   * Yield all datastore values
-   *
    * @param {Query} q
    * @param {Options} [options]
-   * @returns {AsyncGenerator<Pair>}
-   */
-  async * _all (q, options) { // eslint-disable-line require-await
-
-  }
-
-  /**
-   * @param {Query} q
-   * @param {Options} [options]
-   * @returns {AsyncGenerator<Pair|{key: Key}>}
    */
   query (q, options) {
     let it = this._all(q, options)
 
     if (q.prefix != null) {
-      it = filter(it, e => e.key.toString().startsWith(/** @type {string} */(q.prefix)))
+      it = filter(it, (e) =>
+        e.key.toString().startsWith(/** @type {string} */ (q.prefix))
+      )
     }
 
     if (Array.isArray(q.filters)) {
@@ -179,7 +164,7 @@ class Adapter {
 
     if (q.offset != null) {
       let i = 0
-      it = filter(it, () => i++ >= /** @type {number} */(q.offset))
+      it = filter(it, () => i++ >= /** @type {number} */ (q.offset))
     }
 
     if (q.limit != null) {
@@ -187,11 +172,11 @@ class Adapter {
     }
 
     if (q.keysOnly === true) {
-      return map(it, e => ({ key: e.key }))
+      return map(it, (e) => ({ key: e.key }))
     }
 
     return it
   }
 }
 
-module.exports = Adapter
+module.exports = DatastoreBase
