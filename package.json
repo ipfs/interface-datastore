@@ -18,7 +18,7 @@
     "dist"
   ],
   "scripts": {
-    "prepare": "aegir build",
+    "prepack": "aegir build",
     "lint": "aegir lint",
     "test": "aegir test",
     "test:node": "aegir test --target node",
