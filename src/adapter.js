@@ -172,7 +172,7 @@ class DatastoreBase {
     }
 
     if (q.keysOnly === true) {
-      return map(it, (e) => ({ key: e.key }))
+      return map(it, (e) => /** @type {Pair} */({ key: e.key }))
     }
 
     return it

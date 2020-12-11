@@ -20,7 +20,6 @@ export interface Batch {
 }
 
 export interface DatastoreFactory extends Datastore {
-    prototype: Datastore;
     new (): Datastore;
 }
 
@@ -151,7 +150,7 @@ export interface Datastore {
      * console.log('ALL THE VALUES', list)
      * ```
      */
-    query(q: Query, options?: Options): AsyncIterable<Pair | { key: Key }>;
+    query(q: Query, options?: Options): AsyncIterable<Pair>;
     /**
      * Yield all datastore values
      *
