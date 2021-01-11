@@ -18,6 +18,7 @@ class MemoryDatastore extends Adapter {
   constructor () {
     super()
 
+    /** @type {Record<string, Uint8Array>} */
     this.data = {}
   }
 

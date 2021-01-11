@@ -20,7 +20,7 @@ const drain = require('it-drain')
 /**
  * @implements {Datastore}
  */
-class DatastoreBase {
+class Adapter {
   /**
    * @returns {Promise<void>}
    */
@@ -73,16 +73,6 @@ class DatastoreBase {
   }
 
   /**
-   * @param {Query} q
-   * @param {Options} [options]
-   * @returns {AsyncIterable<Pair>}
-   */
-  // eslint-disable-next-line require-yield
-  async * _all (q, options) {
-    throw new Error('._all is not implemented')
-  }
-
-  /**
    * @param {AwaitIterable<Pair>} source
    * @param {Options} [options]
    * @returns {AsyncIterable<Pair>}
@@ -121,7 +111,9 @@ class DatastoreBase {
    * @returns {Batch}
    */
   batch () {
+    /** @type {Pair[]} */
     let puts = []
+    /** @type {Key[]} */
     let dels = []
 
     return {
@@ -139,6 +131,16 @@ class DatastoreBase {
         dels = []
       }
     }
+  }
+
+  /**
+   * @param {Query} q
+   * @param {Options} [options]
+   * @returns {AsyncIterable<Pair>}
+   */
+  // eslint-disable-next-line require-yield
+  async * _all (q, options) {
+    throw new Error('._all is not implemented')
   }
 
   /**
@@ -179,4 +181,4 @@ class DatastoreBase {
   }
 }
 
-module.exports = DatastoreBase
+module.exports = Adapter

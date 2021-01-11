@@ -7,6 +7,9 @@ const utils = require('../src').utils
 describe('utils', () => {
   it('filter - sync', async () => {
     const data = [1, 2, 3, 4]
+    /**
+     * @param {number} val
+     */
     const filterer = val => val % 2 === 0
     const res = []
     for await (const val of utils.filter(data, filterer)) {
@@ -17,6 +20,9 @@ describe('utils', () => {
 
   it('filter - async', async () => {
     const data = [1, 2, 3, 4]
+    /**
+     * @param {number} val
+     */
     const filterer = val => val % 2 === 0
     const res = []
     for await (const val of utils.filter(data, filterer)) {
@@ -27,6 +33,9 @@ describe('utils', () => {
 
   it('sortAll', async () => {
     const data = [1, 2, 3, 4]
+    /**
+     * @param {number[]} vals
+     */
     const sorter = vals => vals.reverse()
     const res = []
     for await (const val of utils.sortAll(data, sorter)) {
@@ -37,7 +46,7 @@ describe('utils', () => {
 
   it('sortAll - fail', async () => {
     const data = [1, 2, 3, 4]
-    const sorter = vals => { throw new Error('fail') }
+    const sorter = () => { throw new Error('fail') }
     const res = []
 
     try {
@@ -72,6 +81,9 @@ describe('utils', () => {
 
   it('should map iterator values', async () => {
     const data = [1, 2, 3, 4]
+    /**
+     * @param {number} n
+     */
     const mapper = n => n * 2
     const res = []
     for await (const val of utils.map(data, mapper)) {

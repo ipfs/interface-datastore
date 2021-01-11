@@ -396,7 +396,7 @@ class Key {
    * Check if value is a Key instance
    *
    * @param {any} value - Value to check
-   * @returns {boolean}
+   * @returns {value is Key}
    */
   static isKey (value) {
     return value instanceof Key || Boolean(value && value[symbol])

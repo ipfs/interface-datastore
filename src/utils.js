@@ -1,8 +1,8 @@
 'use strict'
 
 const tempdir = require('ipfs-utils/src/temp-dir')
-const _TextEncoder = require('ipfs-utils/src/text-encoder')
-const _TextDecoder = require('ipfs-utils/src/text-decoder')
+const TextEncoder = require('ipfs-utils/src/text-encoder')
+const TextDecoder = require('ipfs-utils/src/text-decoder')
 
 /**
  * @template T
@@ -14,10 +14,8 @@ const _TextDecoder = require('ipfs-utils/src/text-decoder')
  * @typedef {import("./types").AwaitIterable<T>} AnyIterable
  */
 
-/** @type {TextEncoder} */
-const utf8Encoder = new _TextEncoder('utf8')
-/** @type {TextDecoder} */
-const utf8Decoder = new _TextDecoder('utf8')
+const utf8Encoder = new TextEncoder()
+const utf8Decoder = new TextDecoder('utf8')
 
 /**
  * Filter
