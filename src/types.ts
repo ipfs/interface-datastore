@@ -156,7 +156,7 @@ export interface Datastore {
 export interface Query {
   prefix?: string
   filters?: Array<(item: Pair) => boolean>
-  orders?: Array<(items: Pair[]) => Pair[]>
+  orders?: Array<(items: Pair[]) => Await<Pair[]>>
   limit?: number
   offset?: number
   keysOnly?: boolean
