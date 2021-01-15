@@ -1,10 +1,10 @@
 'use strict'
 
 const { nanoid } = require('nanoid')
-const withIs = require('class-is')
 const { utf8Encoder, utf8Decoder } = require('./utils')
 const TextDecoder = require('ipfs-utils/src/text-decoder')
 
+const symbol = Symbol.for('@ipfs/interface-datastore/key')
 const pathSepS = '/'
 const pathSepB = utf8Encoder.encode(pathSepS)
 const pathSep = pathSepB[0]
@@ -26,6 +26,10 @@ const pathSep = pathSepB[0]
  *
  */
 class Key {
+  /**
+   * @param {string | Uint8Array} s
+   * @param {boolean} [clean]
+   */
   constructor (s, clean) {
     if (typeof s === 'string') {
       this._buf = utf8Encoder.encode(s)
@@ -51,7 +55,7 @@ class Key {
   /**
    * Convert to the string representation
    *
-   * @param {string} [encoding='utf8']
+   * @param {string} [encoding='utf8'] - The encoding to use.
    * @returns {string}
    */
   toString (encoding = 'utf8') {
@@ -71,7 +75,13 @@ class Key {
     return this._buf
   }
 
+  get [symbol] () {
+    return true
+  }
+
   /**
+   * Return string representation of the key
+   *
    * @returns {string}
    */
   get [Symbol.toStringTag] () {
@@ -81,16 +91,17 @@ class Key {
   /**
    * Constructs a key out of a namespace array.
    *
-   * @param {Array<string>} list
+   * @param {Array<string>} list - The array of namespaces
    * @returns {Key}
    *
    * @example
+   * ```js
    * Key.withNamespaces(['one', 'two'])
    * // => Key('/one/two')
-   *
+   * ```
    */
   static withNamespaces (list) {
-    return new _Key(list.join(pathSepS))
+    return new Key(list.join(pathSepS))
   }
 
   /**
@@ -99,12 +110,13 @@ class Key {
    * @returns {Key}
    *
    * @example
+   * ```js
    * Key.random()
    * // => Key('/f98719ea086343f7b71f32ea9d9d521d')
-   *
+   * ```
    */
   static random () {
-    return new _Key(nanoid().replace(/-/g, ''))
+    return new Key(nanoid().replace(/-/g, ''))
   }
 
   /**
@@ -133,7 +145,7 @@ class Key {
   /**
    * Check if the given key is sorted lower than ourself.
    *
-   * @param {Key} key
+   * @param {Key} key - The other Key to check against
    * @returns {boolean}
    */
   less (key) {
@@ -164,8 +176,10 @@ class Key {
    * @returns {Key}
    *
    * @example
+   * ```js
    * new Key('/Comedy/MontyPython/Actor:JohnCleese').reverse()
    * // => Key('/Actor:JohnCleese/MontyPython/Comedy')
+   * ```
    */
   reverse () {
     return Key.withNamespaces(this.list().slice().reverse())
@@ -185,9 +199,10 @@ class Key {
    * @returns {string}
    *
    * @example
+   * ```js
    * new Key('/Comedy/MontyPython/Actor:JohnCleese').baseNamespace()
    * // => 'Actor:JohnCleese'
-   *
+   * ```
    */
   baseNamespace () {
     const ns = this.namespaces()
@@ -200,9 +215,10 @@ class Key {
    * @returns {Array<string>}
    *
    * @example
+   * ```js
    * new Key('/Comedy/MontyPython/Actor:JohnCleese').list()
    * // => ['Comedy', 'MontyPythong', 'Actor:JohnCleese']
-   *
+   * ```
    */
   list () {
     return this.toString().split(pathSepS).slice(1)
@@ -214,9 +230,10 @@ class Key {
    * @returns {string}
    *
    * @example
+   * ```js
    * new Key('/Comedy/MontyPython/Actor:JohnCleese').type()
    * // => 'Actor'
-   *
+   * ```
    */
   type () {
     return namespaceType(this.baseNamespace())
@@ -228,8 +245,10 @@ class Key {
    * @returns {string}
    *
    * @example
+   * ```js
    * new Key('/Comedy/MontyPython/Actor:JohnCleese').name()
    * // => 'JohnCleese'
+   * ```
    */
   name () {
     return namespaceValue(this.baseNamespace())
@@ -238,15 +257,17 @@ class Key {
   /**
    * Returns an "instance" of this type key (appends value to namespace).
    *
-   * @param {string} s
+   * @param {string} s - The string to append.
    * @returns {Key}
    *
    * @example
+   * ```js
    * new Key('/Comedy/MontyPython/Actor').instance('JohnClesse')
    * // => Key('/Comedy/MontyPython/Actor:JohnCleese')
+   * ```
    */
   instance (s) {
-    return new _Key(this.toString() + ':' + s)
+    return new Key(this.toString() + ':' + s)
   }
 
   /**
@@ -255,9 +276,10 @@ class Key {
    * @returns {Key}
    *
    * @example
+   * ```js
    * new Key('/Comedy/MontyPython/Actor:JohnCleese').path()
    * // => Key('/Comedy/MontyPython/Actor')
-   *
+   * ```
    */
   path () {
     let p = this.parent().toString()
@@ -265,7 +287,7 @@ class Key {
       p += pathSepS
     }
     p += this.type()
-    return new _Key(p)
+    return new Key(p)
   }
 
   /**
@@ -274,29 +296,31 @@ class Key {
    * @returns {Key}
    *
    * @example
+   * ```js
    * new Key("/Comedy/MontyPython/Actor:JohnCleese").parent()
    * // => Key("/Comedy/MontyPython")
-   *
+   * ```
    */
   parent () {
     const list = this.list()
     if (list.length === 1) {
-      return new _Key(pathSepS)
+      return new Key(pathSepS)
     }
 
-    return new _Key(list.slice(0, -1).join(pathSepS))
+    return new Key(list.slice(0, -1).join(pathSepS))
   }
 
   /**
    * Returns the `child` Key of this Key.
    *
-   * @param {Key} key
+   * @param {Key} key - The child Key to add
    * @returns {Key}
    *
    * @example
+   * ```js
    * new Key('/Comedy/MontyPython').child(new Key('Actor:JohnCleese'))
    * // => Key('/Comedy/MontyPython/Actor:JohnCleese')
-   *
+   * ```
    */
   child (key) {
     if (this.toString() === pathSepS) {
@@ -305,19 +329,20 @@ class Key {
       return this
     }
 
-    return new _Key(this.toString() + key.toString(), false)
+    return new Key(this.toString() + key.toString(), false)
   }
 
   /**
    * Returns whether this key is a prefix of `other`
    *
-   * @param {Key} other
+   * @param {Key} other - The other key to test against
    * @returns {boolean}
    *
    * @example
+   * ```js
    * new Key('/Comedy').isAncestorOf('/Comedy/MontyPython')
    * // => true
-   *
+   * ```
    */
   isAncestorOf (other) {
     if (other.toString() === this.toString()) {
@@ -330,13 +355,14 @@ class Key {
   /**
    * Returns whether this key is a contains another as prefix.
    *
-   * @param {Key} other
+   * @param {Key} other - The other Key to test against
    * @returns {boolean}
    *
    * @example
+   * ```js
    * new Key('/Comedy/MontyPython').isDecendantOf('/Comedy')
    * // => true
-   *
+   * ```
    */
   isDecendantOf (other) {
     if (other.toString() === this.toString()) {
@@ -347,7 +373,7 @@ class Key {
   }
 
   /**
-   * Returns wether this key has only one namespace.
+   * Checks if this key has only one namespace.
    *
    * @returns {boolean}
    *
@@ -359,11 +385,21 @@ class Key {
   /**
    * Concats one or more Keys into one new Key.
    *
-   * @param {Array<Key>} keys
+   * @param {Array<Key>} keys - The array of keys to concatenate
    * @returns {Key}
    */
   concat (...keys) {
     return Key.withNamespaces([...this.namespaces(), ...flatten(keys.map(key => key.namespaces()))])
+  }
+
+  /**
+   * Check if value is a Key instance
+   *
+   * @param {any} value - Value to check
+   * @returns {value is Key}
+   */
+  static isKey (value) {
+    return value instanceof Key || Boolean(value && value[symbol])
   }
 }
 
@@ -395,13 +431,12 @@ function namespaceValue (ns) {
 /**
  * Flatten array of arrays (only one level)
  *
- * @param {Array<Array>} arr
- * @returns {*}
+ * @template T
+ * @param {Array<T|T[]>} arr
+ * @returns {T[]}
  */
 function flatten (arr) {
-  return [].concat(...arr)
+  return /** @type {T[]} */([]).concat(...arr)
 }
 
-const _Key = withIs(Key, { className: 'Key', symbolName: '@ipfs/interface-datastore/key' })
-
-module.exports = _Key
+module.exports = Key

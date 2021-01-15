@@ -1,13 +1,15 @@
 /* eslint-env mocha */
 'use strict'
 
-const expect = require('chai').expect
-
+const { expect } = require('aegir/utils/chai')
 const Key = require('../src').Key
 
 const pathSep = '/'
 
 describe('Key', () => {
+  /**
+   * @param {string} s
+   */
   const clean = (s) => {
     let fixed = s
     if (fixed.startsWith(pathSep + pathSep)) {
@@ -21,6 +23,9 @@ describe('Key', () => {
   }
 
   describe('basic', () => {
+    /**
+     * @param {string} s
+     */
     const validKey = (s) => it(s, () => {
       const fixed = clean(pathSep + s)
       const namespaces = fixed.split(pathSep).slice(1)
@@ -110,6 +115,7 @@ describe('Key', () => {
   })
 
   it('random', () => {
+    /** @type {Record<string, boolean>} */
     const keys = {}
     const k = 100
     for (let i = 0; i < k; i++) {
@@ -122,6 +128,10 @@ describe('Key', () => {
   })
 
   it('less', () => {
+    /**
+     * @param {string | Uint8Array} a
+     * @param {string | Uint8Array} b
+     */
     const checkLess = (a, b) => {
       const ak = new Key(a)
       const bk = new Key(b)

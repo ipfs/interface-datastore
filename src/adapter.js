@@ -3,33 +3,79 @@
 const { filter, sortAll, take, map } = require('./utils')
 const drain = require('it-drain')
 
-class InterfaceDatastoreAdapter {
-  async open () { // eslint-disable-line require-await
+/**
+ * @typedef {import('./key')} Key
+ * @typedef {import('./types').Pair} Pair
+ * @typedef {import('./types').Datastore} Datastore
+ * @typedef {import('./types').Options} Options
+ * @typedef {import('./types').Query} Query
+ * @typedef {import('./types').Batch} Batch
+ */
 
-  }
+/**
+ * @template O
+ * @typedef {import('./types').AwaitIterable<O>} AwaitIterable
+ */
 
-  async close () { // eslint-disable-line require-await
-
-  }
-
+/**
+ * @implements {Datastore}
+ */
+class Adapter {
   /**
-   * Store the passed value under the passed key
-   *
-   * @param {Key} key
-   * @param {Uint8Array} val
-   * @param {Object} options
    * @returns {Promise<void>}
    */
-  async put (key, val, options = {}) { // eslint-disable-line require-await
-
+  open () {
+    return Promise.reject(new Error('.open is not implemented'))
   }
 
   /**
-   * Store the given key/value pairs
-   *
-   * @param {AsyncIterator<{ key: Key, value: Uint8Array }>} source
-   * @param {Object} options
-   * @returns {AsyncIterator<{ key: Key, value: Uint8Array }>}
+   * @returns {Promise<void>}
+   */
+  close () {
+    return Promise.reject(new Error('.close is not implemented'))
+  }
+
+  /**
+   * @param {Key} key
+   * @param {Uint8Array} val
+   * @param {Options} [options]
+   * @returns {Promise<void>}
+   */
+  put (key, val, options) {
+    return Promise.reject(new Error('.put is not implemented'))
+  }
+
+  /**
+   * @param {Key} key
+   * @param {Options} [options]
+   * @returns {Promise<Uint8Array>}
+   */
+  get (key, options) {
+    return Promise.reject(new Error('.get is not implemented'))
+  }
+
+  /**
+   * @param {Key} key
+   * @param {Options} [options]
+   * @returns {Promise<boolean>}
+   */
+  has (key, options) {
+    return Promise.reject(new Error('.has is not implemented'))
+  }
+
+  /**
+   * @param {Key} key
+   * @param {Options} [options]
+   * @returns {Promise<void>}
+   */
+  delete (key, options) {
+    return Promise.reject(new Error('.delete is not implemented'))
+  }
+
+  /**
+   * @param {AwaitIterable<Pair>} source
+   * @param {Options} [options]
+   * @returns {AsyncIterable<Pair>}
    */
   async * putMany (source, options = {}) {
     for await (const { key, value } of source) {
@@ -39,22 +85,9 @@ class InterfaceDatastoreAdapter {
   }
 
   /**
-   * Retrieve the value for the passed key
-   *
-   * @param {Key} key
-   * @param {Object} options
-   * @returns {Promise<Uint8Array>}
-   */
-  async get (key, options = {}) { // eslint-disable-line require-await
-
-  }
-
-  /**
-   * Retrieve values for the passed keys
-   *
-   * @param {AsyncIterator<Key>} source
-   * @param {Object} options
-   * @returns {AsyncIterator<Uint8Array>}
+   * @param {AwaitIterable<Key>} source
+   * @param {Options} [options]
+   * @returns {AsyncIterable<Uint8Array>}
    */
   async * getMany (source, options = {}) {
     for await (const key of source) {
@@ -63,32 +96,9 @@ class InterfaceDatastoreAdapter {
   }
 
   /**
-   * Check for the existence of a value for the passed key
-   *
-   * @param {Key} key
-   * @returns {Promise<boolean>}
-   */
-  async has (key) { // eslint-disable-line require-await
-
-  }
-
-  /**
-   * Remove the record for the passed key
-   *
-   * @param {Key} key
-   * @param {Object} options
-   * @returns {Promise<void>}
-   */
-  async delete (key, options = {}) { // eslint-disable-line require-await
-
-  }
-
-  /**
-   * Remove values for the passed keys
-   *
-   * @param {AsyncIterator<Key>} source
-   * @param {Object} options
-   * @returns {AsyncIterator<Key>}
+   * @param {AwaitIterable<Key>} source
+   * @param {Options} [options]
+   * @returns {AsyncIterable<Key>}
    */
   async * deleteMany (source, options = {}) {
     for await (const key of source) {
@@ -98,18 +108,19 @@ class InterfaceDatastoreAdapter {
   }
 
   /**
-   * Create a new batch object.
-   *
-   * @returns {Object}
+   * @returns {Batch}
    */
   batch () {
+    /** @type {Pair[]} */
     let puts = []
+    /** @type {Key[]} */
     let dels = []
 
     return {
       put (key, value) {
         puts.push({ key, value })
       },
+
       delete (key) {
         dels.push(key)
       },
@@ -123,28 +134,26 @@ class InterfaceDatastoreAdapter {
   }
 
   /**
-   * Yield all datastore values
-   *
-   * @param {Object} q
-   * @param {Object} options
-   * @returns {AsyncIterable<{ key: Key, value: Uint8Array }>}
+   * @param {Query} q
+   * @param {Options} [options]
+   * @returns {AsyncIterable<Pair>}
    */
-  async * _all (q, options) { // eslint-disable-line require-await
-
+  // eslint-disable-next-line require-yield
+  async * _all (q, options) {
+    throw new Error('._all is not implemented')
   }
 
   /**
-   * Query the store.
-   *
-   * @param {Object} q
-   * @param {Object} options
-   * @returns {AsyncIterable<Uint8Array>}
+   * @param {Query} q
+   * @param {Options} [options]
    */
-  async * query (q, options) { // eslint-disable-line require-await
+  query (q, options) {
     let it = this._all(q, options)
 
     if (q.prefix != null) {
-      it = filter(it, e => e.key.toString().startsWith(q.prefix))
+      it = filter(it, (e) =>
+        e.key.toString().startsWith(/** @type {string} */ (q.prefix))
+      )
     }
 
     if (Array.isArray(q.filters)) {
@@ -157,7 +166,7 @@ class InterfaceDatastoreAdapter {
 
     if (q.offset != null) {
       let i = 0
-      it = filter(it, () => i++ >= q.offset)
+      it = filter(it, () => i++ >= /** @type {number} */ (q.offset))
     }
 
     if (q.limit != null) {
@@ -165,11 +174,11 @@ class InterfaceDatastoreAdapter {
     }
 
     if (q.keysOnly === true) {
-      it = map(it, e => ({ key: e.key }))
+      return map(it, (e) => /** @type {Pair} */({ key: e.key }))
     }
 
-    yield * it
+    return it
   }
 }
 
-module.exports = InterfaceDatastoreAdapter
+module.exports = Adapter

@@ -1,24 +1,34 @@
 /* eslint-env mocha */
-/* eslint max-nested-callbacks: ["error", 8] */
 'use strict'
 
+// @ts-ignore
 const randomBytes = require('iso-random-stream/src/random')
-const chai = require('chai')
-chai.use(require('dirty-chai'))
-const expect = chai.expect
+const { expect } = require('aegir/utils/chai')
 const all = require('it-all')
 const drain = require('it-drain')
 const { utf8Encoder } = require('../src/utils')
 
-const Key = require('../src').Key
+const { Key } = require('../src')
 
+/**
+ * @typedef {import('./types').Datastore} Datastore
+ * @typedef {import('./types').Pair} Pair
+ */
+
+/**
+ * @param {{ teardown: () => void; setup: () => Datastore; }} test
+ */
 module.exports = (test) => {
+  /**
+   * @param {Datastore} store
+   */
   const cleanup = async store => {
     await store.close()
     await test.teardown()
   }
 
   describe('put', () => {
+    /** @type {Datastore} */
     let store
 
     beforeEach(async () => {
@@ -47,6 +57,7 @@ module.exports = (test) => {
   })
 
   describe('putMany', () => {
+    /** @type {Datastore} */
     let store
 
     beforeEach(async () => {
@@ -77,6 +88,7 @@ module.exports = (test) => {
   })
 
   describe('get', () => {
+    /** @type {Datastore} */
     let store
 
     beforeEach(async () => {
@@ -108,6 +120,7 @@ module.exports = (test) => {
   })
 
   describe('getMany', () => {
+    /** @type {Datastore} */
     let store
 
     beforeEach(async () => {
@@ -142,6 +155,7 @@ module.exports = (test) => {
   })
 
   describe('delete', () => {
+    /** @type {Datastore} */
     let store
 
     beforeEach(async () => {
@@ -161,6 +175,7 @@ module.exports = (test) => {
     })
 
     it('parallel', async () => {
+      /** @type {[Key, Uint8Array][]} */
       const data = []
       for (let i = 0; i < 100; i++) {
         data.push([new Key(`/a/key${i}`), utf8Encoder.encode(`data${i}`)])
@@ -179,6 +194,7 @@ module.exports = (test) => {
   })
 
   describe('deleteMany', () => {
+    /** @type {Datastore} */
     let store
 
     beforeEach(async () => {
@@ -214,6 +230,7 @@ module.exports = (test) => {
   })
 
   describe('batch', () => {
+    /** @type {Datastore} */
     let store
 
     beforeEach(async () => {
@@ -252,9 +269,13 @@ module.exports = (test) => {
 
       await b.commit()
 
+      /**
+       * @param {AsyncIterable<Pair>} iterable
+       */
       const total = async iterable => {
         let count = 0
-        for await (const _ of iterable) count++ // eslint-disable-line
+        // eslint-disable-next-line no-unused-vars
+        for await (const _ of iterable) count++
         return count
       }
 
@@ -265,14 +286,24 @@ module.exports = (test) => {
   })
 
   describe('query', () => {
+    /** @type {Datastore} */
     let store
     const hello = { key: new Key('/q/1hello'), value: utf8Encoder.encode('1') }
     const world = { key: new Key('/z/2world'), value: utf8Encoder.encode('2') }
     const hello2 = { key: new Key('/z/3hello2'), value: utf8Encoder.encode('3') }
 
+    /**
+     * @param {Pair} entry
+     */
     const filter1 = entry => !entry.key.toString().endsWith('hello')
+    /**
+     * @param {Pair} entry
+     */
     const filter2 = entry => entry.key.toString().endsWith('hello2')
 
+    /**
+     * @param {Pair[]} res
+     */
     const order1 = res => {
       return res.sort((a, b) => {
         if (a.value.toString() < b.value.toString()) {
@@ -282,6 +313,9 @@ module.exports = (test) => {
       })
     }
 
+    /**
+     * @param {Pair[]} res
+     */
     const order2 = res => {
       return res.sort((a, b) => {
         if (a.value.toString() < b.value.toString()) {
@@ -294,6 +328,7 @@ module.exports = (test) => {
       })
     }
 
+    /** @type {Array<[string, any, any[]|number]>} */
     const tests = [
       ['empty', {}, [hello, world, hello2]],
       ['prefix', { prefix: '/z' }, [world, hello2]],
@@ -327,6 +362,10 @@ module.exports = (test) => {
       if (Array.isArray(expected)) {
         if (query.orders == null) {
           expect(res).to.have.length(expected.length)
+          /**
+           * @param {Pair} a
+           * @param {Pair} b
+           */
           const s = (a, b) => {
             if (a.key.toString() < b.key.toString()) {
               return 1
@@ -358,7 +397,7 @@ module.exports = (test) => {
       const hello3 = { key: new Key('/z/4hello3'), value: utf8Encoder.encode('4') }
       let firstIteration = true
 
-      for await (const { key, value } of store.query({})) { // eslint-disable-line no-unused-vars
+      for await (const {} of store.query({})) { // eslint-disable-line no-empty-pattern
         if (firstIteration) {
           expect(await store.has(hello2.key)).to.be.true()
           await store.delete(hello2.key)
@@ -388,6 +427,7 @@ module.exports = (test) => {
   })
 
   describe('lifecycle', () => {
+    /** @type {Datastore} */
     let store
 
     before(async () => {
