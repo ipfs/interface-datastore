@@ -1,3 +1,22 @@
+# [3.0.0](https://github.com/ipfs/interface-datastore/compare/v2.0.1...v3.0.0) (2021-01-15)
+
+
+### Bug Fixes
+
+* ci ([f197aa4](https://github.com/ipfs/interface-datastore/commit/f197aa4a719a388ba91c65ea49ee3cdc5be4dc84))
+* feedback ([248cddb](https://github.com/ipfs/interface-datastore/commit/248cddb7d14ee9f29e92fdbe24916578577f4f6d))
+* fix some types ([42aebd5](https://github.com/ipfs/interface-datastore/commit/42aebd5f56e4577e6743f0c3861ea0a558e142b7))
+* remove types versions and tweak orders ([e449528](https://github.com/ipfs/interface-datastore/commit/e449528d5b98edf6b62e770033d59686928fe67e))
+* types ([f8fe99e](https://github.com/ipfs/interface-datastore/commit/f8fe99ec949a694434564b0494bc9f6b57351df4))
+* update aegir and feedback ([eab84b0](https://github.com/ipfs/interface-datastore/commit/eab84b025c03b6a2fff805af3a238cefd57545f2))
+
+
+### Features
+
+* ts types, github ci and clean up ([2afd9be](https://github.com/ipfs/interface-datastore/commit/2afd9be3abf747528473c46550671f92acc5792e))
+
+
+
 ## [2.0.1](https://github.com/ipfs/interface-datastore/compare/v2.0.0...v2.0.1) (2020-11-09)
 
 
