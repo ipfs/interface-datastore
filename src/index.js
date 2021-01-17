@@ -1,5 +1,14 @@
 'use strict'
 
+/**
+ * @typedef {import('./types').Datastore} Datastore
+ * @typedef {import('./types').DatastoreFactory} DatastoreFactory
+ * @typedef {import('./types').Batch} Batch
+ * @typedef {import('./types').Options} Options
+ * @typedef {import('./types').Query} Query
+ * @typedef {import('./types').Pair} Pair
+ */
+
 const Key = require('./key')
 const MemoryDatastore = require('./memory')
 const utils = require('./utils')
