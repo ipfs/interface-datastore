@@ -18,11 +18,6 @@ export interface Batch {
   delete: (key: Key) => void
   commit: (options?: Options) => Promise<void>
 }
-
-export interface DatastoreConstructor {
-  new (): Datastore
-}
-
 export interface Datastore {
   open: () => Promise<void>
   close: () => Promise<void>
