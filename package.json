@@ -1,6 +1,6 @@
 {
   "name": "interface-datastore",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "datastore interface",
   "leadMaintainer": "Alex Potsides <alex.potsides@protocol.ai>",
   "main": "src/index.js",
@@ -61,8 +61,8 @@
     "Jacob Heun <jacobheun@gmail.com>",
     "Hugo Dias <hugomrdias@gmail.com>",
     "Vasco Santos <vasco.santos@moxy.studio>",
-    "Richard Schneider <makaretu@gmail.com>",
     "Hector Sanjuan <code@hector.link>",
+    "Richard Schneider <makaretu@gmail.com>",
     "ᴠɪᴄᴛᴏʀ ʙᴊᴇʟᴋʜᴏʟᴍ <victorbjelkholm@gmail.com>",
     "Alan Shaw <alan.shaw@protocol.ai>",
     "Carson Farmer <carson.farmer@gmail.com>",
