@@ -27,13 +27,19 @@ module.exports = (test) => {
     await test.teardown()
   }
 
+  const createStore = async () => {
+    const store = await test.setup()
+    if (!store) throw new Error('missing store')
+    await store.open()
+    return store
+  }
+
   describe('put', () => {
     /** @type {Datastore} */
     let store
 
     beforeEach(async () => {
-      store = await test.setup()
-      if (!store) throw new Error('missing store')
+      store = await createStore()
     })
 
     afterEach(() => cleanup(store))
@@ -61,8 +67,7 @@ module.exports = (test) => {
     let store
 
     beforeEach(async () => {
-      store = await test.setup()
-      if (!store) throw new Error('missing store')
+      store = await createStore()
     })
 
     afterEach(() => cleanup(store))
@@ -92,8 +97,7 @@ module.exports = (test) => {
     let store
 
     beforeEach(async () => {
-      store = await test.setup()
-      if (!store) throw new Error('missing store')
+      store = await createStore()
     })
 
     afterEach(() => cleanup(store))
@@ -124,8 +128,7 @@ module.exports = (test) => {
     let store
 
     beforeEach(async () => {
-      store = await test.setup()
-      if (!store) throw new Error('missing store')
+      store = await createStore()
     })
 
     afterEach(() => cleanup(store))
@@ -159,8 +162,7 @@ module.exports = (test) => {
     let store
 
     beforeEach(async () => {
-      store = await test.setup()
-      if (!store) throw new Error('missing store')
+      store = await createStore()
     })
 
     afterEach(() => cleanup(store))
@@ -198,8 +200,7 @@ module.exports = (test) => {
     let store
 
     beforeEach(async () => {
-      store = await test.setup()
-      if (!store) throw new Error('missing store')
+      store = await createStore()
     })
 
     afterEach(() => cleanup(store))
@@ -234,8 +235,7 @@ module.exports = (test) => {
     let store
 
     beforeEach(async () => {
-      store = await test.setup()
-      if (!store) throw new Error('missing store')
+      store = await createStore()
     })
 
     afterEach(() => cleanup(store))
@@ -342,8 +342,7 @@ module.exports = (test) => {
     ]
 
     before(async () => {
-      store = await test.setup()
-      if (!store) throw new Error('missing store')
+      store = await createStore()
 
       const b = store.batch()
 
