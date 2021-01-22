@@ -1,3 +1,12 @@
+## [3.0.3](https://github.com/ipfs/interface-datastore/compare/v3.0.2...v3.0.3) (2021-01-22)
+
+
+### Bug Fixes
+
+* fix datastore factory ([#65](https://github.com/ipfs/interface-datastore/issues/65)) ([586f883](https://github.com/ipfs/interface-datastore/commit/586f883d3f5ea0391cf3184024db9a60d9b4aa56))
+
+
+
 ## [3.0.2](https://github.com/ipfs/interface-datastore/compare/v3.0.1...v3.0.2) (2021-01-22)
 
 
