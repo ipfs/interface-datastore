@@ -19,9 +19,8 @@ export interface Batch {
   commit: (options?: Options) => Promise<void>
 }
 
-export interface DatastoreFactory {
+export interface DatastoreConstructor {
   new (): Datastore
-  prototype: Datastore
 }
 
 export interface Datastore {
