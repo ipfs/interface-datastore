@@ -17,187 +17,191 @@ export interface Batch {
   commit: (options?: Options) => Promise<void>
 }
 
-interface Key {
-  /**
-   * Convert to the string representation
-   *
-   * @returns {string}
-   */
-  toString: (encoding: 'utf8' | 'utf-8' | string) => string
-  /**
-   * Return the Uint8Array representation of the key
-   */
-  uint8Array: () => Uint8Array
-  /**
-   * Return string representation of the key
-   */
-  [Symbol.toStringTag]: string
-  /**
-   * Cleanup the current key
-   */
-  clean: () => void
-  /**
-   * Check if the given key is sorted lower than ourself.
-   */
-  less: (key: Key) => boolean
-  /**
-   * Returns the key with all parts in reversed order.
-   *
-   * @example
-   * ```js
-   * new Key('/Comedy/MontyPython/Actor:JohnCleese').reverse()
-   * // => Key('/Actor:JohnCleese/MontyPython/Comedy')
-   * ```
-   */
-  reverse: () => Key
-  /**
-   * Returns the `namespaces` making up this Key.
-   */
-  namespaces: () => string[]
+// interface Key {
+//   _buf: Uint8Array
 
-  /** Returns the "base" namespace of this key.
-   *
-   * @example
-   * ```js
-   * new Key('/Comedy/MontyPython/Actor:JohnCleese').baseNamespace()
-   * // => 'Actor:JohnCleese'
-   * ```
-   */
-  baseNamespace: () => string
-  /**
-   * Returns the `list` representation of this key.
-   *
-   * @example
-   * ```js
-   * new Key('/Comedy/MontyPython/Actor:JohnCleese').list()
-   * // => ['Comedy', 'MontyPythong', 'Actor:JohnCleese']
-   * ```
-   */
-  list: () => string[]
+//   /**
+//    * Convert to the string representation
+//    *
+//    * @returns {string}
+//    */
+//   toString: (encoding: 'utf8' | 'utf-8' | string) => string
+//   /**
+//    * Return the Uint8Array representation of the key
+//    */
+//   uint8Array: () => Uint8Array
+//   /**
+//    * Return string representation of the key
+//    */
+//   [Symbol.toStringTag]: string
+//   /**
+//    * Cleanup the current key
+//    */
+//   clean: () => void
+//   /**
+//    * Check if the given key is sorted lower than ourself.
+//    */
+//   less: (key: Key) => boolean
+//   /**
+//    * Returns the key with all parts in reversed order.
+//    *
+//    * @example
+//    * ```js
+//    * new Key('/Comedy/MontyPython/Actor:JohnCleese').reverse()
+//    * // => Key('/Actor:JohnCleese/MontyPython/Comedy')
+//    * ```
+//    */
+//   reverse: () => Key
+//   /**
+//    * Returns the `namespaces` making up this Key.
+//    */
+//   namespaces: () => string[]
 
-  /**
-   * Returns the "type" of this key (value of last namespace).
-   *
-   * @example
-   * ```js
-   * new Key('/Comedy/MontyPython/Actor:JohnCleese').type()
-   * // => 'Actor'
-   * ```
-   */
-  type: () => string
-  /**
-   * Returns the "name" of this key (field of last namespace).
-   *
-   * @example
-   * ```js
-   * new Key('/Comedy/MontyPython/Actor:JohnCleese').name()
-   * // => 'JohnCleese'
-   * ```
-   */
-  name: () => string
-  /**
-   * Returns an "instance" of this type key (appends value to namespace).
-   *
-   * @example
-   * ```js
-   * new Key('/Comedy/MontyPython/Actor').instance('JohnClesse')
-   * // => Key('/Comedy/MontyPython/Actor:JohnCleese')
-   * ```
-   */
-  instance: (s: string) => Key
-  /**
-   * Returns the "path" of this key (parent + type).
-   *
-   * @example
-   * ```js
-   * new Key('/Comedy/MontyPython/Actor:JohnCleese').path()
-   * // => Key('/Comedy/MontyPython/Actor')
-   * ```
-   */
-  path: () => Key
-  /**
-   * Returns the `parent` Key of this Key.
-   *
-   * @example
-   * ```js
-   * new Key("/Comedy/MontyPython/Actor:JohnCleese").parent()
-   * // => Key("/Comedy/MontyPython")
-   * ```
-   */
-  parent: () => Key
-  /**
-   * Returns the `child` Key of this Key.
-   *
-   * @example
-   * ```js
-   * new Key('/Comedy/MontyPython').child(new Key('Actor:JohnCleese'))
-   * // => Key('/Comedy/MontyPython/Actor:JohnCleese')
-   * ```
-   */
-  child: (key: Key) => Key
-  /**
-   * Returns whether this key is a prefix of `other`
-   *
-   * @example
-   * ```js
-   * new Key('/Comedy').isAncestorOf('/Comedy/MontyPython')
-   * // => true
-   * ```
-   */
-  isAncestorOf: (other: unknown) => boolean
-  /**
-   * Returns whether this key is a contains another as prefix.
-   *
-   * @example
-   * ```js
-   * new Key('/Comedy/MontyPython').isDecendantOf('/Comedy')
-   * // => true
-   * ```
-   */
-  isDecendantOf: (other: unknown) => boolean
-  /**
-   * Checks if this key has only one namespace.
-   */
-  isTopLevel: () => boolean
+//   /** Returns the "base" namespace of this key.
+//    *
+//    * @example
+//    * ```js
+//    * new Key('/Comedy/MontyPython/Actor:JohnCleese').baseNamespace()
+//    * // => 'Actor:JohnCleese'
+//    * ```
+//    */
+//   baseNamespace: () => string
+//   /**
+//    * Returns the `list` representation of this key.
+//    *
+//    * @example
+//    * ```js
+//    * new Key('/Comedy/MontyPython/Actor:JohnCleese').list()
+//    * // => ['Comedy', 'MontyPythong', 'Actor:JohnCleese']
+//    * ```
+//    */
+//   list: () => string[]
 
-  /**
-   * Concats one or more Keys into one new Key.
-   */
-  concat: (...keys: Key[]) => Key
-}
+//   /**
+//    * Returns the "type" of this key (value of last namespace).
+//    *
+//    * @example
+//    * ```js
+//    * new Key('/Comedy/MontyPython/Actor:JohnCleese').type()
+//    * // => 'Actor'
+//    * ```
+//    */
+//   type: () => string
+//   /**
+//    * Returns the "name" of this key (field of last namespace).
+//    *
+//    * @example
+//    * ```js
+//    * new Key('/Comedy/MontyPython/Actor:JohnCleese').name()
+//    * // => 'JohnCleese'
+//    * ```
+//    */
+//   name: () => string
+//   /**
+//    * Returns an "instance" of this type key (appends value to namespace).
+//    *
+//    * @example
+//    * ```js
+//    * new Key('/Comedy/MontyPython/Actor').instance('JohnClesse')
+//    * // => Key('/Comedy/MontyPython/Actor:JohnCleese')
+//    * ```
+//    */
+//   instance: (s: string) => Key
+//   /**
+//    * Returns the "path" of this key (parent + type).
+//    *
+//    * @example
+//    * ```js
+//    * new Key('/Comedy/MontyPython/Actor:JohnCleese').path()
+//    * // => Key('/Comedy/MontyPython/Actor')
+//    * ```
+//    */
+//   path: () => Key
+//   /**
+//    * Returns the `parent` Key of this Key.
+//    *
+//    * @example
+//    * ```js
+//    * new Key("/Comedy/MontyPython/Actor:JohnCleese").parent()
+//    * // => Key("/Comedy/MontyPython")
+//    * ```
+//    */
+//   parent: () => Key
+//   /**
+//    * Returns the `child` Key of this Key.
+//    *
+//    * @example
+//    * ```js
+//    * new Key('/Comedy/MontyPython').child(new Key('Actor:JohnCleese'))
+//    * // => Key('/Comedy/MontyPython/Actor:JohnCleese')
+//    * ```
+//    */
+//   child: (key: Key) => Key
+//   /**
+//    * Returns whether this key is a prefix of `other`
+//    *
+//    * @example
+//    * ```js
+//    * new Key('/Comedy').isAncestorOf('/Comedy/MontyPython')
+//    * // => true
+//    * ```
+//    */
+//   isAncestorOf: (other: unknown) => boolean
+//   /**
+//    * Returns whether this key is a contains another as prefix.
+//    *
+//    * @example
+//    * ```js
+//    * new Key('/Comedy/MontyPython').isDecendantOf('/Comedy')
+//    * // => true
+//    * ```
+//    */
+//   isDecendantOf: (other: unknown) => boolean
+//   /**
+//    * Checks if this key has only one namespace.
+//    */
+//   isTopLevel: () => boolean
 
-interface KeyConstructor {
-  new (s: string | Uint8Array, clean?: boolean): Key
-  /**
-   * Constructs a key out of a namespace array.
-   *
-   * @param {Array<string>} list - The array of namespaces
-   * @returns {Key}
-   *
-   * @example
-   * ```js
-   * Key.withNamespaces(['one', 'two'])
-   * // => Key('/one/two')
-   * ```
-   */
-  withNamespaces: (list: string[]) => Key
+//   /**
+//    * Concats one or more Keys into one new Key.
+//    */
+//   concat: (...keys: Key[]) => Key
+// }
 
-  /**
-   * Returns a randomly (uuid) generated key.
-   *
-   * @returns {Key}
-   *
-   * @example
-   * ```js
-   * Key.random()
-   * // => Key('/f98719ea086343f7b71f32ea9d9d521d')
-   * ```
-   */
-  random: () => Key
-  isKey: (value: any) => value is Key
-}
+// interface KeyConstructor {
+//   new (s: string | Uint8Array, clean?: boolean): Key
+//   /**
+//    * Constructs a key out of a namespace array.
+//    *
+//    * @param {Array<string>} list - The array of namespaces
+//    * @returns {Key}
+//    *
+//    * @example
+//    * ```js
+//    * Key.withNamespaces(['one', 'two'])
+//    * // => Key('/one/two')
+//    * ```
+//    */
+//   withNamespaces: (list: string[]) => Key
 
-declare var Key: KeyConstructor
+//   /**
+//    * Returns a randomly (uuid) generated key.
+//    *
+//    * @returns {Key}
+//    *
+//    * @example
+//    * ```js
+//    * Key.random()
+//    * // => Key('/f98719ea086343f7b71f32ea9d9d521d')
+//    * ```
+//    */
+//   random: () => Key
+//   isKey: (value: any) => value is Key
+// }
+
+// declare var Key: KeyConstructor
+
+type Key = any
 
 export type { Key }
 
