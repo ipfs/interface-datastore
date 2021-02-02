@@ -34,15 +34,15 @@
  * @typedef {object} Datastore
  * @property {() => Promise<void>} open
  * @property {() => Promise<void>} close
- * @property {(key: Key, val: Uint8Array, options?: Options) => Promise<void>} put
- * @property {(key: Key, options?: Options) => Promise<Uint8Array>} get
- * @property {(key: Key, options?: Options) => Promise<boolean>} has
- * @property {(key: Key, options?: Options) => Promise<void>} delete
- * @property {(source: AwaitIterable<Pair>, options?: Options) => AsyncIterable<Pair>} putMany
- * @property {(source: AwaitIterable<Key>, options?: Options) => AsyncIterable<Uint8Array>} getMany
- * @property {(source: AwaitIterable<Key>, options?: Options) => AsyncIterable<Key>} deleteMany
- * @property {() => Batch} batch
- * @property {(q: Query, options?: Options) => AsyncIterable<Pair>} query
+ * @property {(key: Key, val: Uint8Array, options?: Options) => Promise<void>} put - Store the passed value under the passed key
+ * @property {(key: Key, options?: Options) => Promise<Uint8Array>} get - Retrieve the value stored under the given key
+ * @property {(key: Key, options?: Options) => Promise<boolean>} has - Check for the existence of a value for the passed key
+ * @property {(key: Key, options?: Options) => Promise<void>} delete - Remove the record for the passed key
+ * @property {(source: AwaitIterable<Pair>, options?: Options) => AsyncIterable<Pair>} putMany - Store the given key/value pairs
+ * @property {(source: AwaitIterable<Key>, options?: Options) => AsyncIterable<Uint8Array>} getMany - Retrieve values for the passed keys
+ * @property {(source: AwaitIterable<Key>, options?: Options) => AsyncIterable<Key>} deleteMany - Remove values for the passed keys
+ * @property {() => Batch} batch - This will return an object with which you can chain multiple operations together, with them only being executed on calling `commit`
+ * @property {(q: Query, options?: Options) => AsyncIterable<Pair>} query - Query the store
  */
 
 const Key = require('./key')
