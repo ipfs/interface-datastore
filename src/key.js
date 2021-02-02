@@ -25,6 +25,10 @@ const pathSep = pathSepB[0]
  * - `new Key('/Comedy/MontyPython/Sketch:CheeseShop/Character:Mousebender')`
  *
  */
+/**
+ * @class Key
+ * @implements {Key}
+ */
 class Key {
   /**
    * @param {string | Uint8Array} s
