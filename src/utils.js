@@ -6,12 +6,12 @@ const TextDecoder = require('ipfs-utils/src/text-decoder')
 
 /**
  * @template T
- * @typedef {import("./types").Await<T>} PromiseOrValue
+ * @typedef {import("./").Await<T>} PromiseOrValue
  */
 
 /**
  * @template T
- * @typedef {import("./types").AwaitIterable<T>} AnyIterable
+ * @typedef {import("./").AwaitIterable<T>} AnyIterable
  */
 
 const utf8Encoder = new TextEncoder()

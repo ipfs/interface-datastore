@@ -11,8 +11,8 @@ const { utf8Encoder } = require('../src/utils')
 const { Key } = require('../src')
 
 /**
- * @typedef {import('./types').Datastore} Datastore
- * @typedef {import('./types').Pair} Pair
+ * @typedef {import('./').Datastore} Datastore
+ * @typedef {import('./').Pair} Pair
  */
 
 /**

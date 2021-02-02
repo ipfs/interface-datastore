@@ -5,20 +5,20 @@ const drain = require('it-drain')
 
 /**
  * @typedef {import('./key')} Key
- * @typedef {import('./types').Pair} Pair
- * @typedef {import('./types').Datastore} Datastore
- * @typedef {import('./types').Options} Options
- * @typedef {import('./types').Query} Query
- * @typedef {import('./types').Batch} Batch
+ * @typedef {import('./').Pair} Pair
+ * @typedef {import('./').Datastore} Datastore
+ * @typedef {import('./').Options} Options
+ * @typedef {import('./').Query} Query
+ * @typedef {import('./').Batch} Batch
  */
 
 /**
  * @template O
- * @typedef {import('./types').AwaitIterable<O>} AwaitIterable
+ * @typedef {import('./').AwaitIterable<O>} AwaitIterable
  */
 
 /**
- * @implements {Datastore}
+ * @type {Datastore}
  */
 class Adapter {
   /**

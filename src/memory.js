@@ -5,14 +5,12 @@ const Adapter = require('./adapter')
 const Errors = require('./errors')
 
 /**
- * @typedef {import('./types').Pair} Pair
- * @typedef {import('./types').Datastore} Datastore
- * @typedef {import('./types').Options} Options
+ * @typedef {import('./').Datastore} Datastore
+ * @typedef {import('./').Options} Options
  */
 
 /**
- * @class MemoryDatastore
- * @implements {Datastore}
+ * @type {Datastore}
  */
 class MemoryDatastore extends Adapter {
   constructor () {
