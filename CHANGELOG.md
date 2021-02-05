@@ -1,3 +1,12 @@
+## [3.0.4](https://github.com/ipfs/interface-datastore/compare/v3.0.3...v3.0.4) (2021-02-05)
+
+
+### Bug Fixes
+
+* renames .ts to .d.ts and copies to dist/src on build ([#71](https://github.com/ipfs/interface-datastore/issues/71)) ([568ee54](https://github.com/ipfs/interface-datastore/commit/568ee54323e487bff191437e13b1aeaa0a85f411)), closes [#68](https://github.com/ipfs/interface-datastore/issues/68) [#69](https://github.com/ipfs/interface-datastore/issues/69)
+
+
+
 ## [3.0.3](https://github.com/ipfs/interface-datastore/compare/v3.0.2...v3.0.3) (2021-01-22)
 
 
