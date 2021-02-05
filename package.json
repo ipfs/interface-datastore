@@ -10,7 +10,7 @@
     "dist"
   ],
   "scripts": {
-    "prepare": "aegir build --no-bundle",
+    "prepare": "aegir build --no-bundle && cp src/types.d.ts dist/src/types.d.ts",
     "lint": "aegir lint",
     "test": "aegir test",
     "test:node": "aegir test --target node",
