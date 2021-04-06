@@ -2,7 +2,6 @@
 
 const { nanoid } = require('nanoid')
 const { utf8Encoder, utf8Decoder } = require('./utils')
-const TextDecoder = require('ipfs-utils/src/text-decoder')
 
 const symbol = Symbol.for('@ipfs/interface-datastore/key')
 const pathSepS = '/'
