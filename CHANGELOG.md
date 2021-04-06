@@ -1,3 +1,7 @@
+## [3.0.5](https://github.com/ipfs/interface-datastore/compare/v3.0.4...v3.0.5) (2021-04-06)
+
+
+
 ## [3.0.4](https://github.com/ipfs/interface-datastore/compare/v3.0.3...v3.0.4) (2021-02-05)
 
 
