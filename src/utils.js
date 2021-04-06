@@ -1,8 +1,6 @@
 'use strict'
 
 const tempdir = require('ipfs-utils/src/temp-dir')
-const TextEncoder = require('ipfs-utils/src/text-encoder')
-const TextDecoder = require('ipfs-utils/src/text-decoder')
 
 /**
  * @template T
