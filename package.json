@@ -39,7 +39,7 @@
   "homepage": "https://github.com/ipfs/interface-datastore#readme",
   "devDependencies": {
     "@types/err-code": "^2.0.0",
-    "aegir": "^30.3.0"
+    "aegir": "^33.0.0"
   },
   "dependencies": {
     "err-code": "^3.0.1",
