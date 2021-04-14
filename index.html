@@ -3,120 +3,11 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>interface-datastore - v3.0.5</title>
-	<meta name="description" content="Documentation for interface-datastore - v3.0.5">
+	<title>interface-datastore - v3.0.6</title>
+	<meta name="description" content="Documentation for interface-datastore - v3.0.6">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
-	<link href="https://unpkg.com/nord-highlightjs@0.1.0/dist/nord.css" rel="stylesheet" type="text/css" />
-	<style>
-        .toolbar-icon {
-            display: inline-block;
-            vertical-align: middle;
-            margin-left: 10px;
-            cursor: pointer;
-        }
-        .toolbar-icon-search {
-            box-sizing: border-box;
-            position: absolute;
-            overflow: hidden;
-            right: -40px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            @media (min-width: 901px){
-                display: none
-            }
-        }
-            @media (min-width: 901px){
-                .toolbar-icon-menu {
-                    display: none
-                }
-                .toolbar-icon-options {
-                    display: none
-                }
-            }
-
-        .gg-menu {
-            transform: scale(var(--ggs,1))
-        }
-        .gg-menu,
-        .gg-menu::after,
-        .gg-menu::before {
-            box-sizing: border-box;
-            position: relative;
-            display: block;
-            width: 20px;
-            height: 2px;
-            border-radius: 3px;
-            background: currentColor
-        }
-        .gg-menu::after,
-        .gg-menu::before {
-            content: "";
-            position: absolute;
-            top: -6px
-        }
-        .gg-menu::after {
-            top: 6px
-        }
-        .gg-options {
-            box-sizing: border-box;
-            position: relative;
-            display: block;
-            transform: scale(var(--ggs,1));
-            width: 10px;
-            height: 2px;
-            box-shadow:
-                -3px 4px 0 0,
-                3px -4px 0 0
-        }
-        .gg-options::after,
-        .gg-options::before {
-            content: "";
-            display: block;
-            box-sizing: border-box;
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            border: 2px solid;
-            border-radius: 100%
-        }
-        .gg-options::before {
-            top: -7px;
-            left: -4px
-        }
-        .gg-options::after {
-            bottom: -7px;
-            right: -4px
-        }
-        .gg-search {
-            box-sizing: border-box;
-            position: relative;
-            display: block;
-            transform: scale(var(--ggs,1));
-            width: 16px;
-            height: 16px;
-            border: 2px solid;
-            border-radius: 100%;
-            margin-left: -4px;
-            margin-top: -4px
-        }
-        .gg-search::after {
-            content: "";
-            display: block;
-            box-sizing: border-box;
-            position: absolute;
-            border-radius: 3px;
-            width: 2px;
-            height: 8px;
-            background: currentColor;
-            transform: rotate(-45deg);
-            top: 10px;
-            left: 12px
-        }
-    </style>
+	<script async src="assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
@@ -125,26 +16,41 @@
 			<div class="table-wrap">
 				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
 					<div class="field">
-						<label for="tsd-search-field" class="toolbar-icon toolbar-icon-search"><i class="gg-search"></i></label>
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
 					</div>
 					<ul class="results">
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">interface-datastore - v3.0.5</a>
+					<a href="index.html" class="title">interface-datastore - v3.0.6</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
-					<a href="#" class="toolbar-icon toolbar-icon-menu" data-toggle="menu"><i class="gg-menu"></i></a>
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="tsd-page-title">
 		<div class="container">
-			<ul class="tsd-breadcrumb">
-			</ul>
-			<h1>interface-datastore - v3.0.5</h1>
+			<h1>interface-datastore - v3.0.6</h1>
 		</div>
 	</div>
 </header>
@@ -206,42 +112,42 @@
 					</li>
 				</ul>
 				<p>If you want the same functionality as <a href="https://github.com/ipfs/go-ds-flatfs">go-ds-flatfs</a>, use sharding with fs.</p>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> FsStore = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;datastore-fs&#x27;</span>)
-<span class="hljs-keyword">const</span> ShardingStore = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;datastore-core&#x27;</span>).ShardingDatatstore
-<span class="hljs-keyword">const</span> NextToLast = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;datastore-core&#x27;</span>).shard.NextToLast
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">FsStore</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;datastore-fs&#039;</span><span style="color: #000000">)</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">ShardingStore</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;datastore-core&#039;</span><span style="color: #000000">).</span><span style="color: #001080">ShardingDatatstore</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">NextToLast</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;datastore-core&#039;</span><span style="color: #000000">).</span><span style="color: #001080">shard</span><span style="color: #000000">.</span><span style="color: #001080">NextToLast</span>
 
-<span class="hljs-keyword">const</span> fs = <span class="hljs-keyword">new</span> FsStore(<span class="hljs-string">&#x27;path/to/store&#x27;</span>)
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">fs</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">FsStore</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;path/to/store&#039;</span><span style="color: #000000">)</span>
 
-<span class="hljs-comment">// flatfs now works like go-flatfs</span>
-<span class="hljs-keyword">const</span> flatfs = <span class="hljs-keyword">await</span> ShardingStore.createOrOpen(fs, <span class="hljs-keyword">new</span> NextToLast(<span class="hljs-number">2</span>))
+<span style="color: #008000">// flatfs now works like go-flatfs</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">flatfs</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">ShardingStore</span><span style="color: #000000">.</span><span style="color: #795E26">createOrOpen</span><span style="color: #000000">(</span><span style="color: #001080">fs</span><span style="color: #000000">, </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">NextToLast</span><span style="color: #000000">(</span><span style="color: #098658">2</span><span style="color: #000000">))</span>
 </code></pre>
 				<a href="#adapter" id="adapter" style="color: inherit; text-decoration: none;">
 					<h2>Adapter</h2>
 				</a>
 				<p>An adapter is made available to make implementing your own datastore easier:</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { Adapter } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;interface-datastore&#x27;</span>)
+				<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> { </span><span style="color: #0070C1">Adapter</span><span style="color: #000000"> } = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;interface-datastore&#039;</span><span style="color: #000000">)</span>
 
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyDatastore</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Adapter</span> </span>{
-  <span class="hljs-title">constructor</span> (<span class="hljs-params"></span>) {
-    <span class="hljs-built_in">super</span>()
-  }
+<span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">MyDatastore</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">Adapter</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">constructor</span><span style="color: #000000"> () {</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">super</span><span style="color: #000000">()</span>
+<span style="color: #000000">  }</span>
 
-  <span class="hljs-keyword">async</span> put (key, val) {
-    <span class="hljs-comment">// your implementation here</span>
-  }
+<span style="color: #000000">  </span><span style="color: #0000FF">async</span><span style="color: #000000"> </span><span style="color: #795E26">put</span><span style="color: #000000"> (</span><span style="color: #001080">key</span><span style="color: #000000">, </span><span style="color: #001080">val</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #008000">// your implementation here</span>
+<span style="color: #000000">  }</span>
 
-  <span class="hljs-keyword">async</span> get (key) {
-    <span class="hljs-comment">// your implementation here</span>
-  }
+<span style="color: #000000">  </span><span style="color: #0000FF">async</span><span style="color: #000000"> </span><span style="color: #795E26">get</span><span style="color: #000000"> (</span><span style="color: #001080">key</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #008000">// your implementation here</span>
+<span style="color: #000000">  }</span>
 
-  <span class="hljs-comment">// etc...</span>
-}
+<span style="color: #000000">  </span><span style="color: #008000">// etc...</span>
+<span style="color: #000000">}</span>
 </code></pre>
 				<p>See the <a href="./src/memory.js">MemoryDatastore</a> for an example of how it is used.</p>
 				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
 					<h2>Install</h2>
 				</a>
-				<pre><code class="language-sh">$ npm install interface-datastore
+				<pre><code class="language-sh"><span style="color: #000000">$ npm install interface-datastore</span>
 </code></pre>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
@@ -249,26 +155,26 @@
 				<a href="#wrapping-stores" id="wrapping-stores" style="color: inherit; text-decoration: none;">
 					<h3>Wrapping Stores</h3>
 				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> MemoryStore = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;interface-datastore&#x27;</span>).MemoryDatastore
-<span class="hljs-keyword">const</span> MountStore = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;datastore-core&#x27;</span>).MountDatastore
-<span class="hljs-keyword">const</span> Key = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;interface-datastore&#x27;</span>).Key
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">MemoryStore</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;interface-datastore&#039;</span><span style="color: #000000">).</span><span style="color: #001080">MemoryDatastore</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">MountStore</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;datastore-core&#039;</span><span style="color: #000000">).</span><span style="color: #001080">MountDatastore</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Key</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;interface-datastore&#039;</span><span style="color: #000000">).</span><span style="color: #001080">Key</span>
 
-<span class="hljs-keyword">const</span> store = <span class="hljs-keyword">new</span> MountStore({ <span class="hljs-attr">prefix</span>: <span class="hljs-keyword">new</span> Key(<span class="hljs-string">&#x27;/a&#x27;</span>), <span class="hljs-attr">datastore</span>: <span class="hljs-keyword">new</span> MemoryStore() })
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">store</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MountStore</span><span style="color: #000000">({ </span><span style="color: #001080">prefix:</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Key</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;/a&#039;</span><span style="color: #000000">), </span><span style="color: #001080">datastore:</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MemoryStore</span><span style="color: #000000">() })</span>
 </code></pre>
 				<a href="#test-suite" id="test-suite" style="color: inherit; text-decoration: none;">
 					<h3>Test suite</h3>
 				</a>
 				<p>Available under <a href="src/tests.js"><code>src/tests.js</code></a></p>
-				<pre><code class="language-js">describe(<span class="hljs-string">&#x27;mystore&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
-  <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;interface-datastore/src/tests&#x27;</span>)({
-    <span class="hljs-keyword">async</span> setup () {
-      <span class="hljs-keyword">return</span> instanceOfMyStore
-    },
-    <span class="hljs-keyword">async</span> teardown () {
-      <span class="hljs-comment">// cleanup resources</span>
-    }
-  })
-})
+				<pre><code class="language-js"><span style="color: #795E26">describe</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;mystore&#039;</span><span style="color: #000000">, () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;interface-datastore/src/tests&#039;</span><span style="color: #000000">)({</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">async</span><span style="color: #000000"> </span><span style="color: #795E26">setup</span><span style="color: #000000"> () {</span>
+<span style="color: #000000">      </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">instanceOfMyStore</span>
+<span style="color: #000000">    },</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">async</span><span style="color: #000000"> </span><span style="color: #795E26">teardown</span><span style="color: #000000"> () {</span>
+<span style="color: #000000">      </span><span style="color: #008000">// cleanup resources</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  })</span>
+<span style="color: #000000">})</span>
 </code></pre>
 				<a href="#aborting-requests" id="aborting-requests" style="color: inherit; text-decoration: none;">
 					<h3>Aborting requests</h3>
@@ -278,23 +184,23 @@
 					<h3>Concurrency</h3>
 				</a>
 				<p>The streaming <code>(put|get|delete)Many</code> methods are intended to be used with modules such as <a href="https://www.npmjs.com/package/it-parallel-batch">it-parallel-batch</a> to allow calling code to control levels of parallelisation.  The batching method ensures results are returned in the correct order, but interface implementations should be thread safe.</p>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> batch = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;it-parallel-batch&#x27;</span>)
-<span class="hljs-keyword">const</span> source = [{
-  <span class="hljs-attr">key</span>: ..,
-  <span class="hljs-attr">value</span>: ..
-}]
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">batch</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;it-parallel-batch&#039;</span><span style="color: #000000">)</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">source</span><span style="color: #000000"> = [{</span>
+<span style="color: #000000">  </span><span style="color: #001080">key:</span><span style="color: #000000"> ..,</span>
+<span style="color: #000000">  </span><span style="color: #001080">value:</span><span style="color: #000000"> ..</span>
+<span style="color: #000000">}]</span>
 
-<span class="hljs-comment">// put values into the datastore concurrently, max 10 at a time</span>
-<span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> { key, data } <span class="hljs-keyword">of</span> batch(store.putMany(source), <span class="hljs-number">10</span>)) {
-  <span class="hljs-built_in">console</span>.info(<span class="hljs-string">`Put <span class="hljs-subst">${key}</span>`</span>)
-}
+<span style="color: #008000">// put values into the datastore concurrently, max 10 at a time</span>
+<span style="color: #AF00DB">for</span><span style="color: #000000"> </span><span style="color: #AF00DB">await</span><span style="color: #000000"> (</span><span style="color: #0000FF">const</span><span style="color: #000000"> { </span><span style="color: #0070C1">key</span><span style="color: #000000">, </span><span style="color: #0070C1">data</span><span style="color: #000000"> } </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #795E26">batch</span><span style="color: #000000">(</span><span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #795E26">putMany</span><span style="color: #000000">(</span><span style="color: #001080">source</span><span style="color: #000000">), </span><span style="color: #098658">10</span><span style="color: #000000">)) {</span>
+<span style="color: #000000">  </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">info</span><span style="color: #000000">(</span><span style="color: #A31515">`Put </span><span style="color: #0000FF">${</span><span style="color: #001080">key</span><span style="color: #0000FF">}</span><span style="color: #A31515">`</span><span style="color: #000000">)</span>
+<span style="color: #000000">}</span>
 </code></pre>
 				<a href="#keys" id="keys" style="color: inherit; text-decoration: none;">
 					<h3>Keys</h3>
 				</a>
 				<p>To allow a better abstraction on how to address values, there is a <code>Key</code> class which is used as identifier. It&#39;s easy to create a key from a <code>Uint8Array</code> or a <code>string</code>.</p>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> a = <span class="hljs-keyword">new</span> Key(<span class="hljs-string">&#x27;a&#x27;</span>)
-<span class="hljs-keyword">const</span> b = <span class="hljs-keyword">new</span> Key(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Uint8Array</span>([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]))
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">a</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Key</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;a&#039;</span><span style="color: #000000">)</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">b</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Key</span><span style="color: #000000">(</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Uint8Array</span><span style="color: #000000">([</span><span style="color: #098658">0</span><span style="color: #000000">, </span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">]))</span>
 </code></pre>
 				<p>The key scheme is inspired by file systems and Google App Engine key model. Keys are meant to be unique across a system. They are typically hierarchical, incorporating more and more specific namespaces. Thus keys can be deemed &#39;children&#39; or &#39;ancestors&#39; of other keys:</p>
 				<ul>
@@ -325,31 +231,46 @@
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class=" tsd-kind-module">
-						<a href="modules/__interface_datastore_.html"> interface-datastore</a>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
 					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/__users_alex_documents_workspaces_ipfs_interface_datastore_src_adapter_.html">/Users/alex/Documents/Workspaces/ipfs/interface-datastore/src/adapter</a>
+					<li class=" tsd-kind-namespace">
+						<a href="modules/errors.html">Errors</a>
 					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/__users_alex_documents_workspaces_ipfs_interface_datastore_src_errors_.html">/Users/alex/Documents/Workspaces/ipfs/interface-datastore/src/errors</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/__users_alex_documents_workspaces_ipfs_interface_datastore_src_key_.html">/Users/alex/Documents/Workspaces/ipfs/interface-datastore/src/key</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/__users_alex_documents_workspaces_ipfs_interface_datastore_src_memory_.html">/Users/alex/Documents/Workspaces/ipfs/interface-datastore/src/memory</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/__users_alex_documents_workspaces_ipfs_interface_datastore_src_tests_.html">/Users/alex/Documents/Workspaces/ipfs/interface-datastore/src/tests</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/__users_alex_documents_workspaces_ipfs_interface_datastore_src_utils_.html">/Users/alex/Documents/Workspaces/ipfs/interface-datastore/src/utils</a>
+					<li class=" tsd-kind-namespace">
+						<a href="modules/utils.html">utils</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/adapter.html" class="tsd-kind-icon">Adapter</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/key.html" class="tsd-kind-icon">Key</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/memorydatastore.html" class="tsd-kind-icon">Memory<wbr>Datastore</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#batch" class="tsd-kind-icon">Batch</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#datastore" class="tsd-kind-icon">Datastore</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#options" class="tsd-kind-icon">Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#pair" class="tsd-kind-icon">Pair</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#query" class="tsd-kind-icon">Query</a>
+					</li>
+					<li class=" tsd-kind-property">
+						<a href="modules.html#utils" class="tsd-kind-icon">utils</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -360,14 +281,15 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
-				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>
