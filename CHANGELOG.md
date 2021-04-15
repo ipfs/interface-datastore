@@ -1,3 +1,12 @@
+# [4.0.0](https://github.com/ipfs/interface-datastore/compare/v3.0.6...v4.0.0) (2021-04-15)
+
+
+### Features
+
+* split .query into .query and .queryKeys ([#87](https://github.com/ipfs/interface-datastore/issues/87)) ([4bb5ebc](https://github.com/ipfs/interface-datastore/commit/4bb5ebccec28a6fbfa51411183e037c77313fb8f))
+
+
+
 ## [3.0.6](https://github.com/ipfs/interface-datastore/compare/v3.0.5...v3.0.6) (2021-04-14)
 
 
