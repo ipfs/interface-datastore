@@ -472,7 +472,6 @@ module.exports = (test) => {
       ['2 filters', { filters: [filter1, filter2] }, [hello2.key]],
       ['limit', { limit: 1 }, 1],
       ['offset', { offset: 1 }, 2],
-      ['keysOnly', { keysOnly: true }, [hello.key, world.key, hello2.key]],
       ['1 order (1)', { orders: [order1] }, [hello.key, world.key, hello2.key]],
       ['1 order (reverse 1)', { orders: [order2] }, [hello2.key, world.key, hello.key]]
     ]
