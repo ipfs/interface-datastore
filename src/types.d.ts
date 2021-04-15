@@ -137,22 +137,49 @@ export interface Datastore {
    *
    * @example
    * ```js
-   * // retrieve __all__ values from the store
+   * // retrieve __all__ key/value pairs from the store
    * let list = []
-   * for await (const value of store.query({})) {
+   * for await (const { key, value } of store.query({})) {
    *   list.push(value)
    * }
    * console.log('ALL THE VALUES', list)
    * ```
    */
-  query: (q: Query, options?: Options) => AsyncIterable<Pair>
+   query: (query: Query, options?: Options) => AsyncIterable<Pair>
+   /**
+   * Query the store.
+   *
+   * @example
+   * ```js
+   * // retrieve __all__ keys from the store
+   * let list = []
+   * for await (const key of store.queryKeys({})) {
+   *   list.push(key)
+   * }
+   * console.log('ALL THE KEYS', key)
+   * ```
+   */
+   queryKeys: (query: KeyQuery, options?: Options) => AsyncIterable<Key>
 }
+
+export type QueryFilter = (item: Pair) => boolean
+export type QueryOrder = (a: Pair, b: Pair) => -1 | 0 | 1
 
 export interface Query {
   prefix?: string
-  filters?: Array<(item: Pair) => boolean>
-  orders?: Array<(items: Pair[]) => Await<Pair[]>>
+  filters?: QueryFilter[]
+  orders?: QueryOrder[]
   limit?: number
   offset?: number
-  keysOnly?: boolean
+}
+
+export type KeyQueryFilter = (item: Key) => boolean
+export type KeyQueryOrder = (a: Key, b: Key) => -1 | 0 | 1
+
+export interface KeyQuery {
+  prefix?: string
+  filters?: KeyQueryFilter[]
+  orders?: KeyQueryOrder[]
+  limit?: number
+  offset?: number
 }

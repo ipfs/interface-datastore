@@ -65,6 +65,11 @@ class MemoryDatastore extends Adapter {
     yield * Object.entries(this.data)
       .map(([key, value]) => ({ key: new Key(key), value }))
   }
+
+  async * _allKeys () {
+    yield * Object.entries(this.data)
+      .map(([key]) => new Key(key))
+  }
 }
 
 module.exports = MemoryDatastore

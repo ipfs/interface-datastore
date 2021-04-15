@@ -1,7 +1,9 @@
 'use strict'
 
-const { filter, sortAll, take, map } = require('./utils')
+const { sortAll } = require('./utils')
 const drain = require('it-drain')
+const filter = require('it-filter')
+const take = require('it-take')
 
 /**
  * @typedef {import('./key')} Key
@@ -9,6 +11,7 @@ const drain = require('it-drain')
  * @typedef {import('./types').Datastore} Datastore
  * @typedef {import('./types').Options} Options
  * @typedef {import('./types').Query} Query
+ * @typedef {import('./types').KeyQuery} KeyQuery
  * @typedef {import('./types').Batch} Batch
  */
 
@@ -134,6 +137,8 @@ class Adapter {
   }
 
   /**
+   * Extending classes should override `query` or implement this method
+   *
    * @param {Query} q
    * @param {Options} [options]
    * @returns {AsyncIterable<Pair>}
@@ -141,6 +146,18 @@ class Adapter {
   // eslint-disable-next-line require-yield
   async * _all (q, options) {
     throw new Error('._all is not implemented')
+  }
+
+  /**
+   * Extending classes should override `queryKeys` or implement this method
+   *
+   * @param {KeyQuery} q
+   * @param {Options} [options]
+   * @returns {AsyncIterable<Key>}
+   */
+  // eslint-disable-next-line require-yield
+  async * _allKeys (q, options) {
+    throw new Error('._allKeys is not implemented')
   }
 
   /**
@@ -173,8 +190,37 @@ class Adapter {
       it = take(it, q.limit)
     }
 
-    if (q.keysOnly === true) {
-      return map(it, (e) => /** @type {Pair} */({ key: e.key }))
+    return it
+  }
+
+  /**
+   * @param {KeyQuery} q
+   * @param {Options} [options]
+   */
+  queryKeys (q, options) {
+    let it = this._allKeys(q, options)
+
+    if (q.prefix != null) {
+      it = filter(it, (key) =>
+        key.toString().startsWith(/** @type {string} */ (q.prefix))
+      )
+    }
+
+    if (Array.isArray(q.filters)) {
+      it = q.filters.reduce((it, f) => filter(it, f), it)
+    }
+
+    if (Array.isArray(q.orders)) {
+      it = q.orders.reduce((it, f) => sortAll(it, f), it)
+    }
+
+    if (q.offset != null) {
+      let i = 0
+      it = filter(it, () => i++ >= /** @type {number} */ (q.offset))
+    }
+
+    if (q.limit != null) {
+      it = take(it, q.limit)
     }
 
     return it
