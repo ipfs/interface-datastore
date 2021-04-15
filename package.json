@@ -18,8 +18,7 @@
     "release": "aegir release --docs",
     "release-minor": "aegir release --type minor --docs",
     "release-major": "aegir release --type major --docs",
-    "coverage": "aegir coverage",
-    "coverage-publish": "aegir coverage --provider codecov",
+    "coverage": "aegir test --cov",
     "docs": "aegir docs"
   },
   "repository": {
