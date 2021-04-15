@@ -2,7 +2,6 @@
 
 const { sortAll } = require('./utils')
 const drain = require('it-drain')
-const map = require('it-map')
 const filter = require('it-filter')
 const take = require('it-take')
 
@@ -138,6 +137,8 @@ class Adapter {
   }
 
   /**
+   * Extending classes should override `query` or implement this method
+   *
    * @param {Query} q
    * @param {Options} [options]
    * @returns {AsyncIterable<Pair>}
@@ -145,6 +146,18 @@ class Adapter {
   // eslint-disable-next-line require-yield
   async * _all (q, options) {
     throw new Error('._all is not implemented')
+  }
+
+  /**
+   * Extending classes should override `queryKeys` or implement this method
+   *
+   * @param {KeyQuery} q
+   * @param {Options} [options]
+   * @returns {AsyncIterable<Key>}
+   */
+  // eslint-disable-next-line require-yield
+  async * _allKeys (q, options) {
+    throw new Error('._allKeys is not implemented')
   }
 
   /**
@@ -185,28 +198,32 @@ class Adapter {
    * @param {Options} [options]
    */
   queryKeys (q, options) {
-    /** @type {Query} */
-    const query = {
-      ...q,
-      filters: [],
-      orders: []
+    let it = this._allKeys(q, options)
+
+    if (q.prefix != null) {
+      it = filter(it, (key) =>
+        key.toString().startsWith(/** @type {string} */ (q.prefix))
+      )
     }
 
-    // override filters to just deal with keys
     if (Array.isArray(q.filters)) {
-      query.filters = q.filters.map(filter => {
-        return (item) => filter(item.key)
-      })
+      it = q.filters.reduce((it, f) => filter(it, f), it)
     }
 
-    // override orders to just deal with keys
     if (Array.isArray(q.orders)) {
-      query.orders = q.orders.map(order => {
-        return (a, b) => order(a.key, b.key)
-      })
+      it = q.orders.reduce((it, f) => sortAll(it, f), it)
     }
 
-    return map(this.query(query, options), ({ key }) => key)
+    if (q.offset != null) {
+      let i = 0
+      it = filter(it, () => i++ >= /** @type {number} */ (q.offset))
+    }
+
+    if (q.limit != null) {
+      it = take(it, q.limit)
+    }
+
+    return it
   }
 }
 
