@@ -5,6 +5,11 @@
  * @typedef {import('./types').Batch} Batch
  * @typedef {import('./types').Options} Options
  * @typedef {import('./types').Query} Query
+ * @typedef {import('./types').QueryFilter} QueryFilter
+ * @typedef {import('./types').QueryOrder} QueryOrder
+ * @typedef {import('./types').KeyQuery} KeyQuery
+ * @typedef {import('./types').KeyQueryFilter} KeyQueryFilter
+ * @typedef {import('./types').KeyQueryOrder} KeyQueryOrder
  * @typedef {import('./types').Pair} Pair
  */
 

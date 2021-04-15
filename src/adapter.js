@@ -12,7 +12,7 @@ const take = require('it-take')
  * @typedef {import('./types').Datastore} Datastore
  * @typedef {import('./types').Options} Options
  * @typedef {import('./types').Query} Query
- * @typedef {import('./types').KeysQuery} KeysQuery
+ * @typedef {import('./types').KeyQuery} KeyQuery
  * @typedef {import('./types').Batch} Batch
  */
 
@@ -181,7 +181,7 @@ class Adapter {
   }
 
   /**
-   * @param {KeysQuery} q
+   * @param {KeyQuery} q
    * @param {Options} [options]
    */
   queryKeys (q, options) {

@@ -159,7 +159,7 @@ export interface Datastore {
    * console.log('ALL THE KEYS', key)
    * ```
    */
-   queryKeys: (query: KeysQuery, options?: Options) => AsyncIterable<Key>
+   queryKeys: (query: KeyQuery, options?: Options) => AsyncIterable<Key>
 }
 
 export type QueryFilter = (item: Pair) => boolean
@@ -176,7 +176,7 @@ export interface Query {
 export type KeyQueryFilter = (item: Key) => boolean
 export type KeyQueryOrder = (a: Key, b: Key) => -1 | 0 | 1
 
-export interface KeysQuery {
+export interface KeyQuery {
   prefix?: string
   filters?: KeyQueryFilter[]
   orders?: KeyQueryOrder[]
