@@ -1,7 +1,10 @@
 'use strict'
 
-const { filter, sortAll, take, map } = require('./utils')
+const { sortAll } = require('./utils')
 const drain = require('it-drain')
+const map = require('it-map')
+const filter = require('it-filter')
+const take = require('it-take')
 
 /**
  * @typedef {import('./key')} Key
@@ -9,6 +12,7 @@ const drain = require('it-drain')
  * @typedef {import('./types').Datastore} Datastore
  * @typedef {import('./types').Options} Options
  * @typedef {import('./types').Query} Query
+ * @typedef {import('./types').KeysQuery} KeysQuery
  * @typedef {import('./types').Batch} Batch
  */
 
@@ -173,11 +177,36 @@ class Adapter {
       it = take(it, q.limit)
     }
 
-    if (q.keysOnly === true) {
-      return map(it, (e) => /** @type {Pair} */({ key: e.key }))
+    return it
+  }
+
+  /**
+   * @param {KeysQuery} q
+   * @param {Options} [options]
+   */
+  queryKeys (q, options) {
+    /** @type {Query} */
+    const query = {
+      ...q,
+      filters: [],
+      orders: []
     }
 
-    return it
+    // override filters to just deal with keys
+    if (Array.isArray(q.filters)) {
+      query.filters = q.filters.map(filter => {
+        return (item) => filter(item.key)
+      })
+    }
+
+    // override orders to just deal with keys
+    if (Array.isArray(q.orders)) {
+      query.orders = q.orders.map(order => {
+        return (a, b) => order(a.key, b.key)
+      })
+    }
+
+    return map(this.query(query, options), ({ key }) => key)
   }
 }
 

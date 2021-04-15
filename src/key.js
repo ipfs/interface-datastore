@@ -1,11 +1,13 @@
 'use strict'
 
 const { nanoid } = require('nanoid')
-const { utf8Encoder, utf8Decoder } = require('./utils')
+
+const uint8ArrayToString = require('uint8arrays/to-string')
+const uint8ArrayFromString = require('uint8arrays/from-string')
 
 const symbol = Symbol.for('@ipfs/interface-datastore/key')
 const pathSepS = '/'
-const pathSepB = utf8Encoder.encode(pathSepS)
+const pathSepB = new TextEncoder().encode(pathSepS)
 const pathSep = pathSepB[0]
 
 /**
@@ -31,7 +33,7 @@ class Key {
    */
   constructor (s, clean) {
     if (typeof s === 'string') {
-      this._buf = utf8Encoder.encode(s)
+      this._buf = uint8ArrayFromString(s)
     } else if (s instanceof Uint8Array) {
       this._buf = s
     } else {
@@ -54,15 +56,11 @@ class Key {
   /**
    * Convert to the string representation
    *
-   * @param {string} [encoding='utf8'] - The encoding to use.
+   * @param {import('uint8arrays/to-string').SupportedEncodings} [encoding='utf8'] - The encoding to use.
    * @returns {string}
    */
   toString (encoding = 'utf8') {
-    if (encoding === 'utf8' || encoding === 'utf-8') {
-      return utf8Decoder.decode(this._buf)
-    }
-
-    return new TextDecoder(encoding).decode(this._buf)
+    return uint8ArrayToString(this._buf, encoding)
   }
 
   /**

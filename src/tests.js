@@ -1,18 +1,21 @@
 /* eslint-env mocha */
 'use strict'
 
-// @ts-ignore
-const randomBytes = require('iso-random-stream/src/random')
+const { randomBytes } = require('iso-random-stream')
 const { expect } = require('aegir/utils/chai')
 const all = require('it-all')
 const drain = require('it-drain')
-const { utf8Encoder } = require('../src/utils')
+const uint8ArrayFromString = require('uint8arrays/from-string')
 
 const { Key } = require('../src')
 
 /**
  * @typedef {import('./types').Datastore} Datastore
  * @typedef {import('./types').Pair} Pair
+ * @typedef {import('./types').QueryOrder} QueryOrder
+ * @typedef {import('./types').QueryFilter} QueryFilter
+ * @typedef {import('./types').KeyQueryOrder} KeyQueryOrder
+ * @typedef {import('./types').KeyQueryFilter} KeyQueryFilter
  */
 
 /**
@@ -46,13 +49,13 @@ module.exports = (test) => {
 
     it('simple', () => {
       const k = new Key('/z/one')
-      return store.put(k, utf8Encoder.encode('one'))
+      return store.put(k, uint8ArrayFromString('one'))
     })
 
     it('parallel', async () => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push({ key: new Key(`/z/key${i}`), value: utf8Encoder.encode(`data${i}`) })
+        data.push({ key: new Key(`/z/key${i}`), value: uint8ArrayFromString(`data${i}`) })
       }
 
       await Promise.all(data.map(d => store.put(d.key, d.value)))
@@ -75,7 +78,7 @@ module.exports = (test) => {
     it('streaming', async () => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push({ key: new Key(`/z/key${i}`), value: utf8Encoder.encode(`data${i}`) })
+        data.push({ key: new Key(`/z/key${i}`), value: uint8ArrayFromString(`data${i}`) })
       }
 
       let index = 0
@@ -104,9 +107,9 @@ module.exports = (test) => {
 
     it('simple', async () => {
       const k = new Key('/z/one')
-      await store.put(k, utf8Encoder.encode('hello'))
+      await store.put(k, uint8ArrayFromString('hello'))
       const res = await store.get(k)
-      expect(res).to.be.eql(utf8Encoder.encode('hello'))
+      expect(res).to.be.eql(uint8ArrayFromString('hello'))
     })
 
     it('should throw error for missing key', async () => {
@@ -135,12 +138,12 @@ module.exports = (test) => {
 
     it('streaming', async () => {
       const k = new Key('/z/one')
-      await store.put(k, utf8Encoder.encode('hello'))
+      await store.put(k, uint8ArrayFromString('hello'))
       const source = [k]
 
       const res = await all(store.getMany(source))
       expect(res).to.have.lengthOf(1)
-      expect(res[0]).to.be.eql(utf8Encoder.encode('hello'))
+      expect(res[0]).to.be.eql(uint8ArrayFromString('hello'))
     })
 
     it('should throw error for missing key', async () => {
@@ -169,7 +172,7 @@ module.exports = (test) => {
 
     it('simple', async () => {
       const k = new Key('/z/one')
-      await store.put(k, utf8Encoder.encode('hello'))
+      await store.put(k, uint8ArrayFromString('hello'))
       await store.get(k)
       await store.delete(k)
       const exists = await store.has(k)
@@ -180,7 +183,7 @@ module.exports = (test) => {
       /** @type {[Key, Uint8Array][]} */
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push([new Key(`/a/key${i}`), utf8Encoder.encode(`data${i}`)])
+        data.push([new Key(`/a/key${i}`), uint8ArrayFromString(`data${i}`)])
       }
 
       await Promise.all(data.map(d => store.put(d[0], d[1])))
@@ -208,7 +211,7 @@ module.exports = (test) => {
     it('streaming', async () => {
       const data = []
       for (let i = 0; i < 100; i++) {
-        data.push({ key: new Key(`/a/key${i}`), value: utf8Encoder.encode(`data${i}`) })
+        data.push({ key: new Key(`/a/key${i}`), value: uint8ArrayFromString(`data${i}`) })
       }
 
       await drain(store.putMany(data))
@@ -243,11 +246,11 @@ module.exports = (test) => {
     it('simple', async () => {
       const b = store.batch()
 
-      await store.put(new Key('/z/old'), utf8Encoder.encode('old'))
+      await store.put(new Key('/z/old'), uint8ArrayFromString('old'))
 
-      b.put(new Key('/a/one'), utf8Encoder.encode('1'))
-      b.put(new Key('/q/two'), utf8Encoder.encode('2'))
-      b.put(new Key('/q/three'), utf8Encoder.encode('3'))
+      b.put(new Key('/a/one'), uint8ArrayFromString('1'))
+      b.put(new Key('/q/two'), uint8ArrayFromString('2'))
+      b.put(new Key('/q/three'), uint8ArrayFromString('3'))
       b.delete(new Key('/z/old'))
       await b.commit()
 
@@ -288,44 +291,41 @@ module.exports = (test) => {
   describe('query', () => {
     /** @type {Datastore} */
     let store
-    const hello = { key: new Key('/q/1hello'), value: utf8Encoder.encode('1') }
-    const world = { key: new Key('/z/2world'), value: utf8Encoder.encode('2') }
-    const hello2 = { key: new Key('/z/3hello2'), value: utf8Encoder.encode('3') }
+    const hello = { key: new Key('/q/1hello'), value: uint8ArrayFromString('1') }
+    const world = { key: new Key('/z/2world'), value: uint8ArrayFromString('2') }
+    const hello2 = { key: new Key('/z/3hello2'), value: uint8ArrayFromString('3') }
 
     /**
-     * @param {Pair} entry
+     * @type {QueryFilter}
      */
     const filter1 = entry => !entry.key.toString().endsWith('hello')
+
     /**
-     * @param {Pair} entry
+     * @type {QueryFilter}
      */
     const filter2 = entry => entry.key.toString().endsWith('hello2')
 
     /**
-     * @param {Pair[]} res
+     * @type {QueryOrder}
      */
-    const order1 = res => {
-      return res.sort((a, b) => {
-        if (a.value.toString() < b.value.toString()) {
-          return -1
-        }
-        return 1
-      })
+    const order1 = (a, b) => {
+      if (a.value.toString() < b.value.toString()) {
+        return -1
+      }
+      return 1
     }
 
     /**
-     * @param {Pair[]} res
+     * @type {QueryOrder}
      */
-    const order2 = res => {
-      return res.sort((a, b) => {
-        if (a.value.toString() < b.value.toString()) {
-          return 1
-        }
-        if (a.value.toString() > b.value.toString()) {
-          return -1
-        }
-        return 0
-      })
+    const order2 = (a, b) => {
+      if (a.value.toString() < b.value.toString()) {
+        return 1
+      }
+      if (a.value.toString() > b.value.toString()) {
+        return -1
+      }
+      return 0
     }
 
     /** @type {Array<[string, any, any[]|number]>} */
@@ -336,7 +336,6 @@ module.exports = (test) => {
       ['2 filters', { filters: [filter1, filter2] }, [hello2]],
       ['limit', { limit: 1 }, 1],
       ['offset', { offset: 1 }, 2],
-      ['keysOnly', { keysOnly: true }, [{ key: hello.key }, { key: world.key }, { key: hello2.key }]],
       ['1 order (1)', { orders: [order1] }, [hello, world, hello2]],
       ['1 order (reverse 1)', { orders: [order2] }, [hello2, world, hello]]
     ]
@@ -393,7 +392,7 @@ module.exports = (test) => {
     }))
 
     it('allows mutating the datastore during a query', async () => {
-      const hello3 = { key: new Key('/z/4hello3'), value: utf8Encoder.encode('4') }
+      const hello3 = { key: new Key('/z/4hello3'), value: uint8ArrayFromString('4') }
       let firstIteration = true
 
       for await (const {} of store.query({})) { // eslint-disable-line no-empty-pattern
@@ -418,8 +417,138 @@ module.exports = (test) => {
     })
 
     it('queries while the datastore is being mutated', async () => {
-      const writePromise = store.put(new Key(`/z/key-${Math.random()}`), utf8Encoder.encode('0'))
+      const writePromise = store.put(new Key(`/z/key-${Math.random()}`), uint8ArrayFromString('0'))
       const results = await all(store.query({}))
+      expect(results.length).to.be.greaterThan(0)
+      await writePromise
+    })
+  })
+
+  describe('queryKeys', () => {
+    /** @type {Datastore} */
+    let store
+    const hello = { key: new Key('/q/1hello'), value: uint8ArrayFromString('1') }
+    const world = { key: new Key('/z/2world'), value: uint8ArrayFromString('2') }
+    const hello2 = { key: new Key('/z/3hello2'), value: uint8ArrayFromString('3') }
+
+    /**
+     * @type {KeyQueryFilter}
+     */
+    const filter1 = key => !key.toString().endsWith('hello')
+
+    /**
+     * @type {KeyQueryFilter}
+     */
+    const filter2 = key => key.toString().endsWith('hello2')
+
+    /**
+     * @type {KeyQueryOrder}
+     */
+    const order1 = (a, b) => {
+      if (a.toString() < b.toString()) {
+        return -1
+      }
+      return 1
+    }
+
+    /**
+     * @type {KeyQueryOrder}
+     */
+    const order2 = (a, b) => {
+      if (a.toString() < b.toString()) {
+        return 1
+      }
+      if (a.toString() > b.toString()) {
+        return -1
+      }
+      return 0
+    }
+
+    /** @type {Array<[string, any, any[]|number]>} */
+    const tests = [
+      ['empty', {}, [hello.key, world.key, hello2.key]],
+      ['prefix', { prefix: '/z' }, [world.key, hello2.key]],
+      ['1 filter', { filters: [filter1] }, [world.key, hello2.key]],
+      ['2 filters', { filters: [filter1, filter2] }, [hello2.key]],
+      ['limit', { limit: 1 }, 1],
+      ['offset', { offset: 1 }, 2],
+      ['keysOnly', { keysOnly: true }, [hello.key, world.key, hello2.key]],
+      ['1 order (1)', { orders: [order1] }, [hello.key, world.key, hello2.key]],
+      ['1 order (reverse 1)', { orders: [order2] }, [hello2.key, world.key, hello.key]]
+    ]
+
+    before(async () => {
+      store = await createStore()
+
+      const b = store.batch()
+
+      b.put(hello.key, hello.value)
+      b.put(world.key, world.value)
+      b.put(hello2.key, hello2.value)
+
+      return b.commit()
+    })
+
+    after(() => cleanup(store))
+
+    tests.forEach(([name, query, expected]) => it(name, async () => {
+      let res = await all(store.queryKeys(query))
+
+      if (Array.isArray(expected)) {
+        if (query.orders == null) {
+          expect(res).to.have.length(expected.length)
+          /**
+           * @type {KeyQueryOrder}
+           */
+          const s = (a, b) => {
+            if (a.toString() < b.toString()) {
+              return 1
+            } else {
+              return -1
+            }
+          }
+          res = res.sort(s)
+          const exp = expected.sort(s)
+
+          res.forEach((r, i) => {
+            expect(r.toString()).to.be.eql(exp[i].toString())
+          })
+        } else {
+          expect(res).to.be.eql(expected)
+        }
+      } else if (typeof expected === 'number') {
+        expect(res).to.have.length(expected)
+      }
+    }))
+
+    it('allows mutating the datastore during a query', async () => {
+      const hello3 = { key: new Key('/z/4hello3'), value: uint8ArrayFromString('4') }
+      let firstIteration = true
+
+      for await (const {} of store.queryKeys({})) { // eslint-disable-line no-empty-pattern
+        if (firstIteration) {
+          expect(await store.has(hello2.key)).to.be.true()
+          await store.delete(hello2.key)
+          expect(await store.has(hello2.key)).to.be.false()
+
+          await store.put(hello3.key, hello3.value)
+          firstIteration = false
+        }
+      }
+
+      const results = await all(store.queryKeys({}))
+
+      expect(firstIteration).to.be.false('Query did not return anything')
+      expect(results).to.have.deep.members([
+        hello.key,
+        world.key,
+        hello3.key
+      ])
+    })
+
+    it('queries while the datastore is being mutated', async () => {
+      const writePromise = store.put(new Key(`/z/key-${Math.random()}`), uint8ArrayFromString('0'))
+      const results = await all(store.queryKeys({}))
       expect(results.length).to.be.greaterThan(0)
       await writePromise
     })

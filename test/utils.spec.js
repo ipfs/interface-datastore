@@ -3,6 +3,9 @@
 
 const { expect } = require('aegir/utils/chai')
 const utils = require('../src').utils
+const filter = require('it-filter')
+const take = require('it-take')
+const map = require('it-map')
 
 describe('utils', () => {
   it('filter - sync', async () => {
@@ -12,7 +15,7 @@ describe('utils', () => {
      */
     const filterer = val => val % 2 === 0
     const res = []
-    for await (const val of utils.filter(data, filterer)) {
+    for await (const val of filter(data, filterer)) {
       res.push(val)
     }
     expect(res).to.be.eql([2, 4])
@@ -25,7 +28,7 @@ describe('utils', () => {
      */
     const filterer = val => val % 2 === 0
     const res = []
-    for await (const val of utils.filter(data, filterer)) {
+    for await (const val of filter(data, filterer)) {
       res.push(val)
     }
     expect(res).to.be.eql([2, 4])
@@ -34,9 +37,20 @@ describe('utils', () => {
   it('sortAll', async () => {
     const data = [1, 2, 3, 4]
     /**
-     * @param {number[]} vals
+     * @param {number} a
+     * @param {number} b
      */
-    const sorter = vals => vals.reverse()
+    const sorter = (a, b) => {
+      if (a < b) {
+        return 1
+      }
+
+      if (a > b) {
+        return -1
+      }
+
+      return 0
+    }
     const res = []
     for await (const val of utils.sortAll(data, sorter)) {
       res.push(val)
@@ -65,7 +79,7 @@ describe('utils', () => {
     const data = [1, 2, 3, 4]
     const n = 3
     const res = []
-    for await (const val of utils.take(data, n)) {
+    for await (const val of take(data, n)) {
       res.push(val)
     }
     expect(res).to.be.eql([1, 2, 3])
@@ -74,7 +88,7 @@ describe('utils', () => {
   it('should take nothing from iterator', async () => {
     const data = [1, 2, 3, 4]
     const n = 0
-    for await (const _ of utils.take(data, n)) { // eslint-disable-line
+    for await (const _ of take(data, n)) { // eslint-disable-line
       throw new Error('took a value')
     }
   })
@@ -86,7 +100,7 @@ describe('utils', () => {
      */
     const mapper = n => n * 2
     const res = []
-    for await (const val of utils.map(data, mapper)) {
+    for await (const val of map(data, mapper)) {
       res.push(val)
     }
     expect(res).to.be.eql([2, 4, 6, 8])
