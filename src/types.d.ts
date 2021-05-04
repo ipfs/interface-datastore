@@ -2,9 +2,9 @@ import type Key from './key'
 
 export type AwaitIterable<T> = Iterable<T> | AsyncIterable<T>
 export type Await<T> = Promise<T> | T
-export interface Pair {
-  key: Key
-  value: Uint8Array
+export interface Pair<K = Key, V = Uint8Array> {
+  key: K
+  value: V
 }
 /**
  * Options for async operations.
@@ -13,14 +13,15 @@ export interface Options {
   signal?: AbortSignal
 }
 
-export interface Batch {
-  put: (key: Key, value: Uint8Array) => void
-  delete: (key: Key) => void
+export interface Batch<K = Key, V = Uint8Array> {
+  put: (key: K, value: V) => void
+  delete: (key: K) => void
   commit: (options?: Options) => Promise<void>
 }
-export interface Datastore {
+export interface Datastore<K = Key, V = Uint8Array> {
   open: () => Promise<void>
   close: () => Promise<void>
+
   /**
    * Store the passed value under the passed key
    *
@@ -30,7 +31,8 @@ export interface Datastore {
    * await store.put([{ key: new Key('awesome'), value: new Uint8Array([0, 1, 2, 3]) }])
    * ```
    */
-  put: (key: Key, val: Uint8Array, options?: Options) => Promise<void>
+  put: (key: K, val: V, options?: Options) => Promise<void>
+
   /**
    * Retrieve the value stored under the given key
    *
@@ -41,7 +43,8 @@ export interface Datastore {
    * // => got content: datastore
    * ```
    */
-  get: (key: Key, options?: Options) => Promise<Uint8Array>
+  get: (key: K, options?: Options) => Promise<V>
+
   /**
    * Check for the existence of a value for the passed key
    *
@@ -56,7 +59,8 @@ export interface Datastore {
    *}
    *```
    */
-  has: (key: Key, options?: Options) => Promise<boolean>
+  has: (key: K, options?: Options) => Promise<boolean>
+
   /**
    * Remove the record for the passed key
    *
@@ -67,7 +71,8 @@ export interface Datastore {
    * console.log('deleted awesome content :(')
    * ```
    */
-  delete: (key: Key, options?: Options) => Promise<void>
+  delete: (key: K, options?: Options) => Promise<void>
+
   /**
    * Store the given key/value pairs
    *
@@ -81,9 +86,10 @@ export interface Datastore {
    * ```
    */
   putMany: (
-    source: AwaitIterable<Pair>,
+    source: AwaitIterable<Pair<K, V>>,
     options?: Options
-  ) => AsyncIterable<Pair>
+  ) => AsyncIterable<Pair<K, V>>
+
   /**
    * Retrieve values for the passed keys
    *
@@ -96,9 +102,10 @@ export interface Datastore {
    * ```
    */
   getMany: (
-    source: AwaitIterable<Key>,
+    source: AwaitIterable<K>,
     options?: Options
-  ) => AsyncIterable<Uint8Array>
+  ) => AsyncIterable<V>
+
   /**
    * Remove values for the passed keys
    *
@@ -113,9 +120,10 @@ export interface Datastore {
    * ```
    */
   deleteMany: (
-    source: AwaitIterable<Key>,
+    source: AwaitIterable<K>,
     options?: Options
-  ) => AsyncIterable<Key>
+  ) => AsyncIterable<K>
+
   /**
    * This will return an object with which you can chain multiple operations together, with them only being executed on calling `commit`.
    *
@@ -131,7 +139,8 @@ export interface Datastore {
    * console.log('put 100 values')
    * ```
    */
-  batch: () => Batch
+  batch: () => Batch<K, V>
+
   /**
    * Query the store.
    *
@@ -145,7 +154,8 @@ export interface Datastore {
    * console.log('ALL THE VALUES', list)
    * ```
    */
-   query: (query: Query, options?: Options) => AsyncIterable<Pair>
+   query: (query: Query<K, V>, options?: Options) => AsyncIterable<Pair<K, V>>
+
    /**
    * Query the store.
    *
@@ -159,27 +169,27 @@ export interface Datastore {
    * console.log('ALL THE KEYS', key)
    * ```
    */
-   queryKeys: (query: KeyQuery, options?: Options) => AsyncIterable<Key>
+   queryKeys: (query: KeyQuery<K>, options?: Options) => AsyncIterable<K>
 }
 
-export type QueryFilter = (item: Pair) => boolean
-export type QueryOrder = (a: Pair, b: Pair) => -1 | 0 | 1
+export type QueryFilter<K = Key, V = Uint8Array> = (item: Pair<K, V>) => boolean
+export type QueryOrder<K = Key, V = Uint8Array> = (a: Pair<K, V>, b: Pair<K, V>) => -1 | 0 | 1
 
-export interface Query {
+export interface Query<K = Key, V = Uint8Array> {
   prefix?: string
-  filters?: QueryFilter[]
-  orders?: QueryOrder[]
+  filters?: QueryFilter<K, V>[]
+  orders?: QueryOrder<K, V>[]
   limit?: number
   offset?: number
 }
 
-export type KeyQueryFilter = (item: Key) => boolean
-export type KeyQueryOrder = (a: Key, b: Key) => -1 | 0 | 1
+export type KeyQueryFilter<K = Key> = (item: K) => boolean
+export type KeyQueryOrder<K = Key> = (a: K, b: K) => -1 | 0 | 1
 
-export interface KeyQuery {
+export interface KeyQuery<K = Key> {
   prefix?: string
-  filters?: KeyQueryFilter[]
-  orders?: KeyQueryOrder[]
+  filters?: KeyQueryFilter<K>[]
+  orders?: KeyQueryOrder<K>[]
   limit?: number
   offset?: number
 }

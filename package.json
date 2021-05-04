@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "prepare": "aegir build --no-bundle",
-    "lint": "aegir lint",
+    "lint": "aegir ts -p check && aegir lint",
     "test": "aegir test",
     "test:node": "aegir test --target node",
     "test:browser": "aegir test --target browser",
