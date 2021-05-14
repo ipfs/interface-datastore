@@ -7,9 +7,14 @@ import {
   KeyQueryFilter as StoreKeyQueryFilter,
   KeyQueryOrder as StoreKeyQueryOrder,
   KeyQuery as StoreKeyQuery,
+  Options as StoreOptions,
   Store
 } from 'interface-store'
 import type Key from './key'
+
+export interface Options extends StoreOptions{
+
+}
 
 export interface Pair extends StorePair<Key, Uint8Array> {
 
