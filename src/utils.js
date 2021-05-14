@@ -4,21 +4,11 @@ const tempdir = require('ipfs-utils/src/temp-dir')
 const all = require('it-all')
 
 /**
- * @template T
- * @typedef {import("./types").Await<T>} PromiseOrValue
- */
-
-/**
- * @template T
- * @typedef {import("./types").AwaitIterable<T>} AnyIterable
- */
-
-/**
  * Collect all values from the iterable and sort them using
  * the passed sorter function
  *
  * @template T
- * @param {AnyIterable<T>} iterable
+ * @param {AsyncIterable<T> | Iterable<T>} iterable
  * @param {(a: T, b: T) => -1 | 0 | 1} sorter
  * @returns {AsyncIterable<T>}
  */

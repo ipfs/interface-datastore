@@ -7,7 +7,7 @@ const Errors = require('./errors')
 /**
  * @typedef {import('./types').Pair} Pair
  * @typedef {import('./types').Datastore} Datastore
- * @typedef {import('./types').Options} Options
+ * @typedef {import('interface-store').Options} Options
  */
 
 /**

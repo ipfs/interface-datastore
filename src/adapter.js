@@ -6,10 +6,10 @@ const filter = require('it-filter')
 const take = require('it-take')
 
 /**
+ * @typedef {import('interface-store').Options} Options
  * @typedef {import('./key')} Key
  * @typedef {import('./types').Pair} Pair
  * @typedef {import('./types').Datastore} Datastore
- * @typedef {import('./types').Options} Options
  * @typedef {import('./types').Query} Query
  * @typedef {import('./types').KeyQuery} KeyQuery
  * @typedef {import('./types').Batch} Batch
@@ -17,7 +17,7 @@ const take = require('it-take')
 
 /**
  * @template O
- * @typedef {import('./types').AwaitIterable<O>} AwaitIterable
+ * @typedef {import('interface-store').AwaitIterable<O>} AwaitIterable
  */
 
 /**
