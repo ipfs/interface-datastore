@@ -3,7 +3,7 @@
 /**
  * @typedef {import('./types').Datastore} Datastore
  * @typedef {import('./types').Batch} Batch
- * @typedef {import('./types').Options} Options
+ * @typedef {import('interface-store').Options} Options
  * @typedef {import('./types').Query} Query
  * @typedef {import('./types').QueryFilter} QueryFilter
  * @typedef {import('./types').QueryOrder} QueryOrder
