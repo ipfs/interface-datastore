@@ -44,7 +44,7 @@ If you want the same functionality as [go-ds-flatfs](https://github.com/ipfs/go-
 
 ```js
 const FsStore = require('datastore-fs')
-const ShardingStore = require('datastore-core').ShardingDatatstore
+const ShardingStore = require('datastore-core').ShardingDatastore
 const NextToLast = require('datastore-core').shard.NextToLast
 
 const fs = new FsStore('path/to/store')
