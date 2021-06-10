@@ -1,6 +1,6 @@
 {
   "name": "interface-datastore",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "datastore interface",
   "leadMaintainer": "Alex Potsides <alex.potsides@protocol.ai>",
   "main": "src/index.js",
