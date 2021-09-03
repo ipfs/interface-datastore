@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "err-code": "^3.0.1",
-    "interface-store": "^0.0.2",
+    "interface-store": "^1.0.2",
     "ipfs-utils": "^8.1.2",
     "iso-random-stream": "^2.0.0",
     "it-all": "^1.0.2",
